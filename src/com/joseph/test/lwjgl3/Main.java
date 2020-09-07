@@ -6,6 +6,10 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
+import com.joseph.test.lwjgl3.models.ModelLoader;
+import com.joseph.test.lwjgl3.models.RawModel;
+import com.joseph.test.lwjgl3.renderer.Renderer;
+
 public class Main {
 	public static void main(String[] args) {
 		// note this is created and explained later in the program
@@ -108,6 +112,24 @@ public class Main {
 		// this is the color it will use. the current color is full red
 		GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 		
+		// honestly this should be static too but still like, this is the way the tutorial did it so like
+		// thats how imma do it
+		ModelLoader loader = new ModelLoader();
+		Renderer renderer = new Renderer();
+		
+		// just a square
+		float[] verticies = {
+				-0.5f, 0.5f, 0.0f,
+				-0.5f, -0.5f, 0.0f,
+				0.5f, -0.5f, 0f,
+				0.5f, -0.5f, 0f,
+				0.5f, 0.5f, 0f,
+				-0.5f, 0.5f, 0f
+		};
+		
+		// loat the quare into a thing and get its thing from the thing
+		RawModel model = loader.loadToVAO(verticies);
+		
 		// this is the loop portion of our code. this is the "main game loop" area
 		// it will continue to run until the window hint that the window should close is set to true
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
@@ -115,7 +137,11 @@ public class Main {
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
 			// this will clear the current frame buffer of its contents and set the pixels to the 
 			// pixel color specified in the clearColor funciton call above
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+//			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+			renderer.prepare();
+			
+			// render the model
+			renderer.render(model);
 			
 			// this will swap which buffer is currently in the "front" and which is in the "back"
 			// for more reading on why we do this and how it works, see 
@@ -132,6 +158,8 @@ public class Main {
 		// normally it is bad practice to have the loop and initialization all in one method, but
 		// as mentioned earlier, there is no need for us to follow good practice when trying to 
 		// connect these inter-weaving ideas together.
+		
+		loader.cleanUp();
 		
 		// this will free our call backs, as well as destroy the window we created
 		Callbacks.glfwFreeCallbacks(windowPointer);
