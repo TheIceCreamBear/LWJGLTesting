@@ -127,7 +127,7 @@ public class Main {
 				-0.5f, 0.5f, 0f
 		};
 		
-		// loat the quare into a thing and get its thing from the thing
+		// load the square into a thing and get its thing from the thing
 		RawModel model = loader.loadToVAO(verticies);
 		
 		// this is the loop portion of our code. this is the "main game loop" area
