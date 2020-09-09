@@ -31,7 +31,7 @@ public class Renderer {
 		GL20.glEnableVertexAttribArray(0);
 		// this actually draws everything, it uses the bound VAO to get the vertices and it starts a the 0th vert
 		// and draws model.getVertexCount() vertices using triangles
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, model.getVertexCount());
+		GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 		// opposite of the enable vertex attrib array call, probably just unbinds it
 		GL20.glDisableVertexAttribArray(0);
 		// unbinds the currently bound VAO by passing in zero, which is the value of NULL in C/C++

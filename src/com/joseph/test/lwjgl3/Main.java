@@ -117,18 +117,22 @@ public class Main {
 		ModelLoader loader = new ModelLoader();
 		Renderer renderer = new Renderer();
 		
-		// just a square
+		// just some verts
 		float[] verticies = {
 				-0.5f, 0.5f, 0.0f,
 				-0.5f, -0.5f, 0.0f,
 				0.5f, -0.5f, 0f,
-				0.5f, -0.5f, 0f,
 				0.5f, 0.5f, 0f,
-				-0.5f, 0.5f, 0f
+		};
+		
+		// just the order in which to use the verts
+		int[] indices = {
+				0, 1, 3,
+				3, 1, 2
 		};
 		
 		// load the square into a thing and get its thing from the thing
-		RawModel model = loader.loadToVAO(verticies);
+		RawModel model = loader.loadToVAO(verticies, indices);
 		
 		// this is the loop portion of our code. this is the "main game loop" area
 		// it will continue to run until the window hint that the window should close is set to true

@@ -1,6 +1,7 @@
 package com.joseph.test.lwjgl3.models;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +27,15 @@ public class ModelLoader {
 	/**
 	 * loads an array of vertices into a brand new vao and attrib list
 	 * and returns it as a raw model for use in rendering
-	 * @param vertecies
+	 * @param vertecies - the vertices of the object
+	 * @param indices - the list of vertices to use when constructing the object
 	 * @return
 	 */
-	public RawModel loadToVAO(float[] vertices) {
+	public RawModel loadToVAO(float[] vertices, int[] indices) {
 		// creates the new vao and returns the id
 		int vaoID = createVAO();
+		// create the indices buffer and bind it
+		bindIndicesBuffer(indices);
 		// stores the vertex data in the attribute list at index 0 
 		dataToAttribList(0, vertices);
 		// unbinds the vao because duh
@@ -39,7 +43,7 @@ public class ModelLoader {
 		
 		// return the new model with the vao and because the verticies array
 		// is always in triangles, divide it by 3
-		return new RawModel(vaoID, vertices.length / 3);
+		return new RawModel(vaoID, indices.length);
 	}
 	
 	/**
@@ -105,6 +109,36 @@ public class ModelLoader {
 	 */
 	private void unbindVAO() {
 		GL30.glBindVertexArray(0);
+	}
+	
+	/**
+	 * idk kinda doing a thing here where new vbo to hold the indices because thats less memory
+	 * than using a float array
+	 * @param indices
+	 */
+	private void bindIndicesBuffer(int[] indices) {
+		// create the vbo because like we still need one hello?
+		int vboID = GL15.glGenBuffers();
+		// add to list because yes
+		vbos.add(vboID);
+		// binding of the buffer, but it is a different type of data
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
+		// CREATE A BUFFER
+		IntBuffer buffer = dataToIntBuffer(indices);
+		// store the buffer
+		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+	}
+	
+	/**
+	 * simple, just creates an int buffer to read the info from
+	 * @param data - the data
+	 * @return the buffer
+	 */
+	private IntBuffer dataToIntBuffer(int[] data) {
+		IntBuffer b = BufferUtils.createIntBuffer(data.length);
+		b.put(data);
+		b.flip();
+		return b;
 	}
 	
 	/**
