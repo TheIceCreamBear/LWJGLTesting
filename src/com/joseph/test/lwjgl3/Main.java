@@ -4,11 +4,13 @@ import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
 
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.renderer.Renderer;
+import com.joseph.test.lwjgl3.shaders.StaticShader;
 
 public class Main {
 	public static void main(String[] args) {
@@ -116,6 +118,7 @@ public class Main {
 		// thats how imma do it
 		ModelLoader loader = new ModelLoader();
 		Renderer renderer = new Renderer();
+		StaticShader shader = new StaticShader();
 		
 		// just some verts
 		float[] verticies = {
@@ -134,6 +137,9 @@ public class Main {
 		// load the square into a thing and get its thing from the thing
 		RawModel model = loader.loadToVAO(verticies, indices);
 		
+		// this is how you make it go brrrrrrr and display only wires
+//		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
+		
 		// this is the loop portion of our code. this is the "main game loop" area
 		// it will continue to run until the window hint that the window should close is set to true
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
@@ -144,8 +150,14 @@ public class Main {
 //			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 			renderer.prepare();
 			
+			// start le shader
+			shader.start();
+			
 			// render the model
 			renderer.render(model);
+			
+			// stop le shader
+			shader.stop();
 			
 			// this will swap which buffer is currently in the "front" and which is in the "back"
 			// for more reading on why we do this and how it works, see 
@@ -164,6 +176,7 @@ public class Main {
 		// connect these inter-weaving ideas together.
 		
 		loader.cleanUp();
+		shader.cleanUp();
 		
 		// this will free our call backs, as well as destroy the window we created
 		Callbacks.glfwFreeCallbacks(windowPointer);
