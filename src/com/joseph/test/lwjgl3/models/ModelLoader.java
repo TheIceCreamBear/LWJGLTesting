@@ -11,6 +11,9 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.joseph.test.lwjgl3.textures.TextureLoader;
+import com.sun.prism.Texture;
+
 /**
  * Class to load models up, and saves the vao and vbo IDs associated with them
  * This should honestly probably be static, but LOL the video didnt do that
@@ -31,13 +34,15 @@ public class ModelLoader {
 	 * @param indices - the list of vertices to use when constructing the object
 	 * @return
 	 */
-	public RawModel loadToVAO(float[] vertices, int[] indices) {
+	public RawModel loadToVAO(float[] vertices, float[] textureCoords, int[] indices) {
 		// creates the new vao and returns the id
 		int vaoID = createVAO();
 		// create the indices buffer and bind it
 		bindIndicesBuffer(indices);
 		// stores the vertex data in the attribute list at index 0 
-		dataToAttribList(0, vertices);
+		dataToAttribList(0, 3, vertices);
+		// stores the texture uv data in the attribute list at index 1
+		dataToAttribList(1, 2, textureCoords);
 		// unbinds the vao because duh
 		unbindVAO();
 		
@@ -84,7 +89,7 @@ public class ModelLoader {
 	 * @param attribNum - the index of the desired destination for the data
 	 * @param data - the data
 	 */
-	private void dataToAttribList(int attribNum, float[] data) {
+	private void dataToAttribList(int attribNum, int attribSize, float[] data) {
 		// create the vbo because like we need it hello?
 		int vboID = GL15.glGenBuffers();
 		// add to list
@@ -98,7 +103,7 @@ public class ModelLoader {
 		// yea no idea what this does
 		// OHHH wait okay so it says that the vbo at attribNum is like not normalized and not anything 
 		// else but its also a float and it 
-		GL20.glVertexAttribPointer(attribNum, 3, GL11.GL_FLOAT, false, 0, 0);
+		GL20.glVertexAttribPointer(attribNum, attribSize, GL11.GL_FLOAT, false, 0, 0);
 		// yea youre typical unbinding of something for open gl
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}

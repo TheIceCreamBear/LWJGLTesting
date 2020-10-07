@@ -4,13 +4,15 @@ import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
 
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
+import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.renderer.Renderer;
 import com.joseph.test.lwjgl3.shaders.StaticShader;
+import com.joseph.test.lwjgl3.textures.Texture;
+import com.joseph.test.lwjgl3.textures.TextureLoader;
 
 public class Main {
 	public static void main(String[] args) {
@@ -134,8 +136,17 @@ public class Main {
 				3, 1, 2
 		};
 		
+		float[] textureCoords = {
+				0, 0,
+				0, 1,
+				1, 1,
+				1, 0
+		};
+		
 		// load the square into a thing and get its thing from the thing
-		RawModel model = loader.loadToVAO(verticies, indices);
+		RawModel model = loader.loadToVAO(verticies, textureCoords, indices);
+		Texture tex = TextureLoader.loadTexture("res/blarg.png");
+		TexturedModel texMod = new TexturedModel(model, tex);
 		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
@@ -154,7 +165,7 @@ public class Main {
 			shader.start();
 			
 			// render the model
-			renderer.render(model);
+			renderer.render(texMod);
 			
 			// stop le shader
 			shader.stop();
@@ -177,6 +188,7 @@ public class Main {
 		
 		loader.cleanUp();
 		shader.cleanUp();
+		TextureLoader.cleanUp();
 		
 		// this will free our call backs, as well as destroy the window we created
 		Callbacks.glfwFreeCallbacks(windowPointer);
