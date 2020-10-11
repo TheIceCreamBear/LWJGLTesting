@@ -29,5 +29,10 @@
 			<attribute name="javadoc_location" value="jar:file:/E:/Programming/Java/_Libraries/LWJGL3/PNGDecoder/pngdecoder-1.0-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="E:/Programming/Java/_Libraries/LWJGL3/joml-1.9.25.jar" sourcepath="E:/Programming/Java/_Libraries/LWJGL3/joml-1.9.25-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/E:/Programming/Java/_Libraries/LWJGL3/joml-1.9.25-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
