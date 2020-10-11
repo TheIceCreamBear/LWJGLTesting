@@ -1,13 +1,15 @@
 package com.joseph.test.lwjgl3.shaders;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL46;
 
 /**
  * Abstract shader program, it does the shading, and makes things have color yay,
@@ -18,6 +20,12 @@ import org.lwjgl.opengl.GL46;
  *
  */
 public abstract class ShaderProgram {
+	/**
+	 * "IGNORE MY EXISTANCE", said the variable. 
+	 * I DONT LIKE THIS PARADIGM!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 */
+	private static FloatBuffer matrixBuf = BufferUtils.createFloatBuffer(16);
+	
 	private int programID;
 	private int vertexShaderID;
 	private int fragmentShaderID;
@@ -39,12 +47,27 @@ public abstract class ShaderProgram {
 		GL20.glAttachShader(programID, vertexShaderID);
 		// possibly attach the shader to the program
 		GL20.glAttachShader(programID, fragmentShaderID);
+		// call this so that they have to bind their attribs and what not
+		bindAttributes();
 		// link the program
 		GL20.glLinkProgram(programID);
 		// this probably validates the program
 		GL20.glValidateProgram(programID);
-		// call this so that they have to bind their attribs and what not
-		bindAttributes();
+	}
+	
+	/**
+	 * another thing to make sure that all of the things get found, this time
+	 * it is the uniform locations
+	 */
+	protected abstract void getUniformLocations();
+	
+	/**
+	 * helper thing to make it easier to get uniform locations i guess
+	 * @param name
+	 * @return
+	 */
+	protected int getUniformLocation(String name) {
+		return GL20.glGetUniformLocation(programID, name);
 	}
 	
 	/**
@@ -79,6 +102,10 @@ public abstract class ShaderProgram {
 		GL20.glDeleteProgram(programID);
 	}
 	
+	/**
+	 * LOL didnt document this last time but its like a way to force that all attributes
+	 * of the program get bound
+	 */
 	protected abstract void bindAttributes();
 	
 	/**
@@ -90,6 +117,46 @@ public abstract class ShaderProgram {
 	protected void bindAttribute(int attribute, String variableName) {
 		// do the bind thingy
 		GL20.glBindAttribLocation(programID, attribute, variableName);
+	}
+	
+	/**
+	 * Also kinda helper to load a float uniform kinda not the 
+	 * best here but meh
+	 * @param location
+	 * @param val
+	 */
+	protected void loadFloat(int location, float val) {
+		GL20.glUniform1f(location, val);
+	}
+	
+	/**
+	 * Also kinda helper to load a vector uniform kinda not the 
+	 * best here but meh
+	 * @param location
+	 * @param val
+	 */
+	protected void loadVector(int location, Vector3f vec) {
+		GL20.glUniform3f(location, vec.x, vec.y, vec.z);
+	}
+	
+	/**
+	 * Also kinda helper to load a boolean uniform kinda not the 
+	 * best here but meh
+	 * @param location
+	 * @param val
+	 */
+	protected void loadBoolean(int location, boolean val) {
+		GL20.glUniform1f(location, val ? 1.0f : 0.0f);
+	}
+	
+	/**
+	 * Also kinda helper to load a matrix uniform kinda not the 
+	 * best here but meh
+	 * @param location
+	 * @param val
+	 */
+	protected void loadMatrix4(int location, Matrix4f matrix) {
+		GL20.glUniformMatrix4fv(location, false, (FloatBuffer) matrix.get(matrixBuf).flip());
 	}
 	
 	/**
