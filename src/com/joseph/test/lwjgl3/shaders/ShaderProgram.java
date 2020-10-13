@@ -156,7 +156,7 @@ public abstract class ShaderProgram {
 	 * @param val
 	 */
 	protected void loadMatrix4(int location, Matrix4f matrix) {
-		GL20.glUniformMatrix4fv(location, false, (FloatBuffer) matrix.get(matrixBuf).flip());
+		GL20.glUniformMatrix4fv(location, false, matrix.get(matrixBuf));
 	}
 	
 	/**
