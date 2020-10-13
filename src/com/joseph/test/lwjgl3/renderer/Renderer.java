@@ -1,12 +1,16 @@
 package com.joseph.test.lwjgl3.renderer;
 
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.joseph.test.lwjgl3.entity.Entity;
+import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
+import com.joseph.test.lwjgl3.shaders.StaticShader;
 
 public class Renderer {
 	/**
@@ -23,7 +27,8 @@ public class Renderer {
 	 * This method renders a raw model (which is just raw verticies data) to the screen
 	 * @param model - the model to render
 	 */
-	public void render(TexturedModel texModel) {
+	public void render(Entity entity, StaticShader shader) {
+		TexturedModel texModel = entity.getModel();
 		RawModel model = texModel.getModel();
 		// okay so this takes the vao that is unique to this model and it binds it as the active vao
 		// which is needed so that GL knows which VAO we are gonna work on, which makes sense ya know?
@@ -35,6 +40,10 @@ public class Renderer {
 		// used when rendering, with out this that attrib array is unusable
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
+		// this line is ridicilous but like here is how we make a trans matrix
+		Matrix4f transMatrix = MathHelper.createTransformationMatrix(entity.getPos(), entity.getRotx(), entity.getRoty(), entity.getRotz(), entity.getScale());
+		// USE UNIFORM TO MAKE THE TRANS MATRIX BE A PART OF THE RENDER WOOOOOOOOOOO
+		shader.loadTransformation(transMatrix);
 		// sets where the current texture is going to be stored in the texture banks
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		// bind the texture of the model as the active current texture to use because like hello how

@@ -1,11 +1,13 @@
 package com.joseph.test.lwjgl3;
 
+import org.joml.Vector3f;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
+import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
@@ -148,6 +150,8 @@ public class Main {
 		Texture tex = TextureLoader.loadTexture("res/blarg.png");
 		TexturedModel texMod = new TexturedModel(model, tex);
 		
+		Entity ent = new Entity(texMod, new Vector3f(-1, 0, 0), 0, 0, 0, 1);
+		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
 		
@@ -156,6 +160,8 @@ public class Main {
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
+			ent.increasePosition(0.002f, 0, 0);
+			ent.increaseRotation(0, 1, 0);
 			// this will clear the current frame buffer of its contents and set the pixels to the 
 			// pixel color specified in the clearColor funciton call above
 //			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -165,7 +171,7 @@ public class Main {
 			shader.start();
 			
 			// render the model
-			renderer.render(texMod);
+			renderer.render(ent, shader);
 			
 			// stop le shader
 			shader.stop();
