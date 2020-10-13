@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
+import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
@@ -17,6 +18,9 @@ import com.joseph.test.lwjgl3.textures.Texture;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
 
 public class Main {
+	// TEMPORARYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+	public static boolean[] keyDown = new boolean[GLFW.GLFW_KEY_LAST + 1];
+	
 	public static void main(String[] args) {
 		// note this is created and explained later in the program
 		// default value is null
@@ -80,6 +84,16 @@ public class Main {
 				// this will cause our main loop to exit and stop.
 				GLFW.glfwSetWindowShouldClose(window, true);
 			}
+			
+			// THIS IS TEMPORARY GROSS CODE
+			if (action == GLFW.GLFW_PRESS) {
+				keyDown[key] = true;
+			}
+
+			// THIS IS TEMPORARY GROSS CODE
+			if (action == GLFW.GLFW_RELEASE) {
+				keyDown[key] = false;
+			}
 		});
 		
 		// makes the openGl current context to this window
@@ -121,8 +135,8 @@ public class Main {
 		// honestly this should be static too but still like, this is the way the tutorial did it so like
 		// thats how imma do it
 		ModelLoader loader = new ModelLoader();
-		Renderer renderer = new Renderer();
 		StaticShader shader = new StaticShader();
+		Renderer renderer = new Renderer(shader);
 		
 		// just some verts
 		float[] verticies = {
@@ -150,7 +164,8 @@ public class Main {
 		Texture tex = TextureLoader.loadTexture("res/blarg.png");
 		TexturedModel texMod = new TexturedModel(model, tex);
 		
-		Entity ent = new Entity(texMod, new Vector3f(-1, 0, 0), 0, 0, 0, 1);
+		Entity ent = new Entity(texMod, new Vector3f(0, 0, -1), 0, 0, 0, 1);
+		Camera camera = new Camera();
 		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
@@ -160,8 +175,8 @@ public class Main {
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
-			ent.increasePosition(0.002f, 0, 0);
-			ent.increaseRotation(0, 1, 0);
+			ent.increasePosition(0, 0, -0.1f);
+			camera.move();
 			// this will clear the current frame buffer of its contents and set the pixels to the 
 			// pixel color specified in the clearColor funciton call above
 //			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -169,6 +184,9 @@ public class Main {
 			
 			// start le shader
 			shader.start();
+			
+			// load the camera view into le shader
+			shader.loadViewMatrix(camera);
 			
 			// render the model
 			renderer.render(ent, shader);

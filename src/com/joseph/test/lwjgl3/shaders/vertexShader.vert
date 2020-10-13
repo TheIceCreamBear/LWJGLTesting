@@ -6,8 +6,10 @@ in vec2 textureCoords;
 out vec2 texCord;
 
 uniform mat4 tMatrix;
+uniform mat4 projMatrix;
+uniform mat4 viewMatrix;
 
 void main(void) {
-    gl_Position = tMatrix * vec4(position, 1.0);
+    gl_Position = projMatrix * viewMatrix * tMatrix * vec4(position, 1.0);
     texCord = textureCoords;
 }

@@ -3,6 +3,8 @@ package com.joseph.test.lwjgl3.math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import com.joseph.test.lwjgl3.entity.Camera;
+
 public class MathHelper {
 	// TODO Create own vec2, vec3, vec4, matrix3, matrix4 and other similar classes
 	// use JOML from LWJGL for now, becuase for some super 10000 iq reason there is
@@ -39,6 +41,26 @@ public class MathHelper {
 		// make big
 		matrix.scale(scale);
 		
+		return matrix;
+	}
+	
+	/**
+	 * makes a new view matrix from the camera, and like yay it makes a view transform thing yay
+	 * @param camera
+	 * @return
+	 */
+	public static Matrix4f createViewMatrix(Camera camera) {
+		// make the matrix
+		Matrix4f matrix = new Matrix4f();
+		// rotate x
+		matrix.rotateX((float) Math.toRadians(camera.getPitch()));
+		// rotate y
+		matrix.rotateY((float) Math.toRadians(camera.getYaw()));
+		// rotate z
+		matrix.rotateZ((float) Math.toRadians(camera.getRoll()));
+		// move it opposite the direction of the camera
+		matrix.translate(new Vector3f(camera.getPosition()).negate());
+		// ret run
 		return matrix;
 	}
 }

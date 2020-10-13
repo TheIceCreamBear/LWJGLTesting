@@ -2,6 +2,9 @@ package com.joseph.test.lwjgl3.shaders;
 
 import org.joml.Matrix4f;
 
+import com.joseph.test.lwjgl3.entity.Camera;
+import com.joseph.test.lwjgl3.math.MathHelper;
+
 /**
  * does this even need docs? meh, okay so this is just a static shader 
  * that statically shades the basic rectangle that is at the tutorial thingy
@@ -13,7 +16,9 @@ public class StaticShader extends ShaderProgram {
 	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/shaders/vertexShader.vert";
 	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/shaders/fragmentShader.frag";
 	
-	private int matrixLocation;
+	private int tMatrixLocation;
+	private int projMatrixLocation;
+	private int viewMatrixLocation;
 	
 	public StaticShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -27,10 +32,20 @@ public class StaticShader extends ShaderProgram {
 
 	@Override
 	protected void getUniformLocations() {
-		this.matrixLocation = super.getUniformLocation("tMatrix");
+		this.tMatrixLocation = super.getUniformLocation("tMatrix");
+		this.projMatrixLocation = super.getUniformLocation("projMatrix");
+		this.viewMatrixLocation = super.getUniformLocation("viewMatrix");
 	}
 	
 	public void loadTransformation(Matrix4f mat) {
-		super.loadMatrix4(matrixLocation, mat);
+		super.loadMatrix4(tMatrixLocation, mat);
+	}
+	
+	public void loadProjection(Matrix4f mat) {
+		super.loadMatrix4(projMatrixLocation, mat);
+	}
+	
+	public void loadViewMatrix(Camera cam) {
+		super.loadMatrix4(viewMatrixLocation, MathHelper.createViewMatrix(cam));
 	}
 }

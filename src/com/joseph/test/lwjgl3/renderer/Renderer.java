@@ -13,6 +13,28 @@ import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.shaders.StaticShader;
 
 public class Renderer {
+	// bruv, what if le user wants to change this (although i dont like that idea so)
+	private static final float FOV = 70;
+	private static final float NEAR_PLANE = 0.1f;
+	private static final float FAR_PLANE = 1000f;
+	
+	private Matrix4f projMatrix;
+	
+	/**
+	 * make a renderer this shouldnt be an instance but meh maybe
+	 * @param shader
+	 */
+	public Renderer(StaticShader shader) {
+		// create the projection matrix
+		this.createProjectionMatrix();
+		// start it so we can save it because like we have to save it to start it wot
+		shader.start();
+		// save le proj mat
+		shader.loadProjection(projMatrix);
+		// stsop it because we arent rendering anything rn like hello
+		shader.stop();
+	}
+	
 	/**
 	 * This method contains things that need to happen at the beginning of every frame i think,
 	 * essentially preparing for the next frame to be drawn
@@ -58,5 +80,43 @@ public class Renderer {
 		GL20.glDisableVertexAttribArray(1);
 		// unbinds the currently bound VAO by passing in zero, which is the value of NULL in C/C++
 		GL30.glBindVertexArray(0);
+	}
+	
+	/**
+	 * Creates a projection matrix to project the z axis and stuff
+	 */
+	private void createProjectionMatrix() {
+		// TODO these should not be constant
+		float width = 1600;
+		float height = 900;
+		float aspectRatio = width / height;
+		float yScale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
+		float xScale = yScale / aspectRatio;
+		float frustumLength = FAR_PLANE - NEAR_PLANE;
+		
+		projMatrix = new Matrix4f();
+		projMatrix.m00(xScale);
+		projMatrix.m11(yScale);
+		projMatrix.m22(-(FAR_PLANE + NEAR_PLANE) / frustumLength);
+		projMatrix.m23(-1.0f);
+		projMatrix.m32(-(2 * NEAR_PLANE * FAR_PLANE) / frustumLength);
+		projMatrix.m33(0.0f);
+	}
+	
+	private void createProjectionMatrixMC() {
+		// TODO these should not be constant
+		// also does not work
+		// IGNORE THIS thanks
+		float width = 1600;
+		float height = 900;
+		projMatrix = new Matrix4f();
+		projMatrix.m00(2.0f / width);
+		projMatrix.m11(2.0f / height);
+		float frustumLength = FAR_PLANE - NEAR_PLANE;
+		projMatrix.m22(-2.0f / frustumLength);
+		projMatrix.m33(1.0f);
+		projMatrix.m03(-1.0f);
+		projMatrix.m13(-1.0f);
+		projMatrix.m23(-(FAR_PLANE + NEAR_PLANE) / frustumLength);
 	}
 }

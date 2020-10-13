@@ -53,6 +53,8 @@ public abstract class ShaderProgram {
 		GL20.glLinkProgram(programID);
 		// this probably validates the program
 		GL20.glValidateProgram(programID);
+		// well this should have been added a while ago but like yea basically this gets all the uniforms
+		getUniformLocations();
 	}
 	
 	/**
