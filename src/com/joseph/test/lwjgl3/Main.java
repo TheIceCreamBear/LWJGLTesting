@@ -5,11 +5,13 @@ import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
 
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.models.ModelLoader;
+import com.joseph.test.lwjgl3.models.OBJLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.renderer.Renderer;
@@ -130,7 +132,7 @@ public class Main {
 		
 		// this will set the clear color of the current open GL context. Meaning, when the screen is cleared,
 		// this is the color it will use. the current color is full red
-		GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		
 		// so like this makes it so that open GL will try to figure out which triangle is on top relative
 		// to the other triangles and like itll make it so that you dont see multiple faces on top you only
@@ -143,88 +145,12 @@ public class Main {
 		StaticShader shader = new StaticShader();
 		Renderer renderer = new Renderer(shader);
 		
-		// just some verts
-		float[] verticies = {
-				-0.5f, 0.5f, -0.5f,
-				-0.5f, -0.5f, -0.5f,
-				0.5f, -0.5f, -0.5f,
-				0.5f, 0.5f, -0.5f,
-				
-				-0.5f, 0.5f, 0.5f,
-				-0.5f, -0.5f, 0.5f,
-				0.5f, -0.5f, 0.5f,
-				0.5f, 0.5f, 0.5f,
-				
-				0.5f, 0.5f, -0.5f,
-				0.5f, -0.5f, -0.5f,
-				0.5f, -0.5f, 0.5f,
-				0.5f, 0.5f, 0.5f,
-				
-				-0.5f, 0.5f, -0.5f,
-				-0.5f, -0.5f, -0.5f,
-				-0.5f, -0.5f, 0.5f,
-				-0.5f, 0.5f, 0.5f,
-				
-				-0.5f, 0.5f, 0.5f,
-				-0.5f, 0.5f, -0.5f,
-				0.5f, 0.5f, -0.5f,
-				0.5f, 0.5f, 0.5f,
-				
-				-0.5f, -0.5f, 0.5f,
-				-0.5f, -0.5f, -0.5f,
-				0.5f, -0.5f, -0.5f,
-				0.5f, -0.5f, 0.5f
-		};
-		
-		// just the order in which to use the verts
-		int[] indices = {
-				0, 1, 3,
-				3, 1, 2,
-				4, 5, 7,
-				7, 5, 6,
-				8, 9, 11,
-				11, 9, 10,
-				12, 13, 15,
-				15, 13, 14,	
-				16, 17, 19,
-				19, 17, 18,
-				20, 21, 23,
-				23, 21, 22
-		};
-		
-		float[] textureCoords = {
-				0, 0,
-				0, 1,
-				1, 1,
-				1, 0,
-				0, 0,
-				0, 1,
-				1, 1,
-				1, 0,
-				0, 0,
-				0, 1,
-				1, 1,
-				1, 0,
-				0, 0,
-				0, 1,
-				1, 1,
-				1, 0,
-				0, 0,
-				0, 1,
-				1, 1,
-				1, 0,
-				0, 0,
-				0, 1,
-				1, 1,
-				1, 0
-		};
-		
 		// load the square into a thing and get its thing from the thing
-		RawModel model = loader.loadToVAO(verticies, textureCoords, indices);
-		Texture tex = TextureLoader.loadTexture("res/blarg.png");
+		RawModel model = OBJLoader.loadObjModel("res/TestModels/TestShip.obj", loader);
+		Texture tex = TextureLoader.loadTexture("res/TestModels/ShipColorDebug.png");
 		TexturedModel texMod = new TexturedModel(model, tex);
 		
-		Entity ent = new Entity(texMod, new Vector3f(0.0f, 0.0f, -5.0f), 0.0f, 0.0f, 0.0f, 1.0f);
+		Entity ent = new Entity(texMod, new Vector3f(0.0f, 0.0f, -150.0f), 0.0f, 0.0f, 0.0f, 1.0f);
 		Camera camera = new Camera();
 		
 		// this is how you make it go brrrrrrr and display only wires
@@ -235,7 +161,7 @@ public class Main {
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
-			ent.increaseRotation(1.0f, 1.0f, 0.0f);
+			ent.increaseRotation(0.0f, 0.25f, 0.0f);
 			camera.move();
 			// this will clear the current frame buffer of its contents and set the pixels to the 
 			// pixel color specified in the clearColor funciton call above

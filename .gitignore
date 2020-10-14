@@ -1,1 +1,4 @@
 /bin/
+/res/TestModels/*
+!/res/TestModels/*.png
+!/res/TestModels/*.obj
