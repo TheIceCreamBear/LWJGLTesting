@@ -146,11 +146,11 @@ public class Main {
 		Renderer renderer = new Renderer(shader);
 		
 		// load the square into a thing and get its thing from the thing
-		RawModel model = OBJLoader.loadObjModel("res/TestModels/TestShip.obj", loader);
-		Texture tex = TextureLoader.loadTexture("res/TestModels/ShipColorDebug.png");
+		RawModel model = OBJLoader.loadObjModel("res/TestModels/dragon.obj", loader);
+		Texture tex = TextureLoader.loadTexture("res/tan.png");
 		TexturedModel texMod = new TexturedModel(model, tex);
 		
-		Entity ent = new Entity(texMod, new Vector3f(0.0f, 0.0f, -150.0f), 0.0f, 0.0f, 0.0f, 1.0f);
+		Entity ent = new Entity(texMod, new Vector3f(0.0f, 0.0f, -25.0f), 0.0f, 0.0f, 0.0f, 1.0f);
 		Camera camera = new Camera();
 		
 		// this is how you make it go brrrrrrr and display only wires
