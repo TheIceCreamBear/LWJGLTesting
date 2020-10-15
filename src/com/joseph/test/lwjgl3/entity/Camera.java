@@ -43,10 +43,10 @@ public class Camera {
 			position.y -= CAM_SPEED;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_KP_8]) {
-			pitch += 2 * CAM_SPEED;
+			pitch -= 2 * CAM_SPEED;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_KP_2]) {
-			pitch -= 2 * CAM_SPEED;
+			pitch += 2 * CAM_SPEED;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_KP_6]) {
 			yaw += 2 * CAM_SPEED;

@@ -11,6 +11,7 @@ import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.shaders.StaticShader;
+import com.joseph.test.lwjgl3.textures.Texture;
 
 public class Renderer {
 	// bruv, what if le user wants to change this (although i dont like that idea so)
@@ -67,6 +68,12 @@ public class Renderer {
 		Matrix4f transMatrix = MathHelper.createTransformationMatrix(entity.getPos(), entity.getRotx(), entity.getRoty(), entity.getRotz(), entity.getScale());
 		// USE UNIFORM TO MAKE THE TRANS MATRIX BE A PART OF THE RENDER WOOOOOOOOOOO
 		shader.loadTransformation(transMatrix);
+		// temp store le texture
+		Texture tex = texModel.getTex();
+		// bruv (simple)
+		shader.loadReflectivity(tex.getReflectivity());
+		// also bruv (simple)
+		shader.loadShineDamper(tex.getShineDamper());
 		// sets where the current texture is going to be stored in the texture banks
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		// bind the texture of the model as the active current texture to use because like hello how

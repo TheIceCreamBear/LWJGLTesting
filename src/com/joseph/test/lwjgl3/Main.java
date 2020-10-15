@@ -132,7 +132,7 @@ public class Main {
 		
 		// this will set the clear color of the current open GL context. Meaning, when the screen is cleared,
 		// this is the color it will use. the current color is full red
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		GL11.glClearColor(0.5f, 0.0f, 0.0f, 0.0f);
 		
 		// so like this makes it so that open GL will try to figure out which triangle is on top relative
 		// to the other triangles and like itll make it so that you dont see multiple faces on top you only
@@ -147,11 +147,13 @@ public class Main {
 		
 		// load the square into a thing and get its thing from the thing
 		RawModel model = OBJLoader.loadObjModel("res/TestModels/dragon.obj", loader);
-		Texture tex = TextureLoader.loadTexture("res/tan.png");
+		Texture tex = TextureLoader.loadTexture("res/purple.png");
+		tex.setShineDamper(10.0f);
+		tex.setReflectivity(1.0f);
 		TexturedModel texMod = new TexturedModel(model, tex);
 		
 		Entity ent = new Entity(texMod, new Vector3f(0.0f, 0.0f, -25.0f), 0.0f, 0.0f, 0.0f, 1.0f);
-		Light light = new Light(new Vector3f(0.0f, 0.0f, -20.0f), new Vector3f(1.0f, 1.0f, 1.0f));
+		Light light = new Light(new Vector3f(200.0f, 200.0f, 100.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		Camera camera = new Camera();
 		
 		// this is how you make it go brrrrrrr and display only wires
@@ -164,6 +166,25 @@ public class Main {
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
 			ent.increaseRotation(0.0f, 0.25f, 0.0f);
 			camera.move();
+			
+			// TEMP STUFF TO TEST DIFFERENT VALUES OF REFLECTIVITY AND SHINDE DAMPINING
+			if (keyDown[GLFW.GLFW_KEY_I]) {
+				tex.setReflectivity(tex.getReflectivity() + 0.125f);
+				System.out.println(tex.getReflectivity());
+			}
+			if (keyDown[GLFW.GLFW_KEY_K]) {
+				tex.setReflectivity(tex.getReflectivity() - 0.125f);
+				System.out.println(tex.getReflectivity());
+			}
+			if (keyDown[GLFW.GLFW_KEY_J]) {
+				tex.setShineDamper(tex.getShineDamper() + 0.125f);
+				System.out.println(tex.getShineDamper());
+			}
+			if (keyDown[GLFW.GLFW_KEY_L]) {
+				tex.setShineDamper(tex.getShineDamper() - 0.125f);
+				System.out.println(tex.getShineDamper());
+			}
+			
 			// this will clear the current frame buffer of its contents and set the pixels to the 
 			// pixel color specified in the clearColor funciton call above
 //			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);

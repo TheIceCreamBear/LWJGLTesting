@@ -7,6 +7,7 @@ in vec3 normal;
 out vec2 texCord;
 out vec3 surfaceNormal;
 out vec3 toLight;
+out vec3 toCam;
 
 uniform mat4 tMatrix;
 uniform mat4 projMatrix;
@@ -22,4 +23,5 @@ void main(void) {
     
     surfaceNormal = (tMatrix * vec4(normal, 0.0)).xyz;
     toLight = lightPos - worldPos.xyz;
+    toCam = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPos.xyz;
 }
