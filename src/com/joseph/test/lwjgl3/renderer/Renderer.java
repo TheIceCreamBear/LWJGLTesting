@@ -62,6 +62,7 @@ public class Renderer {
 		// used when rendering, with out this that attrib array is unusable
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
+		GL20.glEnableVertexAttribArray(2);
 		// this line is ridicilous but like here is how we make a trans matrix
 		Matrix4f transMatrix = MathHelper.createTransformationMatrix(entity.getPos(), entity.getRotx(), entity.getRoty(), entity.getRotz(), entity.getScale());
 		// USE UNIFORM TO MAKE THE TRANS MATRIX BE A PART OF THE RENDER WOOOOOOOOOOO
@@ -78,6 +79,7 @@ public class Renderer {
 		// so yea this is the opposite of the enable call, it essentally says that this will not be used anymore
 		GL20.glDisableVertexAttribArray(0);
 		GL20.glDisableVertexAttribArray(1);
+		GL20.glDisableVertexAttribArray(2);
 		// unbinds the currently bound VAO by passing in zero, which is the value of NULL in C/C++
 		GL30.glBindVertexArray(0);
 	}

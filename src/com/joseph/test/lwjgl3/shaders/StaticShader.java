@@ -3,6 +3,7 @@ package com.joseph.test.lwjgl3.shaders;
 import org.joml.Matrix4f;
 
 import com.joseph.test.lwjgl3.entity.Camera;
+import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.math.MathHelper;
 
 /**
@@ -19,6 +20,8 @@ public class StaticShader extends ShaderProgram {
 	private int tMatrixLocation;
 	private int projMatrixLocation;
 	private int viewMatrixLocation;
+	private int lightPosLocation;
+	private int lightColorLocation;
 	
 	public StaticShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -28,6 +31,7 @@ public class StaticShader extends ShaderProgram {
 	protected void bindAttributes() {
 		super.bindAttribute(0, "position");
 		super.bindAttribute(1, "textureCoords");
+		super.bindAttribute(2, "normal");
 	}
 
 	@Override
@@ -35,6 +39,8 @@ public class StaticShader extends ShaderProgram {
 		this.tMatrixLocation = super.getUniformLocation("tMatrix");
 		this.projMatrixLocation = super.getUniformLocation("projMatrix");
 		this.viewMatrixLocation = super.getUniformLocation("viewMatrix");
+		this.lightPosLocation = super.getUniformLocation("lightPos");
+		this.lightColorLocation = super.getUniformLocation("lightColor");
 	}
 	
 	public void loadTransformation(Matrix4f mat) {
@@ -47,5 +53,10 @@ public class StaticShader extends ShaderProgram {
 	
 	public void loadViewMatrix(Camera cam) {
 		super.loadMatrix4(viewMatrixLocation, MathHelper.createViewMatrix(cam));
+	}
+	
+	public void loadLight(Light l) {
+		super.loadVector(lightPosLocation, l.getPosition());
+		super.loadVector(lightColorLocation, l.getColor());
 	}
 }

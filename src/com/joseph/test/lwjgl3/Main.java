@@ -5,11 +5,11 @@ import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
 
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
+import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.OBJLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
@@ -151,6 +151,7 @@ public class Main {
 		TexturedModel texMod = new TexturedModel(model, tex);
 		
 		Entity ent = new Entity(texMod, new Vector3f(0.0f, 0.0f, -25.0f), 0.0f, 0.0f, 0.0f, 1.0f);
+		Light light = new Light(new Vector3f(0.0f, 0.0f, -20.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		Camera camera = new Camera();
 		
 		// this is how you make it go brrrrrrr and display only wires
@@ -170,6 +171,8 @@ public class Main {
 			
 			// start le shader
 			shader.start();
+			
+			shader.loadLight(light);
 			
 			// load the camera view into le shader
 			shader.loadViewMatrix(camera);

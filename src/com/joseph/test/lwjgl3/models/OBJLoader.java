@@ -111,7 +111,7 @@ public class OBJLoader {
 		}
 
 		// retrun
-		return loader.loadToVAO(vertexData, textureData, indexData);
+		return loader.loadToVAO(vertexData, textureData, normalData, indexData);
 	}
 	
 	/**

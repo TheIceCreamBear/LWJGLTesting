@@ -31,10 +31,12 @@ public class ModelLoader {
 	 * loads an array of vertices into a brand new vao and attrib list
 	 * and returns it as a raw model for use in rendering
 	 * @param vertecies - the vertices of the object
+	 * @param textureCoords
+	 * @param normals
 	 * @param indices - the list of vertices to use when constructing the object
 	 * @return
 	 */
-	public RawModel loadToVAO(float[] vertices, float[] textureCoords, int[] indices) {
+	public RawModel loadToVAO(float[] vertices, float[] textureCoords, float[] normals, int[] indices) {
 		// creates the new vao and returns the id
 		int vaoID = createVAO();
 		// create the indices buffer and bind it
@@ -43,6 +45,8 @@ public class ModelLoader {
 		dataToAttribList(0, 3, vertices);
 		// stores the texture uv data in the attribute list at index 1
 		dataToAttribList(1, 2, textureCoords);
+		// store le normal vectorsssssssss in the attribute list at index 2
+		dataToAttribList(2, 3, normals);
 		// unbinds the vao because duh
 		unbindVAO();
 		

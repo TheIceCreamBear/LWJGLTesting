@@ -2,14 +2,24 @@
 
 in vec3 position;
 in vec2 textureCoords;
+in vec3 normal;
 
 out vec2 texCord;
+out vec3 surfaceNormal;
+out vec3 toLight;
 
 uniform mat4 tMatrix;
 uniform mat4 projMatrix;
 uniform mat4 viewMatrix;
 
+uniform vec3 lightPos;
+
 void main(void) {
+    vec4 worldPos = tMatrix * vec4(position, 1.0);
+
     gl_Position = projMatrix * viewMatrix * tMatrix * vec4(position, 1.0);
     texCord = textureCoords;
+    
+    surfaceNormal = (tMatrix * vec4(normal, 0.0)).xyz;
+    toLight = lightPos - worldPos.xyz;
 }
