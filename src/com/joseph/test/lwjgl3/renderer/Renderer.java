@@ -26,6 +26,9 @@ public class Renderer {
 	 * @param shader
 	 */
 	public Renderer(StaticShader shader) {
+		// enable the like renderer api to like, decide to not render faces that we cant see so like performance gains
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
 		// create the projection matrix
 		this.createProjectionMatrix();
 		// start it so we can save it because like we have to save it to start it wot

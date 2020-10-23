@@ -12,6 +12,7 @@ uniform sampler2D texSampler;
 uniform vec3 lightColor;
 uniform float shineDamper;
 uniform float reflectivity;
+uniform float ambientLight = 0.2;
 
 void main(void) {
     vec3 normal = normalize(surfaceNormal);
@@ -20,7 +21,7 @@ void main(void) {
     vec3 cam = normalize(toCam);
     
     float dotProd = dot(normal, light);
-    float brightness = max(dotProd, 0.0);
+    float brightness = max(dotProd, ambientLight);
     vec3 diffuse = brightness * lightColor;
     
     vec3 reflected = reflect(lightDir, normal);
