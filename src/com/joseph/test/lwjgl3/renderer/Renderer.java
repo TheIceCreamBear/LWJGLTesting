@@ -1,5 +1,8 @@
 package com.joseph.test.lwjgl3.renderer;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -20,12 +23,14 @@ public class Renderer {
 	private static final float FAR_PLANE = 1000f;
 	
 	private Matrix4f projMatrix;
+	private StaticShader shader;
 	
 	/**
 	 * make a renderer this shouldnt be an instance but meh maybe
 	 * @param shader
 	 */
 	public Renderer(StaticShader shader) {
+		this.shader = shader;
 		// enable the like renderer api to like, decide to not render faces that we cant see so like performance gains
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glCullFace(GL11.GL_BACK);
@@ -50,16 +55,45 @@ public class Renderer {
 	}
 	
 	/**
-	 * This method renders a raw model (which is just raw verticies data) to the screen
-	 * @param model - the model to render
+	 * new version of render that takes in a horrible idea of a think (kinda maybe) and 
+	 * for each texmodel renders all the instances of that textured model into the view
+	 * 
+	 * basically uses batch rendering but like yea basically that 
+	 * (this should be done a different way)
+	 * @param entities
 	 */
-	public void render(Entity entity, StaticShader shader) {
-		TexturedModel texModel = entity.getModel();
-		RawModel model = texModel.getModel();
+	public void render(HashMap<TexturedModel, List<Entity>> entities) {
+		// get each textured model
+		for (TexturedModel texMod : entities.keySet()) {
+			// prep it
+			this.prepareTexturedModel(texMod);
+			// get the batch of entities
+			List<Entity> batch = entities.get(texMod);
+			// loop that (bet you did not see that coming)
+			for (Entity e : batch) {
+				// prep the E
+				this.prepareInstance(e);
+				// draw call
+				GL11.glDrawElements(GL11.GL_TRIANGLES, texMod.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+			}
+			
+			// unbind the current one
+			this.unbindTexturedModel();
+		}
+	}
+	
+	/**
+	 * sets up the current textured model to be like, ready for a render call to be rendered, by 
+	 * binding the vao and enabling the vbo, and doing some fun texture stuff like loading the 
+	 * reflectivity property and binding the texture to a bank
+	 * @param model
+	 */
+	private void prepareTexturedModel(TexturedModel model) {
+		RawModel mod = model.getModel();
 		// okay so this takes the vao that is unique to this model and it binds it as the active vao
 		// which is needed so that GL knows which VAO we are gonna work on, which makes sense ya know?
 		// bind it then use it
-		GL30.glBindVertexArray(model.getVaoID());
+		GL30.glBindVertexArray(mod.getVaoID());
 		// honestly NOT sure what exactly this does, it was in the tutorial tho so its still here
 		// theory, chooses which attributes array inside the VAO to use to get the vertices from
 		// scratch that, i know what it does. It enables an attribute array inside the vao to be
@@ -67,12 +101,9 @@ public class Renderer {
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
 		GL20.glEnableVertexAttribArray(2);
-		// this line is ridicilous but like here is how we make a trans matrix
-		Matrix4f transMatrix = MathHelper.createTransformationMatrix(entity.getPos(), entity.getRotx(), entity.getRoty(), entity.getRotz(), entity.getScale());
-		// USE UNIFORM TO MAKE THE TRANS MATRIX BE A PART OF THE RENDER WOOOOOOOOOOO
-		shader.loadTransformation(transMatrix);
+		
 		// temp store le texture
-		Texture tex = texModel.getTex();
+		Texture tex = model.getTex();
 		// bruv (simple)
 		shader.loadReflectivity(tex.getReflectivity());
 		// also bruv (simple)
@@ -81,10 +112,13 @@ public class Renderer {
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		// bind the texture of the model as the active current texture to use because like hello how
 		// else are we gonna know which texture to use
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texModel.getTex().glTextureID());
-		// this actually draws everything, it uses the bound VAO to get the vertices and it starts a the 0th vert
-		// and draws model.getVertexCount() vertices using triangles
-		GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.glTextureID());
+	}
+	
+	/**
+	 * disables the vertex attribs for what ever textured model is currently being used and also unbinds the VAO
+	 */
+	private void unbindTexturedModel() {
 		// opposite of the enable vertex attrib array call, probably just unbinds it
 		// so yea this is the opposite of the enable call, it essentally says that this will not be used anymore
 		GL20.glDisableVertexAttribArray(0);
@@ -92,6 +126,17 @@ public class Renderer {
 		GL20.glDisableVertexAttribArray(2);
 		// unbinds the currently bound VAO by passing in zero, which is the value of NULL in C/C++
 		GL30.glBindVertexArray(0);
+	}
+	
+	/**
+	 * does a thing and loads a transformation matrix into the shader, specific to the current entity
+	 * @param e
+	 */
+	private void prepareInstance(Entity e) {
+		// this line is ridicilous but like here is how we make a trans matrix
+		Matrix4f transMatrix = MathHelper.createTransformationMatrix(e.getPos(), e.getRotx(), e.getRoty(), e.getRotz(), e.getScale());
+		// USE UNIFORM TO MAKE THE TRANS MATRIX BE A PART OF THE RENDER WOOOOOOOOOOO
+		shader.loadTransformation(transMatrix);
 	}
 	
 	/**

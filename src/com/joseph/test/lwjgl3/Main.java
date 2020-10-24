@@ -1,5 +1,8 @@
 package com.joseph.test.lwjgl3;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import org.joml.Vector3f;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
@@ -14,8 +17,7 @@ import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.OBJLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
-import com.joseph.test.lwjgl3.renderer.Renderer;
-import com.joseph.test.lwjgl3.shaders.StaticShader;
+import com.joseph.test.lwjgl3.renderer.MainRenderer;
 import com.joseph.test.lwjgl3.textures.Texture;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
 
@@ -142,8 +144,7 @@ public class Main {
 		// honestly this should be static too but still like, this is the way the tutorial did it so like
 		// thats how imma do it
 		ModelLoader loader = new ModelLoader();
-		StaticShader shader = new StaticShader();
-		Renderer renderer = new Renderer(shader);
+		MainRenderer renderer = new MainRenderer();
 		
 		// load the square into a thing and get its thing from the thing
 		RawModel model = OBJLoader.loadObjModel("res/TestModels/dragon.obj", loader);
@@ -152,9 +153,23 @@ public class Main {
 		tex.setReflectivity(1.0f);
 		TexturedModel texMod = new TexturedModel(model, tex);
 		
+		RawModel cube = OBJLoader.loadObjModel("res/TestModels/ColorCube.obj", loader);
+		Texture cubeTex = TextureLoader.loadTexture("res/TestModels/ColorCube.png");
+		TexturedModel cubeMod = new TexturedModel(cube, cubeTex);
+		
 		Entity ent = new Entity(texMod, new Vector3f(0.0f, 0.0f, -25.0f), 0.0f, 0.0f, 0.0f, 1.0f);
-		Light light = new Light(new Vector3f(200.0f, 200.0f, 100.0f), new Vector3f(1.0f, 1.0f, 1.0f));
+		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		Camera camera = new Camera();
+		
+		ArrayList<Entity> cubes = new ArrayList<Entity>();
+		Random r = new Random();
+		
+		for (int i = 0; i < 200; i++) {
+			float x = r.nextFloat() * 100 - 50;
+			float y = r.nextFloat() * 100 - 50;
+			float z = r.nextFloat() * -300;
+			cubes.add(new Entity(cubeMod, new Vector3f(x, y, z), r.nextFloat() * 180.0f, r.nextFloat() * 180.0f, 0.0f, 1.0f));
+		}
 		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
@@ -185,24 +200,15 @@ public class Main {
 				System.out.println(tex.getShineDamper());
 			}
 			
-			// this will clear the current frame buffer of its contents and set the pixels to the 
-			// pixel color specified in the clearColor funciton call above
-//			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-			renderer.prepare();
+			// load all of the objects (entities) that we are going to render into the main renderer
+			for (Entity e : cubes) {
+				renderer.addEntity(e);
+			}
+			renderer.addEntity(ent);
 			
-			// start le shader
-			shader.start();
-			
-			shader.loadLight(light);
-			
-			// load the camera view into le shader
-			shader.loadViewMatrix(camera);
-			
-			// render the model
-			renderer.render(ent, shader);
-			
-			// stop le shader
-			shader.stop();
+			// responsible for all the rendering, and while this is okay, i dont really like the structure
+			// of how it was coded, like at all, so expect this to change significantly
+			renderer.render(light, camera);
 			
 			// this will swap which buffer is currently in the "front" and which is in the "back"
 			// for more reading on why we do this and how it works, see 
@@ -221,7 +227,7 @@ public class Main {
 		// connect these inter-weaving ideas together.
 		
 		loader.cleanUp();
-		shader.cleanUp();
+		renderer.cleanUp();
 		TextureLoader.cleanUp();
 		
 		// this will free our call backs, as well as destroy the window we created
