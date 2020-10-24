@@ -24,41 +24,45 @@ public class Camera {
 	 * IDFK BUT THIS IS GROSS
 	 */
 	public void move() {
+		float speed = CAM_SPEED;
+		if (Main.keyDown[GLFW.GLFW_KEY_LEFT_SHIFT]) {
+			speed *= 2;
+		}
 		if (Main.keyDown[GLFW.GLFW_KEY_W]) {
-			position.z -= CAM_SPEED;
+			position.z -= speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_S]) {
-			position.z += CAM_SPEED;
+			position.z += speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_D]) {
-			position.x += CAM_SPEED;
+			position.x += speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_A]) {
-			position.x -= CAM_SPEED;
+			position.x -= speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_SPACE]) {
-			position.y += CAM_SPEED;
+			position.y += speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_C]) {
-			position.y -= CAM_SPEED;
+			position.y -= speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_KP_8]) {
-			pitch -= 2 * CAM_SPEED;
+			pitch -= 2 * speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_KP_2]) {
-			pitch += 2 * CAM_SPEED;
+			pitch += 2 * speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_KP_6]) {
-			yaw += 2 * CAM_SPEED;
+			yaw += 2 * speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_KP_4]) {
-			yaw -= 2 * CAM_SPEED;
+			yaw -= 2 * speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_E]) {
-			roll += 2 * CAM_SPEED;
+			roll += 2 * speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_Q]) {
-			roll -= 2 * CAM_SPEED;
+			roll -= 2 * speed;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_R]) {
 			this.position = new Vector3f(0.0f, 0.0f, 0.0f);
