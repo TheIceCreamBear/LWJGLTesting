@@ -164,9 +164,9 @@ public class Main {
 		ArrayList<Entity> cubes = new ArrayList<Entity>();
 		Random r = new Random();
 		
-		for (int i = 0; i < 200; i++) {
-			float x = r.nextFloat() * 100 - 50;
-			float y = r.nextFloat() * 100 - 50;
+		for (int i = 0; i < 400; i++) {
+			float x = r.nextFloat() * 200 - 100;
+			float y = r.nextFloat() * 200 - 100;
 			float z = r.nextFloat() * -300;
 			cubes.add(new Entity(cubeMod, new Vector3f(x, y, z), r.nextFloat() * 180.0f, r.nextFloat() * 180.0f, 0.0f, 1.0f));
 		}
