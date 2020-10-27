@@ -18,6 +18,7 @@ import com.joseph.test.lwjgl3.models.OBJLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.renderer.MainRenderer;
+import com.joseph.test.lwjgl3.terrain.Terrain;
 import com.joseph.test.lwjgl3.textures.Texture;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
 
@@ -147,29 +148,16 @@ public class Main {
 		MainRenderer renderer = new MainRenderer();
 		
 		// load the square into a thing and get its thing from the thing
-		RawModel model = OBJLoader.loadObjModel("res/TestModels/dragon.obj", loader);
-		Texture tex = TextureLoader.loadTexture("res/purple.png");
-		tex.setShineDamper(10.0f);
-		tex.setReflectivity(1.0f);
+		RawModel model = OBJLoader.loadObjModel("res/provided/tree.obj", loader);
+		Texture tex = TextureLoader.loadTexture("res/provided/tree.png");
 		TexturedModel texMod = new TexturedModel(model, tex);
-		
-		RawModel cube = OBJLoader.loadObjModel("res/TestModels/ColorCube.obj", loader);
-		Texture cubeTex = TextureLoader.loadTexture("res/TestModels/ColorCube.png");
-		TexturedModel cubeMod = new TexturedModel(cube, cubeTex);
 		
 		Entity ent = new Entity(texMod, new Vector3f(0.0f, 0.0f, -25.0f), 0.0f, 0.0f, 0.0f, 1.0f);
 		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		Camera camera = new Camera();
 		
-		ArrayList<Entity> cubes = new ArrayList<Entity>();
-		Random r = new Random();
-		
-		for (int i = 0; i < 400; i++) {
-			float x = r.nextFloat() * 200 - 100;
-			float y = r.nextFloat() * 200 - 100;
-			float z = r.nextFloat() * -300;
-			cubes.add(new Entity(cubeMod, new Vector3f(x, y, z), r.nextFloat() * 180.0f, r.nextFloat() * 180.0f, 0.0f, 1.0f));
-		}
+		Terrain terrain = new Terrain(0, 0, loader, TextureLoader.loadTexture("res/provided/grass.png"));
+		Terrain terrain2 = new Terrain(1, 0, loader, TextureLoader.loadTexture("res/provided/grass.png"));
 		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
@@ -179,7 +167,7 @@ public class Main {
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
-			ent.increaseRotation(0.0f, 0.25f, 0.0f);
+			ent.increaseRotation(0.0f, 1.0f, 0.0f);
 			camera.move();
 			
 			// TEMP STUFF TO TEST DIFFERENT VALUES OF REFLECTIVITY AND SHINDE DAMPINING
@@ -201,10 +189,9 @@ public class Main {
 			}
 			
 			// load all of the objects (entities) that we are going to render into the main renderer
-			for (Entity e : cubes) {
-				renderer.addEntity(e);
-			}
 			renderer.addEntity(ent);
+			renderer.addTerrain(terrain);
+			renderer.addTerrain(terrain2);
 			
 			// responsible for all the rendering, and while this is okay, i dont really like the structure
 			// of how it was coded, like at all, so expect this to change significantly

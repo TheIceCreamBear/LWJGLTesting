@@ -1,9 +1,9 @@
 package com.joseph.test.lwjgl3.renderer;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -13,63 +13,50 @@ import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
-import com.joseph.test.lwjgl3.shaders.StaticShader;
+import com.joseph.test.lwjgl3.shaders.TerrainShader;
+import com.joseph.test.lwjgl3.terrain.Terrain;
 import com.joseph.test.lwjgl3.textures.Texture;
 
-public class EntityRenderer {
-	
-	private StaticShader shader;
+public class TerrainRenderer {
+	private TerrainShader shader;
 	
 	/**
-	 * make a renderer this shouldnt be an instance but meh maybe
+	 * make a new renderer instance obv
 	 * @param shader
+	 * @param projMat
 	 */
-	public EntityRenderer(StaticShader shader, Matrix4f projMatrix) {
+	public TerrainRenderer(TerrainShader shader, Matrix4f projMat) {
 		this.shader = shader;
-		// start it so we can save it because like we have to save it to start it wot
 		shader.start();
-		// save le proj mat
-		shader.loadProjection(projMatrix);
-		// stsop it because we arent rendering anything rn like hello
+		shader.loadProjection(projMat);
 		shader.stop();
 	}
 	
 	/**
-	 * new version of render that takes in a horrible idea of a think (kinda maybe) and 
-	 * for each texmodel renders all the instances of that textured model into the view
-	 * 
-	 * basically uses batch rendering but like yea basically that 
-	 * (this should be done a different way)
-	 * @param entities
+	 * render the list of terrains
+	 * @param terrains
 	 */
-	public void render(HashMap<TexturedModel, List<Entity>> entities) {
-		// get each textured model
-		for (TexturedModel texMod : entities.keySet()) {
-			// prep it
-			this.prepareTexturedModel(texMod);
-			// get the batch of entities
-			List<Entity> batch = entities.get(texMod);
-			// loop that (bet you did not see that coming)
-			for (Entity e : batch) {
-				// prep the E
-				this.prepareInstance(e);
-				// draw call
-				GL11.glDrawElements(GL11.GL_TRIANGLES, texMod.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-			}
-			
-			// unbind the current one
-			this.unbindTexturedModel();
+	public void render(List<Terrain> terrains) {
+		for (Terrain t : terrains) {
+			// prep
+			this.prepareTerrain(t);
+			// load
+			this.loadModelMatrix(t);
+			// draw call
+			GL11.glDrawElements(GL11.GL_TRIANGLES, t.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+			// unbind
+			this.unbindTerrain();
 		}
 	}
 	
 	/**
-	 * sets up the current textured model to be like, ready for a render call to be rendered, by 
+	 * sets up the current Terrain ready for a render call to be rendered, by 
 	 * binding the vao and enabling the vbo, and doing some fun texture stuff like loading the 
 	 * reflectivity property and binding the texture to a bank
-	 * @param model
+	 * @param t
 	 */
-	private void prepareTexturedModel(TexturedModel model) {
-		RawModel mod = model.getModel();
+	private void prepareTerrain(Terrain t) {
+		RawModel mod = t.getModel();
 		// okay so this takes the vao that is unique to this model and it binds it as the active vao
 		// which is needed so that GL knows which VAO we are gonna work on, which makes sense ya know?
 		// bind it then use it
@@ -83,7 +70,7 @@ public class EntityRenderer {
 		GL20.glEnableVertexAttribArray(2);
 		
 		// temp store le texture
-		Texture tex = model.getTex();
+		Texture tex = t.getTexture();
 		// bruv (simple)
 		shader.loadReflectivity(tex.getReflectivity());
 		// also bruv (simple)
@@ -96,9 +83,9 @@ public class EntityRenderer {
 	}
 	
 	/**
-	 * disables the vertex attribs for what ever textured model is currently being used and also unbinds the VAO
+	 * disables the vertex attribs for what ever terrain is currently being used and also unbinds the VAO
 	 */
-	private void unbindTexturedModel() {
+	private void unbindTerrain() {
 		// opposite of the enable vertex attrib array call, probably just unbinds it
 		// so yea this is the opposite of the enable call, it essentally says that this will not be used anymore
 		GL20.glDisableVertexAttribArray(0);
@@ -109,12 +96,12 @@ public class EntityRenderer {
 	}
 	
 	/**
-	 * does a thing and loads a transformation matrix into the shader, specific to the current entity
-	 * @param e
+	 * does a thing and loads a transformation matrix into the shader, specific to the current Terrain
+	 * @param t
 	 */
-	private void prepareInstance(Entity e) {
+	private void loadModelMatrix(Terrain t) {
 		// this line is ridicilous but like here is how we make a trans matrix
-		Matrix4f transMatrix = MathHelper.createTransformationMatrix(e.getPos(), e.getRotx(), e.getRoty(), e.getRotz(), e.getScale());
+		Matrix4f transMatrix = MathHelper.createTransformationMatrix(new Vector3f(t.getX(), 0, t.getZ()), 0, 0, 0, 1);
 		// USE UNIFORM TO MAKE THE TRANS MATRIX BE A PART OF THE RENDER WOOOOOOOOOOO
 		shader.loadTransformation(transMatrix);
 	}
