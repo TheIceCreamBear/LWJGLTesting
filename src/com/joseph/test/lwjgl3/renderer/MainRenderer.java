@@ -40,9 +40,7 @@ public class MainRenderer {
 	private List<Terrain> terrains;
 	
 	public MainRenderer() {
-		// enable the like renderer api to like, decide to not render faces that we cant see so like performance gains
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glCullFace(GL11.GL_BACK);
+		enableCulling();
 		
 		// create the projection matrix
 		this.createProjectionMatrix();
@@ -144,9 +142,11 @@ public class MainRenderer {
 	}
 	
 	/**
-	 * okay so this is conna be commented out because it is REALLY BAD CODE but im including it here
+	 * okay so this is gonna be commented out because it is REALLY BAD CODE but im including it here
 	 * because i want to meme on the tutorial for how bad the code here is when like my slight modification to
 	 * it above is much more simpler words arent the best for me anyway enjoy this cursed code
+	 * 
+	 * this will be deleted in TUT 16 FINAL (if i dont forget, prob gonna forget, oh well)
 	 * @param e
 	 */
 	/*
@@ -182,5 +182,22 @@ public class MainRenderer {
 	public void cleanUp() {
 		sShader.cleanUp();
 		tShader.cleanUp();
+	}
+	
+	/**
+	 * i mean this should be obvious but still docs is nice enables culling
+	 */
+	public static void enableCulling() {
+		// enable the like renderer api to like, decide to not render faces that we cant see so like performance gains
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
+	}
+
+	/**
+	 * i mean this should be obvious but still docs is nice disables culling
+	 */
+	public static void disableCulling() {
+		// disable the removal of the cull feature of faces, i want all the faces
+		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
 }

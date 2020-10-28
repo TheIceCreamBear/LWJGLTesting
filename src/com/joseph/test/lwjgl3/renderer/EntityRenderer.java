@@ -84,6 +84,12 @@ public class EntityRenderer {
 		
 		// temp store le texture
 		Texture tex = model.getTex();
+		// if tex has pixels that are see through, we dont want to cull the back faces of that
+		if (tex.hasTransparency()) {
+			MainRenderer.disableCulling();
+		}
+		// also if the tex wants fake lighting, load that into the shader
+		shader.loadFakeLightValue(tex.useFakedLighting());
 		// bruv (simple)
 		shader.loadReflectivity(tex.getReflectivity());
 		// also bruv (simple)
@@ -99,6 +105,9 @@ public class EntityRenderer {
 	 * disables the vertex attribs for what ever textured model is currently being used and also unbinds the VAO
 	 */
 	private void unbindTexturedModel() {
+		// just make sure its enabled, even tho adding a new method onto the stack is alot, 
+		// it might be less than checking every time if a change was made to it
+		MainRenderer.enableCulling();
 		// opposite of the enable vertex attrib array call, probably just unbinds it
 		// so yea this is the opposite of the enable call, it essentally says that this will not be used anymore
 		GL20.glDisableVertexAttribArray(0);

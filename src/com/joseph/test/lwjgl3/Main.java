@@ -1,6 +1,7 @@
 package com.joseph.test.lwjgl3;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.joml.Vector3f;
@@ -134,30 +135,53 @@ public class Main {
 		// OpenGL code and methods. without this line, trying to render anything with OpenGL will fail
 		
 		// this will set the clear color of the current open GL context. Meaning, when the screen is cleared,
-		// this is the color it will use. the current color is full red
-		GL11.glClearColor(0.5f, 0.0f, 0.0f, 0.0f);
+		// this is the color it will use. the current color is a sky blue
+		GL11.glClearColor(0.45f, 89.0f, 0.98f, 1.0f);
 		
 		// so like this makes it so that open GL will try to figure out which triangle is on top relative
 		// to the other triangles and like itll make it so that you dont see multiple faces on top you only
 		// see what you can see so ya
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		
-		// honestly this should be static too but still like, this is the way the tutorial did it so like
+		// honestly this should probably be static too but still like, this is the way the tutorial did it so like
 		// thats how imma do it
 		ModelLoader loader = new ModelLoader();
 		MainRenderer renderer = new MainRenderer();
 		
-		// load the square into a thing and get its thing from the thing
-		RawModel model = OBJLoader.loadObjModel("res/provided/tree.obj", loader);
-		Texture tex = TextureLoader.loadTexture("res/provided/tree.png");
-		TexturedModel texMod = new TexturedModel(model, tex);
+		// load a tree model and its texture
+		RawModel treeModel = OBJLoader.loadObjModel("res/provided/tree.obj", loader);
+		Texture treeTex = TextureLoader.loadTexture("res/provided/tree.png");
+		TexturedModel tree = new TexturedModel(treeModel, treeTex);
+
+		// load a grass model and its texture
+		RawModel grassModel = OBJLoader.loadObjModel("res/provided/grassModel.obj", loader);
+		Texture grassTex = TextureLoader.loadTexture("res/provided/grassTexture.png");
+		grassTex.setHasTransparency(true);
+		grassTex.setUseFakedLighting(true);
+		TexturedModel grass = new TexturedModel(grassModel, grassTex);
 		
-		Entity ent = new Entity(texMod, new Vector3f(0.0f, 0.0f, -25.0f), 0.0f, 0.0f, 0.0f, 1.0f);
+		// load a fern model and its texture
+		RawModel fernModel = OBJLoader.loadObjModel("res/provided/fern.obj", loader);
+		Texture fernTex = TextureLoader.loadTexture("res/provided/fern.png");
+		fernTex.setHasTransparency(true);
+		fernTex.setUseFakedLighting(true);
+		TexturedModel fern = new TexturedModel(fernModel, fernTex);
+		
+		// store the random objects into a list
+		List<Entity> entities = new ArrayList<Entity>();
+		Random r = new Random();
+		for (int i = 0; i < 500; i++) {
+			entities.add(new Entity(tree,  new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 3.0f));
+			entities.add(new Entity(grass, new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+			entities.add(new Entity(fern,  new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 0.6f));
+		}
+		
 		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		Camera camera = new Camera();
 		
-		Terrain terrain = new Terrain(0, 0, loader, TextureLoader.loadTexture("res/provided/grass.png"));
-		Terrain terrain2 = new Terrain(1, 0, loader, TextureLoader.loadTexture("res/provided/grass.png"));
+		// got shifted to be in cam view
+		Terrain terrain = new Terrain(-1, -1, loader, TextureLoader.loadTexture("res/provided/grass.png"));
+		Terrain terrain2 = new Terrain(0, -1, loader, TextureLoader.loadTexture("res/provided/grass.png"));
 		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
@@ -167,29 +191,12 @@ public class Main {
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
-			ent.increaseRotation(0.0f, 1.0f, 0.0f);
 			camera.move();
 			
-			// TEMP STUFF TO TEST DIFFERENT VALUES OF REFLECTIVITY AND SHINDE DAMPINING
-			if (keyDown[GLFW.GLFW_KEY_I]) {
-				tex.setReflectivity(tex.getReflectivity() + 0.125f);
-				System.out.println(tex.getReflectivity());
-			}
-			if (keyDown[GLFW.GLFW_KEY_K]) {
-				tex.setReflectivity(tex.getReflectivity() - 0.125f);
-				System.out.println(tex.getReflectivity());
-			}
-			if (keyDown[GLFW.GLFW_KEY_J]) {
-				tex.setShineDamper(tex.getShineDamper() + 0.125f);
-				System.out.println(tex.getShineDamper());
-			}
-			if (keyDown[GLFW.GLFW_KEY_L]) {
-				tex.setShineDamper(tex.getShineDamper() - 0.125f);
-				System.out.println(tex.getShineDamper());
-			}
-			
 			// load all of the objects (entities) that we are going to render into the main renderer
-			renderer.addEntity(ent);
+			for (Entity e : entities) {
+				renderer.addEntity(e);
+			}
 			renderer.addTerrain(terrain);
 			renderer.addTerrain(terrain2);
 			

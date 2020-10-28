@@ -11,9 +11,9 @@ import com.joseph.test.lwjgl3.Main;
  * @author Joseph
  */
 public class Camera {
-	private static final float CAM_SPEED = 0.125f;
-	private Vector3f position = new Vector3f(0, 0, 0);
-	private float pitch;
+	private static final float CAM_SPEED = 0.25f;
+	private Vector3f position = new Vector3f(0.0f, 5.0f, 0.0f);
+	private float pitch = 10.0f;
 	private float yaw;
 	private float roll;
 	
