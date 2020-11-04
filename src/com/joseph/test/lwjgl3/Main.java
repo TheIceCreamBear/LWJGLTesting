@@ -148,33 +148,49 @@ public class Main {
 		ModelLoader loader = new ModelLoader();
 		MainRenderer renderer = new MainRenderer();
 		
-		// load a tree model and its texture
-		RawModel treeModel = OBJLoader.loadObjModel("res/provided/tree.obj", loader);
-		Texture treeTex = TextureLoader.loadTexture("res/provided/tree.png");
-		TexturedModel tree = new TexturedModel(treeModel, treeTex);
-
-		// load a grass model and its texture
-		RawModel grassModel = OBJLoader.loadObjModel("res/provided/grassModel.obj", loader);
-		Texture grassTex = TextureLoader.loadTexture("res/provided/grassTexture.png");
-		grassTex.setHasTransparency(true);
-		grassTex.setUseFakedLighting(true);
-		TexturedModel grass = new TexturedModel(grassModel, grassTex);
+		// load the letter models
+		RawModel hModel = OBJLoader.loadObjModel("res/letters/h.obj", loader);
+		RawModel aModel = OBJLoader.loadObjModel("res/letters/a.obj", loader);
+		RawModel pModel = OBJLoader.loadObjModel("res/letters/p.obj", loader);
+		RawModel yModel = OBJLoader.loadObjModel("res/letters/y.obj", loader);
+		RawModel bModel = OBJLoader.loadObjModel("res/letters/b.obj", loader);
+		RawModel iModel = OBJLoader.loadObjModel("res/letters/i.obj", loader);
+		RawModel rModel = OBJLoader.loadObjModel("res/letters/r.obj", loader);
+		RawModel tModel = OBJLoader.loadObjModel("res/letters/t.obj", loader);
+		RawModel dModel = OBJLoader.loadObjModel("res/letters/d.obj", loader);
+		RawModel mModel = OBJLoader.loadObjModel("res/letters/m.obj", loader);
+		RawModel oModel = OBJLoader.loadObjModel("res/letters/o.obj", loader);
+		RawModel eModel = OBJLoader.loadObjModel("res/letters/e.obj", loader);
 		
-		// load a fern model and its texture
-		RawModel fernModel = OBJLoader.loadObjModel("res/provided/fern.obj", loader);
-		Texture fernTex = TextureLoader.loadTexture("res/provided/fern.png");
-		fernTex.setHasTransparency(true);
-		fernTex.setUseFakedLighting(true);
-		TexturedModel fern = new TexturedModel(fernModel, fernTex);
+		// letter texture
+		Texture garnet = TextureLoader.loadTexture("res/garnet.png");
+		Texture gold = TextureLoader.loadTexture("res/gold.png");
 		
-		// store the random objects into a list
+		// models
+		TexturedModel h0 = new TexturedModel(hModel, garnet);
+		TexturedModel a1 = new TexturedModel(aModel, gold);
+		TexturedModel p0 = new TexturedModel(pModel, garnet);
+		TexturedModel p1 = new TexturedModel(pModel, gold);
+		TexturedModel y0 = new TexturedModel(yModel, garnet);
+		TexturedModel b1 = new TexturedModel(bModel, gold);
+		TexturedModel i0 = new TexturedModel(iModel, garnet);
+		TexturedModel r1 = new TexturedModel(rModel, gold);
+		TexturedModel t0 = new TexturedModel(tModel, garnet);
+		TexturedModel h1 = new TexturedModel(hModel, gold);
+		TexturedModel d0 = new TexturedModel(dModel, garnet);
+//		TexturedModel a1 = new TexturedModel(aModel, gold);
+//		TexturedModel y0 = new TexturedModel(yModel, garnet);
+		TexturedModel m1 = new TexturedModel(mModel, gold);
+		TexturedModel o0 = new TexturedModel(oModel, garnet);
+		TexturedModel t1 = new TexturedModel(tModel, gold);
+//		TexturedModel h0 = new TexturedModel(hModel, garnet);
+		TexturedModel e1 = new TexturedModel(eModel, gold);
+		TexturedModel r0 = new TexturedModel(rModel, garnet);
+		
+		// store the objects into a list
 		List<Entity> entities = new ArrayList<Entity>();
-		Random r = new Random();
-		for (int i = 0; i < 500; i++) {
-			entities.add(new Entity(tree,  new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 3.0f));
-			entities.add(new Entity(grass, new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-			entities.add(new Entity(fern,  new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 0.6f));
-		}
+
+		entities.add(new Entity(h0, new Vector3f(50.0f, 32.0f, -100.0f), 0.0f, 0.0f, 0.0f, 0.75f));
 		
 		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		Camera camera = new Camera();
