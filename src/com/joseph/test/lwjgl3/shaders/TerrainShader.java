@@ -12,8 +12,8 @@ import com.joseph.test.lwjgl3.math.MathHelper;
  *
  */
 public class TerrainShader extends ShaderProgram {
-	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/shaders/terrainVertexShader.vert";
-	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/shaders/terrainFragmentShader.frag";
+	private static final String VERTEX_FILE = "/com/joseph/test/lwjgl3/shaders/terrainVertexShader.vert";
+	private static final String FRAGMENT_FILE = "/com/joseph/test/lwjgl3/shaders/terrainFragmentShader.frag";
 	
 	private int tMatrixLocation;
 	private int projMatrixLocation;
