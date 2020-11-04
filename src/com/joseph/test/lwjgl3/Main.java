@@ -75,7 +75,7 @@ public class Main {
 		// 64 bits on a 64 bit system, and 32 bits on a 32 bit system, the long primitive in Java has enough
 		// space to fully store any value of a pointer, and is therefore the best way to represent the 
 		// reference to the window without the use of pointers
-		windowPointer = GLFW.glfwCreateWindow(1600, 900, "LOLOL this is our main Window", MemoryUtil.NULL, MemoryUtil.NULL);
+		windowPointer = GLFW.glfwCreateWindow(1600, 875, "LOLOL this is our main Window", MemoryUtil.NULL, MemoryUtil.NULL);
 		
 		// sets a key call back. all key input is handled via key call backs, and the key, action, and mods 
 		// determine what was pressed this specific callback will use a lambda, however, a method reference 
@@ -164,7 +164,11 @@ public class Main {
 		
 		// letter texture
 		Texture garnet = TextureLoader.loadTexture("res/garnet.png");
+		garnet.setShineDamper(10.0f);
+		garnet.setReflectivity(1.0f);
 		Texture gold = TextureLoader.loadTexture("res/gold.png");
+		gold.setShineDamper(10.0f);
+		gold.setReflectivity(1.0f);
 		
 		// models
 		TexturedModel h0 = new TexturedModel(hModel, garnet);
@@ -190,7 +194,54 @@ public class Main {
 		// store the objects into a list
 		List<Entity> entities = new ArrayList<Entity>();
 
-		entities.add(new Entity(h0, new Vector3f(50.0f, 32.0f, -100.0f), 0.0f, 0.0f, 0.0f, 0.75f));
+		int charOffset = 0;
+		entities.add(new Entity(h0, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(a1, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(p0, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(p1, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(y0, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		charOffset++;
+		entities.add(new Entity(b1, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(i0, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(r1, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(t0, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(h1, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(d0, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(a1, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(y0, new Vector3f(-100.0f + (charOffset++ * 15.5f), 45.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		charOffset = 4;
+		entities.add(new Entity(m1, new Vector3f(-100.0f + (charOffset++ * 15.5f), 20.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(o0, new Vector3f(-100.0f + (charOffset++ * 15.5f), 20.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(t1, new Vector3f(-100.0f + (charOffset++ * 15.5f), 20.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(h0, new Vector3f(-100.0f + (charOffset++ * 15.5f), 20.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(e1, new Vector3f(-100.0f + (charOffset++ * 15.5f), 20.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(r0, new Vector3f(-100.0f + (charOffset++ * 15.5f), 20.0f, -175.0f), 0.0f, 0.0f, 0.0f, 5.0f));
+		
+		// load a tree model and its texture
+		RawModel treeModel = OBJLoader.loadObjModel("res/provided/tree.obj", loader);
+		Texture treeTex = TextureLoader.loadTexture("res/provided/tree.png");
+		TexturedModel tree = new TexturedModel(treeModel, treeTex);
+
+		// load a grass model and its texture
+		RawModel grassModel = OBJLoader.loadObjModel("res/provided/grassModel.obj", loader);
+		Texture grassTex = TextureLoader.loadTexture("res/provided/grassTexture.png");
+		grassTex.setHasTransparency(true);
+		grassTex.setUseFakedLighting(true);
+		TexturedModel grass = new TexturedModel(grassModel, grassTex);
+		
+		// load a fern model and its texture
+		RawModel fernModel = OBJLoader.loadObjModel("res/provided/fern.obj", loader);
+		Texture fernTex = TextureLoader.loadTexture("res/provided/fern.png");
+		fernTex.setHasTransparency(true);
+		fernTex.setUseFakedLighting(true);
+		TexturedModel fern = new TexturedModel(fernModel, fernTex);
+		
+		Random r = new Random();
+		for (int i = 0; i < 500; i++) {
+			entities.add(new Entity(tree,  new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 3.0f));
+			entities.add(new Entity(grass, new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+			entities.add(new Entity(fern,  new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 0.6f));
+		}
 		
 		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		Camera camera = new Camera();
