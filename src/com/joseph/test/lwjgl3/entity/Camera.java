@@ -11,7 +11,7 @@ import com.joseph.test.lwjgl3.Main;
  * @author Joseph
  */
 public class Camera {
-	private static final float CAM_SPEED = 0.25f;
+	private static final float CAM_SPEED = 0.5f;
 	private Vector3f position = new Vector3f(0.0f, 5.0f, 0.0f);
 	private float pitch = 10.0f;
 	private float yaw;
@@ -25,20 +25,24 @@ public class Camera {
 	 */
 	public void move() {
 		float speed = CAM_SPEED;
-		if (Main.keyDown[GLFW.GLFW_KEY_LEFT_SHIFT]) {
+		if (Main.keyDown[GLFW.GLFW_KEY_LEFT_CONTROL]) {
 			speed *= 2;
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_W]) {
-			position.z -= speed;
+			position.z -= speed * Math.cos(Math.toRadians(yaw));
+			position.x += speed * Math.sin(Math.toRadians(yaw));
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_S]) {
-			position.z += speed;
+			position.z += speed * Math.cos(Math.toRadians(yaw));
+			position.x -= speed * Math.sin(Math.toRadians(yaw));
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_D]) {
-			position.x += speed;
+			position.x += speed * Math.cos(Math.toRadians(yaw));
+			position.z += speed * Math.sin(Math.toRadians(yaw));
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_A]) {
-			position.x -= speed;
+			position.x -= speed * Math.cos(Math.toRadians(yaw));
+			position.z -= speed * Math.sin(Math.toRadians(yaw));
 		}
 		if (Main.keyDown[GLFW.GLFW_KEY_SPACE]) {
 			position.y += speed;
