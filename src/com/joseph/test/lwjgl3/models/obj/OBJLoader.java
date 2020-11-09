@@ -1,4 +1,4 @@
-package com.joseph.test.lwjgl3.models;
+package com.joseph.test.lwjgl3.models.obj;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +10,9 @@ import java.util.List;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import com.joseph.test.lwjgl3.models.ModelLoader;
+import com.joseph.test.lwjgl3.models.RawModel;
 
 /**
  * oh fun yay we are loading our own objects yay this is nice yay NOT
@@ -24,9 +27,9 @@ public class OBJLoader {
 	 * @param loader
 	 * @return
 	 */
-	public static RawModel loadObjModel(String fileName, ModelLoader loader) {
+	public static ModelData loadObjModel(String fileName, ModelLoader loader) {
 		// lists of lists not really but lots of lists and null arrays
-		List<Vector3f> verticies = new ArrayList<Vector3f>();
+		List<Vertex> verticies = new ArrayList<Vertex>();
 		List<Vector2f> textures = new ArrayList<Vector2f>();
 		List<Vector3f> normals = new ArrayList<Vector3f>();
 		List<Integer> indicies = new ArrayList<Integer>();
@@ -46,7 +49,8 @@ public class OBJLoader {
 				String[] splits = line.split(" ");
 				// each prefix has a different meaning
 				if (line.startsWith("v ")) {
-					verticies.add(new Vector3f(Float.parseFloat(splits[1]), Float.parseFloat(splits[2]), Float.parseFloat(splits[3])));
+					Vector3f vert = new Vector3f(Float.parseFloat(splits[1]), Float.parseFloat(splits[2]), Float.parseFloat(splits[3]));
+					verticies.add(new Vertex(verticies.size(), vert));
 				} else if (line.startsWith("vt ")) {
 					textures.add(new Vector2f(Float.parseFloat(splits[1]), Float.parseFloat(splits[2])));
 				} else if (line.startsWith("vn ")) {
@@ -55,10 +59,6 @@ public class OBJLoader {
 					break;
 				}
 			}
-			
-			// init some arrs
-			textureData = new float[verticies.size() * 2];
-			normalData = new float[verticies.size() * 3];
 			
 			// while ! end file more yes
 			while (line != null) {
@@ -78,9 +78,9 @@ public class OBJLoader {
 				String[] vertex3 = splits[3].split("/");
 				
 				// bruv, process it, like hello
-				processVertex(vertex1, indicies, textures, normals, textureData, normalData);
-				processVertex(vertex2, indicies, textures, normals, textureData, normalData);
-				processVertex(vertex3, indicies, textures, normals, textureData, normalData);
+				processVertex(vertex1, verticies, indicies);
+				processVertex(vertex2, verticies, indicies);
+				processVertex(vertex3, verticies, indicies);
 				
 				// read next line
 				line = reader.readLine();
@@ -93,52 +93,139 @@ public class OBJLoader {
 			e.printStackTrace();
 		}
 		
-		// more init some arrs
+		
+		// init some arrs
 		vertexData = new float[verticies.size() * 3];
-		indexData = new int[indicies.size()];
+		textureData = new float[verticies.size() * 2];
+		normalData = new float[verticies.size() * 3];
+		float furthest = convertDataToArrays(verticies, textures, normals, vertexData, textureData, normalData);
+		indexData = convertIndicesListToArray(indicies);
 		
-		// move vertexes (yes) from list to arr of floating bouys
-		int vertex = 0;
-		for (Vector3f v : verticies) {
-			vertexData[vertex++] = v.x;
-			vertexData[vertex++] = v.y;
-			vertexData[vertex++] = v.z;
-		}
-		
-		// if only you could easily make an ArrayList<Integer> into int[]
-		for (int i = 0; i < indicies.size(); i++) {
-			indexData[i] = indicies.get(i);
-		}
-
 		// retrun
-		return loader.loadToVAO(vertexData, textureData, normalData, indexData);
+		return new ModelData(vertexData, textureData, normalData, indexData, furthest);
 	}
 	
 	/**
-	 * processes a specific vertex of the described input face and stores it in the arrays passed in, kinda bad design
-	 * but like how else are you gonna do it when there is legit like 3 times you have to do this i mean you could loop...
-	 * @param vertexData
-	 * @param indicies
-	 * @param textures
-	 * @param normals
-	 * @param textureData
-	 * @param normalData
+	 * Processes the current vertex string, adds it to the verticies list and the indicies list
+	 * @param vertex
+	 * @param vertices
+	 * @param indices
 	 */
-	private static void processVertex(String[] vertexData, List<Integer> indicies, List<Vector2f> textures, List<Vector3f> normals, float[] textureData, float[] normalData) {
+	private static void processVertex(String[] vertex, List<Vertex> vertices, List<Integer> indices) {
 		// find the current vertex index
-		int curVertex = Integer.parseInt(vertexData[0]) - 1;
-		// that is now a new index
-		indicies.add(curVertex);
-		// get current texture UV vec
-		Vector2f curTex = textures.get(Integer.parseInt(vertexData[1]) - 1);
-		// save it into the texture data
-		textureData[curVertex * 2] = curTex.x;
-		textureData[curVertex * 2 + 1] = 1 - curTex.y;
-		// get current normal vec
-		Vector3f curNorm = normals.get(Integer.parseInt(vertexData[2]) - 1);
-		// save it into the normal data
-		normalData[curVertex * 3] = curNorm.x;
-		normalData[curVertex * 3 + 1] = curNorm.y;
-		normalData[curVertex * 3 + 2] = curNorm.z;
+		int curVertex = Integer.parseInt(vertex[0]) - 1;
+		// get the vertexAsociated with that index
+		Vertex currentVertex = vertices.get(curVertex);
+		// get the tex data index that is associated with this index
+		int textureIndex = Integer.parseInt(vertex[1]) - 1;
+		// get the normal data index that is associated with this index
+		int normalIndex = Integer.parseInt(vertex[2]) - 1;
+		// if the currentVertex has not been touched, touch it (lol thats kinda sus)
+		if (!currentVertex.isSet()) {
+			// down
+			currentVertex.setTextureIndex(textureIndex);
+			// set
+			currentVertex.setNormalIndex(normalIndex);
+			// hike
+			indices.add(curVertex);
+		} else {
+			// bruh
+			dealWithAlreadyProcessedVertex(currentVertex, textureIndex, normalIndex, indices, vertices);
+		}
+	}
+	
+	/**
+	 * Converts it to an array, simple
+	 * @param indices - list to convert
+	 * @return an array representation of this list
+	 */
+	private static int[] convertIndicesListToArray(List<Integer> indices) {
+		int[] indicesArray = new int[indices.size()];
+		for (int i = 0; i < indicesArray.length; i++) {
+			indicesArray[i] = indices.get(i);
+		}
+		return indicesArray;
+	}
+	
+	/**
+	 * Converts the given data lists to their corresponding data arrays, simple
+	 * @param vertices - list of verticies
+	 * @param textures - list of Vec2fs representing UV data
+	 * @param normals - list of Vec3fs representing normal data
+	 * @param vertexData - array of vertex data
+	 * @param texturesData - array of texture data
+	 * @param normalsData - array of normal data
+	 * @return the farthest point's distance from the origin of the model
+	 */
+	private static float convertDataToArrays(List<Vertex> vertices, List<Vector2f> textures, List<Vector3f> normals, float[] vertexData, float[] texturesData, float[] normalsData) {
+		float furthestPoint = 0;
+		// looooooooooooooooooooooop
+		for (int i = 0; i < vertices.size(); i++) {
+			// get
+			Vertex currentVertex = vertices.get(i);
+			// max update paradigm
+			if (currentVertex.getLength() > furthestPoint) {
+				furthestPoint = currentVertex.getLength();
+			}
+			// convert data, SIMPle
+			Vector3f position = currentVertex.getPosition();
+			Vector2f textureCoord = textures.get(currentVertex.getTextureIndex());
+			Vector3f normalVector = normals.get(currentVertex.getNormalIndex());
+			vertexData[i * 3] = position.x;
+			vertexData[i * 3 + 1] = position.y;
+			vertexData[i * 3 + 2] = position.z;
+			texturesData[i * 2] = textureCoord.x;
+			texturesData[i * 2 + 1] = 1 - textureCoord.y;
+			normalsData[i * 3] = normalVector.x;
+			normalsData[i * 3 + 1] = normalVector.y;
+			normalsData[i * 3 + 2] = normalVector.z;
+		}
+		
+		return furthestPoint;
+	}
+	
+	/**
+	 * deals with a vertex that has already been processed, 
+	 * @param previousVertex
+	 * @param newTextureIndex
+	 * @param newNormalIndex
+	 * @param indices
+	 * @param vertices
+	 */
+	private static void dealWithAlreadyProcessedVertex(Vertex previousVertex, int newTextureIndex, int newNormalIndex, List<Integer> indices, List<Vertex> vertices) {
+		// if they are literally the same
+		if (previousVertex.hasSameTextureAndNormal(newTextureIndex, newNormalIndex)) {
+			// add this index to the indicies list
+			indices.add(previousVertex.getIndex());
+		} else {
+			// get the duplicate vertex
+			Vertex anotherVertex = previousVertex.getDuplicateVertex();
+			if (anotherVertex != null) {
+				// if it exists, go to the next level 
+				dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex, newNormalIndex, indices, vertices);
+			} else {
+				// if it does not exist, create a new duplicate vertex for that location
+				Vertex duplicateVertex = new Vertex(vertices.size(), previousVertex.getPosition());
+				duplicateVertex.setTextureIndex(newTextureIndex);
+				duplicateVertex.setNormalIndex(newNormalIndex);
+				previousVertex.setDuplicateVertex(duplicateVertex);
+				vertices.add(duplicateVertex);
+				indices.add(duplicateVertex.getIndex());
+			}
+			
+		}
+	}
+	
+	/**
+	 * remove unused vertices from the list of verticies
+	 * @param vertices - the list to deal with
+	 */
+	private static void removeUnusedVertices(List<Vertex> vertices) {
+		for (Vertex vertex : vertices) {
+			if (!vertex.isSet()) {
+				vertex.setTextureIndex(0);
+				vertex.setNormalIndex(0);
+			}
+		}
 	}
 }
