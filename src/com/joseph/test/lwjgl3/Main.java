@@ -15,9 +15,10 @@ import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.models.ModelLoader;
-import com.joseph.test.lwjgl3.models.OBJLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
+import com.joseph.test.lwjgl3.models.obj.ModelData;
+import com.joseph.test.lwjgl3.models.obj.OBJLoader;
 import com.joseph.test.lwjgl3.renderer.MainRenderer;
 import com.joseph.test.lwjgl3.terrain.Terrain;
 import com.joseph.test.lwjgl3.textures.Texture;
@@ -149,19 +150,22 @@ public class Main {
 		MainRenderer renderer = new MainRenderer();
 		
 		// load a tree model and its texture
-		RawModel treeModel = OBJLoader.loadObjModel("res/provided/tree.obj", loader);
+		ModelData treeData = OBJLoader.loadObjModel("res/provided/tree.obj");
+		RawModel treeModel = loader.loadToVAO(treeData.getVertices(), treeData.getTextureCoords(), treeData.getNormals(), treeData.getIndices());
 		Texture treeTex = TextureLoader.loadTexture("res/provided/tree.png");
 		TexturedModel tree = new TexturedModel(treeModel, treeTex);
 
 		// load a grass model and its texture
-		RawModel grassModel = OBJLoader.loadObjModel("res/provided/grassModel.obj", loader);
+		ModelData grassData = OBJLoader.loadObjModel("res/provided/grassModel.obj");
+		RawModel grassModel = loader.loadToVAO(grassData.getVertices(), grassData.getTextureCoords(), grassData.getNormals(), grassData.getIndices());
 		Texture grassTex = TextureLoader.loadTexture("res/provided/grassTexture.png");
 		grassTex.setHasTransparency(true);
 		grassTex.setUseFakedLighting(true);
 		TexturedModel grass = new TexturedModel(grassModel, grassTex);
 		
 		// load a fern model and its texture
-		RawModel fernModel = OBJLoader.loadObjModel("res/provided/fern.obj", loader);
+		ModelData fernData = OBJLoader.loadObjModel("res/provided/fern.obj");
+		RawModel fernModel = loader.loadToVAO(fernData.getVertices(), fernData.getTextureCoords(), fernData.getNormals(), fernData.getIndices());
 		Texture fernTex = TextureLoader.loadTexture("res/provided/fern.png");
 		fernTex.setHasTransparency(true);
 		fernTex.setUseFakedLighting(true);
