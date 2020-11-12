@@ -11,9 +11,6 @@ import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import com.joseph.test.lwjgl3.models.ModelLoader;
-import com.joseph.test.lwjgl3.models.RawModel;
-
 /**
  * oh fun yay we are loading our own objects yay this is nice yay NOT
  * this is POOPY but it also works (for most objects)
@@ -22,12 +19,11 @@ import com.joseph.test.lwjgl3.models.RawModel;
  */
 public class OBJLoader {
 	/**
-	 * actually loads the model, reads everything in, and returns a raw version of it
+	 * actually loads the model, reads everything in, and returns the data of it
 	 * @param fileName
-	 * @param loader
 	 * @return
 	 */
-	public static ModelData loadObjModel(String fileName, ModelLoader loader) {
+	public static ModelData loadObjModel(String fileName) {
 		// lists of lists not really but lots of lists and null arrays
 		List<Vertex> verticies = new ArrayList<Vertex>();
 		List<Vector2f> textures = new ArrayList<Vector2f>();
