@@ -2,6 +2,8 @@ package com.joseph.test.lwjgl3.terrain;
 
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
+import com.joseph.test.lwjgl3.textures.TerrainTexture;
+import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 import com.joseph.test.lwjgl3.textures.Texture;
 
 public class Terrain {
@@ -11,7 +13,8 @@ public class Terrain {
 	private float x;
 	private float z;
 	private RawModel model;
-	private Texture texture;
+	private TerrainTexturePack texPack;
+	private TerrainTexture blendMap;
 	
 	/**
 	 * create a new terrain square with like the ability to be a tileable and has a texture and is part of a grid, 
@@ -21,8 +24,9 @@ public class Terrain {
 	 * @param loader
 	 * @param texture
 	 */
-	public Terrain(int gridX, int gridZ, ModelLoader loader, Texture texture) {
-		this.texture = texture;
+	public Terrain(int gridX, int gridZ, ModelLoader loader, TerrainTexturePack texPack, TerrainTexture blendMap) {
+		this.texPack = texPack;
+		this.blendMap = blendMap;
 		this.x = gridX * SIZE;
 		this.z = gridZ * SIZE;
 		this.model = this.generateTerrain(loader);
@@ -87,8 +91,12 @@ public class Terrain {
 		return this.model;
 	}
 	
-	public Texture getTexture() {
-		return this.texture;
+	public TerrainTexturePack getTexPack() {
+		return this.texPack;
+	}
+	
+	public TerrainTexture getBlendMap() {
+		return this.blendMap;
 	}
 	
 	public float getX() {

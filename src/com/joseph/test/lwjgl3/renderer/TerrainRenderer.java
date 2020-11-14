@@ -15,6 +15,7 @@ import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.shaders.TerrainShader;
 import com.joseph.test.lwjgl3.terrain.Terrain;
+import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 import com.joseph.test.lwjgl3.textures.Texture;
 
 public class TerrainRenderer {
@@ -29,6 +30,7 @@ public class TerrainRenderer {
 		this.shader = shader;
 		shader.start();
 		shader.loadProjection(projMat);
+		shader.setupTextures();
 		shader.stop();
 	}
 	
@@ -69,17 +71,25 @@ public class TerrainRenderer {
 		GL20.glEnableVertexAttribArray(1);
 		GL20.glEnableVertexAttribArray(2);
 		
-		// temp store le texture
-		Texture tex = t.getTexture();
 		// bruv (simple)
-		shader.loadReflectivity(tex.getReflectivity());
+		shader.loadReflectivity(0);
 		// also bruv (simple)
-		shader.loadShineDamper(tex.getShineDamper());
-		// sets where the current texture is going to be stored in the texture banks
+		shader.loadShineDamper(1);
+		this.bindTextures(t);
+	}
+	
+	private void bindTextures(Terrain t) {
+		TerrainTexturePack pack = t.getTexPack();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		// bind the texture of the model as the active current texture to use because like hello how
-		// else are we gonna know which texture to use
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.glTextureID());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, t.getBlendMap().glTextureID());
+		GL13.glActiveTexture(GL13.GL_TEXTURE1);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, pack.getBaseTex().glTextureID());
+		GL13.glActiveTexture(GL13.GL_TEXTURE2);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, pack.getRTex().glTextureID());
+		GL13.glActiveTexture(GL13.GL_TEXTURE3);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, pack.getGTex().glTextureID());
+		GL13.glActiveTexture(GL13.GL_TEXTURE4);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, pack.getBTex().glTextureID());
 	}
 	
 	/**

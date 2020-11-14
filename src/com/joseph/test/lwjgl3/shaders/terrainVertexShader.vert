@@ -25,7 +25,7 @@ void main(void) {
     vec4 positionRelToCam = viewMatrix * worldPos;
 
     gl_Position = projMatrix * viewMatrix * tMatrix * vec4(position, 1.0);
-    texCord = textureCoords * 40;
+    texCord = textureCoords;
     
     surfaceNormal = (tMatrix * vec4(normal, 0.0)).xyz;
     toLight = lightPos - worldPos.xyz;

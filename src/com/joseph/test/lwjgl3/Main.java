@@ -21,6 +21,8 @@ import com.joseph.test.lwjgl3.models.obj.ModelData;
 import com.joseph.test.lwjgl3.models.obj.OBJLoader;
 import com.joseph.test.lwjgl3.renderer.MainRenderer;
 import com.joseph.test.lwjgl3.terrain.Terrain;
+import com.joseph.test.lwjgl3.textures.TerrainTexture;
+import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 import com.joseph.test.lwjgl3.textures.Texture;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
 
@@ -179,9 +181,19 @@ public class Main {
 		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		Camera camera = new Camera();
 		
-		// got shifted to be in cam view
-		Terrain terrain = new Terrain(-1, -1, loader, TextureLoader.loadTexture("res/provided/grass.png"));
-		Terrain terrain2 = new Terrain(0, -1, loader, TextureLoader.loadTexture("res/provided/grass.png"));
+		
+		// setup terrain textures
+		TerrainTexture baseTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/grassy.png"));
+		TerrainTexture rTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/dirt.png"));
+		TerrainTexture gTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/grassFlowers.png"));
+		TerrainTexture bTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/path.png"));
+		
+		TerrainTexturePack pack = new TerrainTexturePack(baseTex, rTex, gTex, bTex);
+		TerrainTexture blendMap = new TerrainTexture(TextureLoader.loadTexture("res/provided/blendMap.png"));
+		
+		
+		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap);
+		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap);
 		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);

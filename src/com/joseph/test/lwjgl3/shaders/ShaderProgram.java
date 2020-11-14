@@ -132,6 +132,16 @@ public abstract class ShaderProgram {
 	}
 	
 	/**
+	 * Also kinda helper to load an int uniform kinda not the 
+	 * best here but meh
+	 * @param location
+	 * @param val
+	 */
+	protected void loadInt(int location, int val) {
+		GL20.glUniform1i(location, val);
+	}
+	
+	/**
 	 * Also kinda helper to load a vector uniform kinda not the 
 	 * best here but meh
 	 * @param location

@@ -8,7 +8,11 @@ in float visibility;
 
 out vec4 out_Color;
 
-uniform sampler2D texSampler;
+uniform sampler2D blendMap;
+uniform sampler2D baseTex;
+uniform sampler2D rTex;
+uniform sampler2D gTex;
+uniform sampler2D bTex;
 
 uniform vec3 lightColor;
 uniform vec3 skyColor;
@@ -17,6 +21,17 @@ uniform float reflectivity;
 uniform float ambientLight = 0.2;
 
 void main(void) {
+    vec4 blendColor = texture(blendMap, texCord);
+    
+    float baseAmount = 1 - (blendColor.r + blendColor.g + blendColor.b);
+    vec2 tiledCoords = texCord * 40;
+    vec4 baseColor = texture(baseTex, tiledCoords) * baseAmount;
+    vec4 rColor = texture(rTex, tiledCoords) * blendColor.r;
+    vec4 gColor = texture(gTex, tiledCoords) * blendColor.g;
+    vec4 bColor = texture(bTex, tiledCoords) * blendColor.b;
+    
+    vec4 totalColor = baseColor + rColor + gColor + bColor;
+
     vec3 normal = normalize(surfaceNormal);
     vec3 light = normalize(toLight);
     vec3 lightDir = -light;
@@ -32,6 +47,6 @@ void main(void) {
     float dampedFactor = pow(specularFactor, shineDamper);
     vec3 specular = dampedFactor * reflectivity * lightColor;
     
-    out_Color = vec4(diffuse, 1.0) * texture(texSampler, texCord) + vec4(specular, 1.0);
+    out_Color = vec4(diffuse, 1.0) * totalColor + vec4(specular, 1.0);
     out_Color = mix(vec4(skyColor,1.0), out_Color, visibility);
 }
