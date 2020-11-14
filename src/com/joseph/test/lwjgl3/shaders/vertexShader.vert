@@ -19,8 +19,8 @@ uniform vec3 lightPos;
 uniform float useFakeLight;
 
 // TODO mess with this
-const float density = 0.007;
-const float gradient = 1.5;
+const float density = 0.0035;
+const float gradient = 5.0;
 
 void main(void) {
     vec4 worldPos = tMatrix * vec4(position, 1.0);
