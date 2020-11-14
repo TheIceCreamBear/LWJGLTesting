@@ -26,6 +26,11 @@ public class MainRenderer {
 	private static final float FOV = 70;
 	private static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 1000f;
+	
+	private static final float CLEAR_RED = 0.45f;
+	private static final float CLEAR_GREEN = 1.0f;
+	private static final float CLEAR_BLUE = 0.98f;
+	
 	private Matrix4f projMatrix;
 	
 	// entity stuff
@@ -67,6 +72,8 @@ public class MainRenderer {
 		this.prepare();
 		// start le shader
 		sShader.start();
+		// load the sky color
+		sShader.loadSkyColor(CLEAR_RED, CLEAR_GREEN, CLEAR_BLUE);
 		// load the light and view matrix
 		sShader.loadLight(worldLight);
 		sShader.loadViewMatrix(camera);
@@ -74,10 +81,16 @@ public class MainRenderer {
 		eRender.render(entities);
 		// stop shader
 		sShader.stop();
+		// start the terrain shader
 		tShader.start();
+		// load the sky color
+		tShader.loadSkyColor(CLEAR_RED, CLEAR_GREEN, CLEAR_BLUE);
+		// load the light and view matrix
 		tShader.loadLight(worldLight);
 		tShader.loadViewMatrix(camera);
+		// render the terrains
 		tRender.render(terrains);
+		// stop the terrain shader
 		tShader.stop();
 		
 		// remove entities (for some reason think this could be handeled a different way instead of clearing it tho the only thing that
@@ -91,6 +104,10 @@ public class MainRenderer {
 	 * essentially preparing for the next frame to be drawn
 	 */
 	public void prepare() {
+		// this will set the clear color of the current open GL context. Meaning, when the screen is cleared,
+		// this is the color it will use. the current color is a sky blue
+		GL11.glClearColor(CLEAR_RED, CLEAR_GREEN, CLEAR_BLUE, 1.0f);
+		
 		// this will clear the current frame buffer of its contents and set the pixels to the 
 		// pixel color specified in the clearColor funciton call above
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
