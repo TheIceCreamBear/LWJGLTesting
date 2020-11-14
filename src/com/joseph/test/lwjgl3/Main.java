@@ -135,10 +135,6 @@ public class Main {
 		// what this line does, is it creates the necessary internal C level code to allow us to use
 		// OpenGL code and methods. without this line, trying to render anything with OpenGL will fail
 		
-		// this will set the clear color of the current open GL context. Meaning, when the screen is cleared,
-		// this is the color it will use. the current color is a sky blue
-		GL11.glClearColor(0.45f, 89.0f, 0.98f, 1.0f);
-		
 		// so like this makes it so that open GL will try to figure out which triangle is on top relative
 		// to the other triangles and like itll make it so that you dont see multiple faces on top you only
 		// see what you can see so ya
