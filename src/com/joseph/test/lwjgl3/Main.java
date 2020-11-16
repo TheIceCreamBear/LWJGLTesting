@@ -125,7 +125,6 @@ public class Main {
 		// this would normally be the end of the "init" step of the program, and we would now move onto
 		// the "loop" step of the program
 		
-		
 		// The following comment is taken from the LWJGL getting started page https://www.lwjgl.org/guide
 		
 		// This line is critical for LWJGL's interoperation with GLFW's
@@ -190,13 +189,18 @@ public class Main {
 		
 		TerrainTexturePack pack = new TerrainTexturePack(baseTex, rTex, gTex, bTex);
 		TerrainTexture blendMap = new TerrainTexture(TextureLoader.loadTexture("res/provided/blendMap.png"));
-		
-		
+				
 		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap);
 		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap);
 		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
+		
+		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
+		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
+		// UPDATES NOT DELTA TIME UPDATES THANKS
+		long lastFrameTime = 0;
+		float delta = 0.0f;
 		
 		// this is the loop portion of our code. this is the "main game loop" area
 		// it will continue to run until the window hint that the window should close is set to true
