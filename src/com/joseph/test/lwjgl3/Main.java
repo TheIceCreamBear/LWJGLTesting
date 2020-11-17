@@ -25,6 +25,7 @@ import com.joseph.test.lwjgl3.textures.TerrainTexture;
 import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 import com.joseph.test.lwjgl3.textures.Texture;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
+import com.sun.org.apache.bcel.internal.generic.LSTORE;
 
 public class Main {
 	// TEMPORARYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
@@ -199,8 +200,14 @@ public class Main {
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
 		// UPDATES NOT DELTA TIME UPDATES THANKS
-		long lastFrameTime = 0;
+		// NOTE: TUT uses Sys.getTime() which is not available in LWJGL 3, how ever, as mentioned on 
+		// this (http://forum.lwjgl.org/index.php?topic=5601.0) forum post, you can use GLFW.glfwGetTime(), 
+		// which returns a double. an alternative, would be replacing Sys in the TUT with GLFW.glfw[^] 
+		// where [^] represents making that following letter capitalized
+		long lastFrameTime = GLFW.glfwGetTimerValue() * 1000 / GLFW.glfwGetTimerFrequency();
 		float delta = 0.0f;
+		double dLastFrameTime = GLFW.glfwGetTime();
+		double dDelta = 0.0;
 		
 		// this is the loop portion of our code. this is the "main game loop" area
 		// it will continue to run until the window hint that the window should close is set to true
@@ -208,6 +215,11 @@ public class Main {
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
 			camera.move();
+			
+			// the final line in this provides the most resolution with the least type casting needed
+			System.out.println("f =    " + delta);
+			System.out.println("d =    " + dDelta);
+			System.out.println("d as f=" + (float) dDelta);
 			
 			// load all of the objects (entities) that we are going to render into the main renderer
 			for (Entity e : entities) {
@@ -229,6 +241,14 @@ public class Main {
 			// our program, as the event model is a poll not listen model (an example of a listen model 
 			// would be the AWT event thread used in java.swing)
 			GLFW.glfwPollEvents();
+			
+			// this is where we update how long this frame took to render
+			long curFrame = GLFW.glfwGetTimerValue() * 1000 / GLFW.glfwGetTimerFrequency();
+			delta = (curFrame - lastFrameTime) / 1000f;
+			lastFrameTime = curFrame;
+			double dCurFrame = GLFW.glfwGetTime();
+			dDelta = dCurFrame - dLastFrameTime;
+			dLastFrameTime = dCurFrame;
 		}
 		
 		// if we have reached this part of the program, we have exited the main loop
