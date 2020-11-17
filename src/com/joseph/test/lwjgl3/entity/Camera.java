@@ -12,7 +12,7 @@ import com.joseph.test.lwjgl3.Main;
  */
 public class Camera {
 	private static final float CAM_SPEED = 0.5f;
-	private Vector3f position = new Vector3f(0.0f, 5.0f, 0.0f);
+	private Vector3f position = new Vector3f(100.0f, 35.0f, 50.0f);
 	private float pitch = 10.0f;
 	private float yaw;
 	private float roll;
@@ -24,7 +24,7 @@ public class Camera {
 	 * IDFK BUT THIS IS GROSS
 	 */
 	public void move() {
-		float speed = CAM_SPEED;
+		float speed = 0;
 		if (Main.keyDown[GLFW.GLFW_KEY_LEFT_CONTROL]) {
 			speed *= 2;
 		}

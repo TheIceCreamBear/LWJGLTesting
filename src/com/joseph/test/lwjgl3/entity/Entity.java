@@ -33,6 +33,10 @@ public class Entity {
 		this.pos.add(dx, dy, dz);
 	}
 	
+	public void displace(Vector3f displacement) {
+		this.pos.add(displacement);
+	}
+	
 	public void increaseRotation(float dx, float dy, float dz) {
 		this.rotx += dx;
 		this.roty += dy;

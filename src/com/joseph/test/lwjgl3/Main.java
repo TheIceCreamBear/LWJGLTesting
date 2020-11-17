@@ -14,6 +14,7 @@ import org.lwjgl.system.MemoryUtil;
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.entity.Light;
+import com.joseph.test.lwjgl3.entity.Player;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
@@ -25,7 +26,6 @@ import com.joseph.test.lwjgl3.textures.TerrainTexture;
 import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 import com.joseph.test.lwjgl3.textures.Texture;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
-import com.sun.org.apache.bcel.internal.generic.LSTORE;
 
 public class Main {
 	// TEMPORARYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
@@ -181,7 +181,6 @@ public class Main {
 		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		Camera camera = new Camera();
 		
-		
 		// setup terrain textures
 		TerrainTexture baseTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/grassy.png"));
 		TerrainTexture rTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/dirt.png"));
@@ -193,6 +192,12 @@ public class Main {
 				
 		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap);
 		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap);
+		
+		ModelData bunnyData = OBJLoader.loadObjModel("res/provided/bunny.obj");
+		RawModel bunnyModel = loader.loadToVAO(bunnyData.getVertices(), bunnyData.getTextureCoords(), bunnyData.getNormals(), bunnyData.getIndices());
+		Texture bunnyTex = TextureLoader.loadTexture("res/provided/white.png");
+		TexturedModel bunny = new TexturedModel(bunnyModel, bunnyTex);
+		Player playa = new Player(bunny, new Vector3f(100, 0, -50), 0, 0, 0, 1);
 		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
@@ -221,10 +226,16 @@ public class Main {
 			System.out.println("d =    " + dDelta);
 			System.out.println("d as f=" + (float) dDelta);
 			
+			// move le player dude (multiple options to test different timing schemes
+//			playa.move(delta);
+			playa.move((float) dDelta);
+			
+			
 			// load all of the objects (entities) that we are going to render into the main renderer
 			for (Entity e : entities) {
 				renderer.addEntity(e);
 			}
+			renderer.addEntity(playa);
 			renderer.addTerrain(terrain);
 			renderer.addTerrain(terrain2);
 			
