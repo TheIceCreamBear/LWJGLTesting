@@ -82,7 +82,7 @@ public class Main {
 		windowPointer = GLFW.glfwCreateWindow(1600, 900, "LOLOL this is our main Window", MemoryUtil.NULL, MemoryUtil.NULL);
 		
 		// sets a key call back. all key input is handled via key call backs, and the key, action, and mods 
-		// determine what was pressed this specific callback will use a lambda, however, a method reference 
+		// determine what was pressed. this specific callback will use a lambda, however, a method reference 
 		// (:: operator) is perfectly valid here as well. because this is a test environment and we are exploring
 		// the feature set of LWJGL 3, this will be better as a lambda expression
 		GLFW.glfwSetKeyCallback(windowPointer, (window, key, scancode, action, mods) -> {
