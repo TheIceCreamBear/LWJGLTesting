@@ -3,7 +3,7 @@ package com.joseph.test.lwjgl3.entity;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-import com.joseph.test.lwjgl3.Main;
+import com.joseph.test.lwjgl3.GLFWHandler;
 import com.joseph.test.lwjgl3.models.TexturedModel;
 
 public class Player extends Entity {
@@ -23,10 +23,10 @@ public class Player extends Entity {
 	
 	public void move(float delta) {
 		// rotate the dude
-		if (Main.keyDown[GLFW.GLFW_KEY_KP_6]) {
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_KP_6]) {
 			super.increaseRotation(0, delta * -TURN_SPEED, 0);
 		}
-		if (Main.keyDown[GLFW.GLFW_KEY_KP_4]) {
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_KP_4]) {
 			super.increaseRotation(0, delta * TURN_SPEED, 0);
 		}
 		
@@ -34,23 +34,23 @@ public class Player extends Entity {
 		// calculate the frame speed
 		float speed = MOVE_SPEED * delta;
 		// different action based on key
-		if (Main.keyDown[GLFW.GLFW_KEY_W]) {
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_W]) {
 			displacement.x -= speed * Math.sin(Math.toRadians(super.getRoty()));
 			displacement.z -= speed * Math.cos(Math.toRadians(super.getRoty()));
 		}
-		if (Main.keyDown[GLFW.GLFW_KEY_S]) {
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_S]) {
 			displacement.x += speed * Math.sin(Math.toRadians(super.getRoty()));
 			displacement.z += speed * Math.cos(Math.toRadians(super.getRoty()));
 		}
-		if (Main.keyDown[GLFW.GLFW_KEY_A]) {
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_A]) {
 			displacement.x -= speed * Math.cos(Math.toRadians(super.getRoty()));
 			displacement.z -= speed * Math.sin(Math.toRadians(super.getRoty()));
 		}
-		if (Main.keyDown[GLFW.GLFW_KEY_D]) {
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_D]) {
 			displacement.x += speed * Math.cos(Math.toRadians(super.getRoty()));
 			displacement.z += speed * Math.sin(Math.toRadians(super.getRoty()));
 		}
-		if (Main.keyDown[GLFW.GLFW_KEY_SPACE] && !inAir) {
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_SPACE] && !inAir) {
 			inAir = true;
 			yVel = JUMP_POWER;
 		}

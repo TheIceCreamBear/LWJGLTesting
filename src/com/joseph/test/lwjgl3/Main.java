@@ -28,9 +28,6 @@ import com.joseph.test.lwjgl3.textures.Texture;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
 
 public class Main {
-	// TEMPORARYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-	public static boolean[] keyDown = new boolean[GLFW.GLFW_KEY_LAST + 1];
-	
 	public static void main(String[] args) {
 		// note this is created and explained later in the program
 		// default value is null
@@ -82,29 +79,16 @@ public class Main {
 		windowPointer = GLFW.glfwCreateWindow(1600, 900, "LOLOL this is our main Window", MemoryUtil.NULL, MemoryUtil.NULL);
 		
 		// sets a key call back. all key input is handled via key call backs, and the key, action, and mods 
-		// determine what was pressed. this specific callback will use a lambda, however, a method reference 
-		// (:: operator) is perfectly valid here as well. because this is a test environment and we are exploring
-		// the feature set of LWJGL 3, this will be better as a lambda expression
-		GLFW.glfwSetKeyCallback(windowPointer, (window, key, scancode, action, mods) -> {
-			// this is what will be called when the poolEvents() method is called in the loop portion of the code
-			// all key presses will be passed here
-			// an example is using the escape key as the determining factor of when the window should close
-			if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
-				// this will tell the window it should close. it DOES NOT actually close the window
-				// this will cause our main loop to exit and stop.
-				GLFW.glfwSetWindowShouldClose(window, true);
-			}
-			
-			// THIS IS TEMPORARY GROSS CODE
-			if (action == GLFW.GLFW_PRESS) {
-				keyDown[key] = true;
-			}
-
-			// THIS IS TEMPORARY GROSS CODE
-			if (action == GLFW.GLFW_RELEASE) {
-				keyDown[key] = false;
-			}
-		});
+		// determine what was pressed. this specific callback will use a lambda (not any more haha lol g3t r3kt),
+		// however, a method reference (:: operator) is perfectly valid here as well. because this is a test 
+		// environment and we are exploring the feature set of LWJGL 3, this will be better as a lambda expression
+		// (again, lol nope, decided to change this to a call back to GLFWHandler due to adding more call backs, to
+		// prevent cluter)
+		GLFW.glfwSetKeyCallback(windowPointer, GLFWHandler::keyboardCallback);
+		
+		// sets a scroll call back. as mentioned, all input is handled via call backs, and the information is passed
+		// to the call back, defined using a method reference(:: operator).
+		GLFW.glfwSetScrollCallback(windowPointer, GLFWHandler::scrollCallback);
 		
 		// makes the openGl current context to this window
 		// any changes made using open gl or that relate to the window
@@ -221,13 +205,9 @@ public class Main {
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
 			camera.move();
 			
-			// the final line in this provides the most resolution with the least type casting needed
-			System.out.println("f =    " + delta);
-			System.out.println("d =    " + dDelta);
-			System.out.println("d as f=" + (float) dDelta);
-			
 			// move le player dude (multiple options to test different timing schemes
-//			playa.move(delta);
+//			playa.move(delta); // this option has been determined to be less precise and induce more stutter
+			// therefore this option will not be used, and it will be removed from git at the end of TUT 19
 			playa.move((float) dDelta);
 			
 			
