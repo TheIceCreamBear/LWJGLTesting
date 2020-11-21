@@ -196,10 +196,8 @@ public class Main {
 		// this (http://forum.lwjgl.org/index.php?topic=5601.0) forum post, you can use GLFW.glfwGetTime(), 
 		// which returns a double. an alternative, would be replacing Sys in the TUT with GLFW.glfw[^] 
 		// where [^] represents making that following letter capitalized
-		long lastFrameTime = GLFW.glfwGetTimerValue() * 1000 / GLFW.glfwGetTimerFrequency();
-		float delta = 0.0f;
-		double dLastFrameTime = GLFW.glfwGetTime();
-		double dDelta = 0.0;
+		double lastFrameTime = GLFW.glfwGetTime();
+		double delta = 0.0;
 		
 		// this is the loop portion of our code. this is the "main game loop" area
 		// it will continue to run until the window hint that the window should close is set to true
@@ -207,9 +205,7 @@ public class Main {
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {			
 			// move le player dude (multiple options to test different timing schemes
-//			playa.move(delta); // this option has been determined to be less precise and induce more stutter
-			// therefore this option will not be used, and it will be removed from git at the end of TUT 19
-			playa.move((float) dDelta);
+			playa.move((float) delta);
 			camera.move();
 			
 			
@@ -236,12 +232,9 @@ public class Main {
 			GLFW.glfwPollEvents();
 			
 			// this is where we update how long this frame took to render
-			long curFrame = GLFW.glfwGetTimerValue() * 1000 / GLFW.glfwGetTimerFrequency();
-			delta = (curFrame - lastFrameTime) / 1000f;
+			double curFrame = GLFW.glfwGetTime();
+			delta = curFrame - lastFrameTime;
 			lastFrameTime = curFrame;
-			double dCurFrame = GLFW.glfwGetTime();
-			dDelta = dCurFrame - dLastFrameTime;
-			dLastFrameTime = dCurFrame;
 			
 			// reset mouse based input
 			GLFWHandler.frameReset();

@@ -81,7 +81,7 @@ public class Camera {
 	}
 	
 	private void calculateAngleAroundPlayer() {
-		if (GLFW.glfwGetMouseButton(Main.windowPointer, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
+		if (GLFW.glfwGetMouseButton(Main.windowPointer, GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS) {
 			double angleChange = GLFWHandler.getDX() * 0.3f;
 			angleAroundPlayer -= angleChange;
 		}
