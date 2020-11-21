@@ -242,6 +242,9 @@ public class Main {
 			double dCurFrame = GLFW.glfwGetTime();
 			dDelta = dCurFrame - dLastFrameTime;
 			dLastFrameTime = dCurFrame;
+			
+			// reset mouse based input
+			GLFWHandler.frameReset();
 		}
 		
 		// if we have reached this part of the program, we have exited the main loop

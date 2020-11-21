@@ -6,7 +6,7 @@ import org.lwjgl.system.MemoryUtil;
 public class GLFWHandler {
 	// NOT THE FINAL RESTING PLACE FOR THIS, GOOD "for now"
 	public static boolean[] keyDown = new boolean[GLFW.GLFW_KEY_LAST + 1];
-	private static double mouseScrollPosition = 0.0f;
+	private static double scroll = 0.0f;
 	private static double dx = 0.0f;
 	private static double dy = 0.0f;
 	
@@ -45,7 +45,7 @@ public class GLFWHandler {
 	}
 	
 	public static void scrollCallback(long window, double xOff, double yOff) {
-		mouseScrollPosition += yOff;
+		scroll += yOff;
 	}
 	
 	public static void cursorPosCallback(long window, double xPos, double yPos) {
@@ -63,29 +63,25 @@ public class GLFWHandler {
 		lastY = yPos;
 	}
 	
-	// = = = = = = = = = = this is duct tape = = = = = = = = 
-	// so, you have come to this point, well basically these functions are only here because these 
-	// values never got reset, which leads to multiple input reads on the same input (game thinks 
-	// you scrolled twice every frame when you only scrolled twice once the entire game). This is not
-	// the best way to do this, BY FAR, but itll work for now. (breaks if more than one thing uses mouse input).
-	// The way to properly handle this, is to do a "reset" every frame, where all of this input is reset
-	// at the end of a frame
+	public static void frameReset() {
+		dx = 0;
+		dy = 0;
+		scroll = 0;
+	}
+	
+	// = = = = = = = = = = this is bloop = = = = = = = =
+	// this is still here incase the something needs to be done to the 
+	// values before they are used
 	
 	public static double getScroll() {
-		double retVal = mouseScrollPosition;
-		mouseScrollPosition = 0;
-		return retVal;
+		return scroll;
 	}
 	
 	public static double getDX() {
-		double retVal = dx;
-		dx = 0;
-		return retVal;
+		return dx;
 	}
 	
 	public static double getDY() {
-		double retVal = dy;
-		dy = 0;
-		return retVal;
+		return dy;
 	}
 }
