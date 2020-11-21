@@ -28,11 +28,11 @@ import com.joseph.test.lwjgl3.textures.Texture;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
 
 public class Main {
-	public static void main(String[] args) {
-		// note this is created and explained later in the program
-		// default value is null
-		long windowPointer = MemoryUtil.NULL;
-		
+	// note this is created and explained later in the program
+	// default value is null
+	public static long windowPointer = MemoryUtil.NULL;
+	
+	public static void main(String[] args) {		
 		// lol this is the main method bois
 		
 		// the lines following this will not stay here, they will be put into a different class.
