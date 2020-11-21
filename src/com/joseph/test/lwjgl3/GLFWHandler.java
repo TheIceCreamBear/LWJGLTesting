@@ -7,6 +7,11 @@ public class GLFWHandler {
 	// NOT THE FINAL RESTING PLACE FOR THIS, GOOD "for now"
 	public static boolean[] keyDown = new boolean[GLFW.GLFW_KEY_LAST + 1];
 	public static double mousePosition = 0.0f;
+	public static double dx = 0.0f;
+	public static double dy = 0.0f;
+	
+	private static double lastX = -1.0;
+	private static double lastY = -1.0;
 	
 	/**
 	 * A method to receive errors from GLFW
@@ -41,5 +46,20 @@ public class GLFWHandler {
 	
 	public static void scrollCallback(long window, double xOff, double yOff) {
 		mousePosition += yOff;
+	}
+	
+	public static void cursorPosCallback(long window, double xPos, double yPos) {
+		// this method gets called once right after the window is shown and setup, meaning that this will only happen once
+		if (lastX == 1.0 && lastY == 1.0) {
+			lastX = xPos;
+			lastY = yPos;
+			return;
+		}
+		
+		dx = xPos - lastX;
+		dy = yPos - lastY;
+
+		lastX = xPos;
+		lastY = yPos;
 	}
 }

@@ -90,6 +90,9 @@ public class Main {
 		// to the call back, defined using a method reference(:: operator).
 		GLFW.glfwSetScrollCallback(windowPointer, GLFWHandler::scrollCallback);
 		
+		// sets a cursor postion call back.
+		GLFW.glfwSetCursorPosCallback(windowPointer, GLFWHandler::cursorPosCallback);
+		
 		// makes the openGl current context to this window
 		// any changes made using open gl or that relate to the window
 		// and the window isnt passed in will be done on this window
