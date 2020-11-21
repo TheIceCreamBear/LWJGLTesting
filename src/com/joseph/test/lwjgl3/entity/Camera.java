@@ -2,7 +2,9 @@ package com.joseph.test.lwjgl3.entity;
 
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWGamepadState;
 
+import com.joseph.test.lwjgl3.GLFWHandler;
 import com.joseph.test.lwjgl3.Main;
 
 /**
@@ -17,10 +19,21 @@ public class Camera {
 	private float yaw;
 	private float roll;
 	
-	public Camera() {}
+	private Player player;
+	
+	private float distFromPlayer = 50.0f; // zoom
+	private float angleAroundPlayer = 0.0f;
+	
+	public Camera(Player p) {
+		this.player = p;
+	}
 	
 	public void move() {
-		
+		this.calculateZoom();
+		this.calculatePitch();
+		this.calculateAngleAroundPlayer();
+		this.calculateNewPos();
+		this.yaw = 180 - (player.getRoty() + angleAroundPlayer);
 	}
 	
 	public Vector3f getPosition() {
@@ -37,5 +50,40 @@ public class Camera {
 	
 	public float getRoll() {
 		return this.roll;
+	}
+	
+	private void calculateNewPos() {
+		float horizDist = (float) (distFromPlayer * Math.cos(Math.toRadians(pitch)));
+		float theta = player.getRoty() + angleAroundPlayer;
+		float xOff = (float) (horizDist * Math.sin(Math.toRadians(theta)));
+		float zOff = (float) (horizDist * Math.cos(Math.toRadians(theta)));
+		position.x = player.getPos().x - xOff;
+		position.z = player.getPos().z - zOff;
+		float vertDist = (float) (distFromPlayer * Math.sin(Math.toRadians(pitch)));
+		float atHead = 5.0f;
+		position.y = player.getPos().y + vertDist + atHead;
+		
+	}
+	
+	private void calculateZoom() {
+		double sensitivity = 1.0;
+		double zoomL = GLFWHandler.getScroll() * sensitivity;
+		this.distFromPlayer -= zoomL;
+	}
+	
+	private void calculatePitch() {
+		// THIS IS SOOOOOOOOOOOOO BAD LIKE NO NO NO BUT BUT BUT this is temp so we all gucci (dont do it 
+		// like this later pls)
+		if (GLFW.glfwGetMouseButton(Main.windowPointer, GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS) {
+			double pitchChange = GLFWHandler.getDY() * 0.1f;
+			pitch -= pitchChange;
+		}
+	}
+	
+	private void calculateAngleAroundPlayer() {
+		if (GLFW.glfwGetMouseButton(Main.windowPointer, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
+			double angleChange = GLFWHandler.getDX() * 0.3f;
+			angleAroundPlayer -= angleChange;
+		}
 	}
 }

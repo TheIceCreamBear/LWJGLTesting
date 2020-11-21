@@ -35,19 +35,19 @@ public class Player extends Entity {
 		float speed = MOVE_SPEED * delta;
 		// different action based on key
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_W]) {
-			displacement.x -= speed * Math.sin(Math.toRadians(super.getRoty()));
-			displacement.z -= speed * Math.cos(Math.toRadians(super.getRoty()));
-		}
-		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_S]) {
 			displacement.x += speed * Math.sin(Math.toRadians(super.getRoty()));
 			displacement.z += speed * Math.cos(Math.toRadians(super.getRoty()));
 		}
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_S]) {
+			displacement.x -= speed * Math.sin(Math.toRadians(super.getRoty()));
+			displacement.z -= speed * Math.cos(Math.toRadians(super.getRoty()));
+		}
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_A]) {
-			displacement.x -= speed * Math.cos(Math.toRadians(super.getRoty()));
+			displacement.x += speed * Math.cos(Math.toRadians(super.getRoty()));
 			displacement.z -= speed * Math.sin(Math.toRadians(super.getRoty()));
 		}
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_D]) {
-			displacement.x += speed * Math.cos(Math.toRadians(super.getRoty()));
+			displacement.x -= speed * Math.cos(Math.toRadians(super.getRoty()));
 			displacement.z += speed * Math.sin(Math.toRadians(super.getRoty()));
 		}
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_SPACE] && !inAir) {

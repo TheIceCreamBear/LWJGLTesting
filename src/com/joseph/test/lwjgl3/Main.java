@@ -166,7 +166,6 @@ public class Main {
 		}
 		
 		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
-		Camera camera = new Camera();
 		
 		// setup terrain textures
 		TerrainTexture baseTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/grassy.png"));
@@ -180,11 +179,12 @@ public class Main {
 		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap);
 		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap);
 		
-		ModelData bunnyData = OBJLoader.loadObjModel("res/provided/bunny.obj");
-		RawModel bunnyModel = loader.loadToVAO(bunnyData.getVertices(), bunnyData.getTextureCoords(), bunnyData.getNormals(), bunnyData.getIndices());
-		Texture bunnyTex = TextureLoader.loadTexture("res/provided/white.png");
-		TexturedModel bunny = new TexturedModel(bunnyModel, bunnyTex);
-		Player playa = new Player(bunny, new Vector3f(100, 0, -50), 0, 0, 0, 1);
+		ModelData playerData = OBJLoader.loadObjModel("res/provided/person.obj");
+		RawModel playerModel = loader.loadToVAO(playerData.getVertices(), playerData.getTextureCoords(), playerData.getNormals(), playerData.getIndices());
+		Texture playerTex = TextureLoader.loadTexture("res/provided/playerTexture.png");
+		TexturedModel player = new TexturedModel(playerModel, playerTex);
+		Player playa = new Player(player, new Vector3f(100, 0, -50), 0, 180, 0, 0.5f);
+		Camera camera = new Camera(playa);
 		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
@@ -205,13 +205,12 @@ public class Main {
 		// it will continue to run until the window hint that the window should close is set to true
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
 		// the user hits escape
-		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
-			camera.move();
-			
+		while (!GLFW.glfwWindowShouldClose(windowPointer)) {			
 			// move le player dude (multiple options to test different timing schemes
 //			playa.move(delta); // this option has been determined to be less precise and induce more stutter
 			// therefore this option will not be used, and it will be removed from git at the end of TUT 19
 			playa.move((float) dDelta);
+			camera.move();
 			
 			
 			// load all of the objects (entities) that we are going to render into the main renderer
