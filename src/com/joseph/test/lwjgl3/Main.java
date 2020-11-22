@@ -226,6 +226,12 @@ public class Main {
 			// https://www.glfw.org/docs/latest/quick_guide.html#quick_swap_buffers
 			GLFW.glfwSwapBuffers(windowPointer);
 			
+			// reset mouse based input
+			// yea so i forgot that maybe this needs to be done before we poll for the NEXT frame, rather than
+			// after we poll for the next frame cause then there are literally no input values for the next frame
+			// hello??
+			GLFWHandler.frameReset();
+			
 			// this will poll the window for events. this is the only way events will be delivered to 
 			// our program, as the event model is a poll not listen model (an example of a listen model 
 			// would be the AWT event thread used in java.swing)
@@ -235,9 +241,6 @@ public class Main {
 			double curFrame = GLFW.glfwGetTime();
 			delta = curFrame - lastFrameTime;
 			lastFrameTime = curFrame;
-			
-			// reset mouse based input
-			GLFWHandler.frameReset();
 		}
 		
 		// if we have reached this part of the program, we have exited the main loop
