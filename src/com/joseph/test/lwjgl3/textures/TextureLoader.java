@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
@@ -67,6 +68,16 @@ public class TextureLoader {
 			
 			// mip map it because why not
 			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+			
+			// oh wow, so um when i did the image decoding, i forgot that i didnt need the above mipmap line (and infact
+			// i never used it anywhere or enabled it LOL) but this line will enable that for this newly generated texture
+			// in the furture, this should probably be a type of deal where they do the ting and pass in a bool to signify
+			// if they want a mip map
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+			
+			// effects the bias of the above mip mapping and how far away it starts to do it and what not, negative means 
+			// more detail, positive means less
+			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -0.5f);
 			
 			// actually create the texture object
 			tex = new Texture(id);
