@@ -66,7 +66,7 @@ public class Camera {
 	}
 	
 	private void calculateZoom() {
-		double sensitivity = 1.0;
+		double sensitivity = 2.0;
 		double zoomL = GLFWHandler.getScroll() * sensitivity;
 		this.distFromPlayer -= zoomL;
 	}
