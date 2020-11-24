@@ -35,8 +35,13 @@ public class Player extends Entity {
 		float speed = MOVE_SPEED * delta;
 		// different action based on key
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_W]) {
-			displacement.x += speed * Math.sin(Math.toRadians(super.getRoty()));
-			displacement.z += speed * Math.cos(Math.toRadians(super.getRoty()));
+			float speeed = speed;
+			// if they are "sprinting"
+			if (GLFWHandler.keyDown[GLFW.GLFW_KEY_LEFT_SHIFT]) {
+				speeed *= 2;
+			}
+			displacement.x += speeed * Math.sin(Math.toRadians(super.getRoty()));
+			displacement.z += speeed * Math.cos(Math.toRadians(super.getRoty()));
 		}
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_S]) {
 			displacement.x -= speed * Math.sin(Math.toRadians(super.getRoty()));
