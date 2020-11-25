@@ -132,9 +132,18 @@ public class Terrain {
 	 * @return
 	 */
 	private float getHeight(int x, int z, BufferedImage img) {
-		// if not in bounds, for now return 0 TODO make this textureWrap?
-		if (x < 0 || x >= img.getHeight() || z < 0 || z >= img.getHeight()) {
-			return 0;
+		// make bounds wrap, only have to handle the range where it is -1 and img.getHieght because of how this is called
+		if (x < 0) {
+			x = img.getHeight() - 1;
+		}
+		if (x >= img.getHeight()) {
+			x = 0;
+		}
+		if (z < 0) {
+			z = img.getHeight() - 1;
+		}
+		if (z >= img.getHeight()) {
+			z = 0;
 		}
 		
 		// get the height and scale it into a range of +/- MAX_HEIGHT
