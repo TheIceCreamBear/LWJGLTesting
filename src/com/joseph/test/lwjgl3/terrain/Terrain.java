@@ -1,14 +1,22 @@
 package com.joseph.test.lwjgl3.terrain;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import org.joml.Vector3f;
+
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.textures.TerrainTexture;
 import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
-import com.joseph.test.lwjgl3.textures.Texture;
 
 public class Terrain {
 	private static final float SIZE = 800;
-	private static final int VERTEX_COUNT = 128;
+	private static final float MAX_HEIGHT = 40.0f;
+	private static final float MAX_PIXEL_COLOR = 256.0f * 256.0f * 256.0f;
 	
 	private float x;
 	private float z;
@@ -24,12 +32,12 @@ public class Terrain {
 	 * @param loader
 	 * @param texture
 	 */
-	public Terrain(int gridX, int gridZ, ModelLoader loader, TerrainTexturePack texPack, TerrainTexture blendMap) {
+	public Terrain(int gridX, int gridZ, ModelLoader loader, TerrainTexturePack texPack, TerrainTexture blendMap, String heightMap) {
 		this.texPack = texPack;
 		this.blendMap = blendMap;
 		this.x = gridX * SIZE;
 		this.z = gridZ * SIZE;
-		this.model = this.generateTerrain(loader);
+		this.model = this.generateTerrain(loader, heightMap);
 	}
 	
 	/**
@@ -37,7 +45,16 @@ public class Terrain {
 	 * @param loader
 	 * @return
 	 */
-	private RawModel generateTerrain(ModelLoader loader) {
+	private RawModel generateTerrain(ModelLoader loader, String heightMap) {
+		BufferedImage height = null;
+		try {
+			height = ImageIO.read(new File(heightMap));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		int VERTEX_COUNT = height.getHeight();
+		
 		// number of total verticies
 		int count = VERTEX_COUNT * VERTEX_COUNT;
 		// data
@@ -52,12 +69,13 @@ public class Terrain {
 			for(int j = 0; j < VERTEX_COUNT; j++) {
 				// position in x, y, z. all y are 0
 				vertices[vertexPointer * 3] = (float) j / ((float) VERTEX_COUNT - 1) * SIZE;
-				vertices[vertexPointer * 3 + 1] = 0;
+				vertices[vertexPointer * 3 + 1] = getHeight(j, i, height);
 				vertices[vertexPointer * 3 + 2] = (float) i / ((float) VERTEX_COUNT - 1) * SIZE;
-				// normal vector, x, y, z. 1 in y as the vector is pointing up
-				normals[vertexPointer * 3] = 0;
-				normals[vertexPointer * 3 + 1] = 1;
-				normals[vertexPointer * 3 + 2] = 0;
+				// normal vector, special calculated
+				Vector3f norm = calculateNormal(j, i, height);
+				normals[vertexPointer * 3] = norm.x;
+				normals[vertexPointer * 3 + 1] = norm.y;
+				normals[vertexPointer * 3 + 2] = norm.z;
 				// texture uv cords
 				textureCoords[vertexPointer * 2] = (float) j / ((float) VERTEX_COUNT - 1);
 				textureCoords[vertexPointer * 2 + 1] = (float) i / ((float) VERTEX_COUNT - 1);
@@ -85,6 +103,46 @@ public class Terrain {
 		
 		// load the vertices we just made
 		return loader.loadToVAO(vertices, textureCoords, normals, indices);
+	}
+	
+	/**
+	 * Calculates the normal of the given location based on the height of the points around it
+	 * @param x
+	 * @param z
+	 * @param img
+	 * @return
+	 */
+	private Vector3f calculateNormal(int x, int z, BufferedImage img) {
+		// get the goods
+		float heightL = getHeight(x - 1, z, img);
+		float heightR = getHeight(x + 1, z, img);
+		float heightD = getHeight(x, z - 1, img);
+		float heightU = getHeight(x, z + 1, img);
+		
+		// create the Vec based on the differences in the heights and also then normalize that
+		Vector3f normal = new Vector3f(heightL - heightR, 2.0f, heightD - heightU);
+		return normal.normalize();
+	}
+	
+	/**
+	 * Gets the height of the given location as specified by the height map
+	 * @param x
+	 * @param z
+	 * @param img
+	 * @return
+	 */
+	private float getHeight(int x, int z, BufferedImage img) {
+		// if not in bounds, for now return 0 TODO make this textureWrap?
+		if (x < 0 || x >= img.getHeight() || z < 0 || z >= img.getHeight()) {
+			return 0;
+		}
+		
+		// get the height and scale it into a range of +/- MAX_HEIGHT
+		float height = img.getRGB(x, z);
+		height += MAX_PIXEL_COLOR / 2f;
+		height /= MAX_PIXEL_COLOR / 2f;
+		height *= MAX_HEIGHT;
+		return height;
 	}
 	
 	public RawModel getModel() {

@@ -176,8 +176,8 @@ public class Main {
 		TerrainTexturePack pack = new TerrainTexturePack(baseTex, rTex, gTex, bTex);
 		TerrainTexture blendMap = new TerrainTexture(TextureLoader.loadTexture("res/provided/blendMap.png"));
 				
-		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap);
-		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap);
+		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap, "res/provided/heightmap.png");
+		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap, "res/provided/heightmap.png");
 		
 		ModelData playerData = OBJLoader.loadObjModel("res/provided/person.obj");
 		RawModel playerModel = loader.loadToVAO(playerData.getVertices(), playerData.getTextureCoords(), playerData.getNormals(), playerData.getIndices());
