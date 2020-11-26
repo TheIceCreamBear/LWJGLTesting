@@ -6,8 +6,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.textures.TerrainTexture;
@@ -23,6 +25,8 @@ public class Terrain {
 	private RawModel model;
 	private TerrainTexturePack texPack;
 	private TerrainTexture blendMap;
+	
+	private float[][] heights;
 	
 	/**
 	 * create a new terrain square with like the ability to be a tileable and has a texture and is part of a grid, 
@@ -46,18 +50,19 @@ public class Terrain {
 	 * @return
 	 */
 	private RawModel generateTerrain(ModelLoader loader, String heightMap) {
-		BufferedImage height = null;
+		BufferedImage img = null;
 		try {
-			height = ImageIO.read(new File(heightMap));
+			img = ImageIO.read(new File(heightMap));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		int VERTEX_COUNT = height.getHeight();
+		int VERTEX_COUNT = img.getHeight();
 		
 		// number of total verticies
 		int count = VERTEX_COUNT * VERTEX_COUNT;
 		// data
+		this.heights = new float[VERTEX_COUNT][VERTEX_COUNT];
 		float[] vertices = new float[count * 3];
 		float[] normals = new float[count * 3];
 		float[] textureCoords = new float[count * 2];
@@ -67,12 +72,15 @@ public class Terrain {
 		int vertexPointer = 0;
 		for(int i = 0; i < VERTEX_COUNT; i++) {
 			for(int j = 0; j < VERTEX_COUNT; j++) {
+				float height = getHeight(j, i, img);
 				// position in x, y, z. all y are 0
 				vertices[vertexPointer * 3] = (float) j / ((float) VERTEX_COUNT - 1) * SIZE;
-				vertices[vertexPointer * 3 + 1] = getHeight(j, i, height);
+				vertices[vertexPointer * 3 + 1] = height;
 				vertices[vertexPointer * 3 + 2] = (float) i / ((float) VERTEX_COUNT - 1) * SIZE;
+				// update heights table
+				this.heights[j][i] = height;				
 				// normal vector, special calculated
-				Vector3f norm = calculateNormal(j, i, height);
+				Vector3f norm = calculateNormal(j, i, img);
 				normals[vertexPointer * 3] = norm.x;
 				normals[vertexPointer * 3 + 1] = norm.y;
 				normals[vertexPointer * 3 + 2] = norm.z;
@@ -152,6 +160,49 @@ public class Terrain {
 		height /= MAX_PIXEL_COLOR / 2f;
 		height *= MAX_HEIGHT;
 		return height;
+	}
+	
+	/**
+	 * gets the height of the terrain at the position in the world
+	 * @param worldX
+	 * @param worldZ
+	 * @return
+	 */
+	public float getHeightOfTerrain(float worldX, float worldZ) {
+		// cord relative to the terrain
+		float terrainX = worldX - this.x;
+		float terrainZ = worldZ - this.z;
+		float gridSquareSize = SIZE / (float) (this.heights.length - 1);
+		
+		// grid cords
+		int gridX = (int) Math.floor(terrainX / gridSquareSize);
+		int gridZ = (int) Math.floor(terrainZ / gridSquareSize);
+		
+		// if out of bounds, return 0
+		if (gridX >= this.heights.length - 1 || gridZ >= this.heights.length - 1 || gridX < 0 || gridZ < 0) {
+			return 0;
+		}
+		
+		// the cord of the tile
+		float xCord = (terrainX % gridSquareSize) / gridSquareSize;
+		float zCord = (terrainZ % gridSquareSize) / gridSquareSize;
+		
+		// determine which triangle, calc answer, and return
+		if (xCord <= (1 - zCord)) {
+			// normally i would be the type to one line this code, but itll be TOOOO long
+			Vector3f p1 = new Vector3f(0, this.heights[gridX][gridZ], 0);
+			Vector3f p2 = new Vector3f(1, this.heights[gridX + 1][gridZ], 0);
+			Vector3f p3 = new Vector3f(0, this.heights[gridX][gridZ + 1], 1);
+			Vector2f pos = new Vector2f(xCord, zCord);
+			return MathHelper.barryCentric(p1, p2, p3, pos);
+		} else {
+			// normally i would be the type to one line this code, but itll be TOOOO long
+			Vector3f p1 = new Vector3f(1, this.heights[gridX + 1][gridZ], 0);
+			Vector3f p2 = new Vector3f(1, this.heights[gridX + 1][gridZ + 1], 1);
+			Vector3f p3 = new Vector3f(0, this.heights[gridX][gridZ + 1], 1);
+			Vector2f pos = new Vector2f(xCord, zCord);
+			return MathHelper.barryCentric(p1, p2, p3, pos);
+		}
 	}
 	
 	public RawModel getModel() {

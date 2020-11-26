@@ -156,15 +156,6 @@ public class Main {
 		fernTex.setUseFakedLighting(true);
 		TexturedModel fern = new TexturedModel(fernModel, fernTex);
 		
-		// store the random objects into a list
-		List<Entity> entities = new ArrayList<Entity>();
-		Random r = new Random();
-		for (int i = 0; i < 500; i++) {
-			entities.add(new Entity(tree,  new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 3.0f));
-			entities.add(new Entity(grass, new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-			entities.add(new Entity(fern,  new Vector3f(r.nextFloat() * 800.0f - 400.0f, 0.0f, r.nextFloat() * -600.0f), 0.0f, 0.0f, 0.0f, 0.6f));
-		}
-		
 		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		
 		// setup terrain textures
@@ -176,7 +167,7 @@ public class Main {
 		TerrainTexturePack pack = new TerrainTexturePack(baseTex, rTex, gTex, bTex);
 		TerrainTexture blendMap = new TerrainTexture(TextureLoader.loadTexture("res/provided/blendMap.png"));
 				
-		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap, "res/provided/heightmap.png");
+//		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap, "res/provided/heightmap.png");
 		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap, "res/provided/heightmap.png");
 		
 		ModelData playerData = OBJLoader.loadObjModel("res/provided/person.obj");
@@ -185,6 +176,28 @@ public class Main {
 		TexturedModel player = new TexturedModel(playerModel, playerTex);
 		Player playa = new Player(player, new Vector3f(100, 0, -50), 0, 180, 0, 0.5f);
 		Camera camera = new Camera(playa);
+		
+		// store the random objects into a list
+		List<Entity> entities = new ArrayList<Entity>();
+		Random r = new Random();
+		for (int i = 0; i < 500; i++) {
+			if (i % 20 == 0) {
+				float x = r.nextFloat() * 800.0f - 400.0f;
+				float z = r.nextFloat() * -600.0f;
+				float y = terrain2.getHeightOfTerrain(x, z);
+				entities.add(new Entity(fern,  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 0.9f));
+				x = r.nextFloat() * 800.0f - 400.0f;
+				z = r.nextFloat() * -600.0f;
+				y = terrain2.getHeightOfTerrain(x, z);
+				entities.add(new Entity(grass, new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 1.0f));
+			}
+			if (i % 5 == 0) {
+				float x = r.nextFloat() * 800.0f - 400.0f;
+				float z = r.nextFloat() * -600.0f;
+				float y = terrain2.getHeightOfTerrain(x, z);
+				entities.add(new Entity(tree,  new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, r.nextFloat() * 1.0f + 4.0f));
+			}
+		}
 		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
@@ -205,7 +218,7 @@ public class Main {
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {			
 			// move le player dude (multiple options to test different timing schemes
-			playa.move((float) delta);
+			playa.move(terrain2, (float) delta);
 			camera.move();
 			
 			
@@ -214,7 +227,7 @@ public class Main {
 				renderer.addEntity(e);
 			}
 			renderer.addEntity(playa);
-			renderer.addTerrain(terrain);
+//			renderer.addTerrain(terrain);
 			renderer.addTerrain(terrain2);
 			
 			// responsible for all the rendering, and while this is okay, i dont really like the structure

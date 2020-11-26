@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.joseph.test.lwjgl3.GLFWHandler;
 import com.joseph.test.lwjgl3.models.TexturedModel;
+import com.joseph.test.lwjgl3.terrain.Terrain;
 
 public class Player extends Entity {
 	private static final float MOVE_SPEED = 20.0f;
@@ -12,7 +13,7 @@ public class Player extends Entity {
 	private static final float GRAVITY = -50;
 	private static final float JUMP_POWER = 30;
 	
-	private static final float TERRAIN_HEIGHT = 0;
+//	private static final float TERRAIN_HEIGHT = 0;
 	
 	private float yVel;
 	private boolean inAir;
@@ -21,7 +22,7 @@ public class Player extends Entity {
 		super(model, pos, rotx, roty, rotz, scale);
 	}
 	
-	public void move(float delta) {
+	public void move(Terrain terrain, float delta) {
 		// rotate the dude
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_KP_6]) {
 			super.increaseRotation(0, delta * -TURN_SPEED, 0);
@@ -67,10 +68,11 @@ public class Player extends Entity {
 		super.displace(displacement);
 		
 		// no below terrain
-		if (super.getPos().y < TERRAIN_HEIGHT) {
+		float terrainHeight = terrain.getHeightOfTerrain(super.getPos().x, super.getPos().z);
+		if (super.getPos().y < terrainHeight) {
 			inAir = false;
 			yVel = 0;
-			super.getPos().y = TERRAIN_HEIGHT;
+			super.getPos().y = terrainHeight;
 		}
 		
 	}
