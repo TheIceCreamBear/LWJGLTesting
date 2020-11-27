@@ -139,6 +139,13 @@ public class Main {
 		RawModel treeModel = loader.loadToVAO(treeData.getVertices(), treeData.getTextureCoords(), treeData.getNormals(), treeData.getIndices());
 		Texture treeTex = TextureLoader.loadTexture("res/provided/tree.png");
 		TexturedModel tree = new TexturedModel(treeModel, treeTex);
+		
+		// load a "low poly" tree model and its texture
+		ModelData lpTreeData = OBJLoader.loadObjModel("res/provided/lowPolyTree.obj");
+		RawModel lpTreeModel = loader.loadToVAO(lpTreeData.getVertices(), lpTreeData.getTextureCoords(), lpTreeData.getNormals(), lpTreeData.getIndices());
+		Texture lpTreeTex = TextureLoader.loadTexture("res/provided/lowPolyTree.png");
+		lpTreeTex.setNumRows(2);
+		TexturedModel lpTree = new TexturedModel(lpTreeModel, lpTreeTex);
 
 		// load a grass model and its texture
 		ModelData grassData = OBJLoader.loadObjModel("res/provided/grassModel.obj");
@@ -152,6 +159,7 @@ public class Main {
 		ModelData fernData = OBJLoader.loadObjModel("res/provided/fern.obj");
 		RawModel fernModel = loader.loadToVAO(fernData.getVertices(), fernData.getTextureCoords(), fernData.getNormals(), fernData.getIndices());
 		Texture fernTex = TextureLoader.loadTexture("res/provided/fern.png");
+		fernTex.setNumRows(2);
 		fernTex.setHasTransparency(true);
 		fernTex.setUseFakedLighting(true);
 		TexturedModel fern = new TexturedModel(fernModel, fernTex);
@@ -185,16 +193,16 @@ public class Main {
 				float x = r.nextFloat() * 800.0f - 400.0f;
 				float z = r.nextFloat() * -600.0f;
 				float y = terrain2.getHeightOfTerrain(x, z);
-				entities.add(new Entity(fern,  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 0.9f));
-				x = r.nextFloat() * 800.0f - 400.0f;
-				z = r.nextFloat() * -600.0f;
-				y = terrain2.getHeightOfTerrain(x, z);
-				entities.add(new Entity(grass, new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 1.0f));
+				entities.add(new Entity(fern, r.nextInt(4),  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 0.9f));
 			}
 			if (i % 5 == 0) {
 				float x = r.nextFloat() * 800.0f - 400.0f;
 				float z = r.nextFloat() * -600.0f;
 				float y = terrain2.getHeightOfTerrain(x, z);
+				entities.add(new Entity(lpTree, r.nextInt(4),  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.1f + 0.6f));
+				x = r.nextFloat() * 800.0f - 400.0f;
+				z = r.nextFloat() * -600.0f;
+				y = terrain2.getHeightOfTerrain(x, z);
 				entities.add(new Entity(tree,  new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, r.nextFloat() * 1.0f + 4.0f));
 			}
 		}

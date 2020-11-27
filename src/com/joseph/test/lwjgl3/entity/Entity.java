@@ -20,13 +20,30 @@ public class Entity {
 	private float rotz;
 	private float scale;
 	
+	private int texIndex;
+	
 	public Entity(TexturedModel model, Vector3f pos, float rotx, float roty, float rotz, float scale) {
+		this(model, 0, pos, rotx, roty, rotz, scale);
+	}
+	
+	public Entity(TexturedModel model, int index, Vector3f pos, float rotx, float roty, float rotz, float scale) {		
 		this.model = model;
+		this.texIndex = index;
 		this.pos = pos;
 		this.rotx = rotx;
 		this.roty = roty;
 		this.rotz = rotz;
 		this.scale = scale;
+	}
+	
+	public float getTextureXOffset() {
+		int column = this.texIndex % this.model.getTex().getNumRows();
+		return (float) column / (float) this.model.getTex().getNumRows();
+	}
+	
+	public float getTextureYOffset() {
+		int row = this.texIndex / this.model.getTex().getNumRows();
+		return (float) row / (float) this.model.getTex().getNumRows();
 	}
 	
 	public void increasePosition(float dx, float dy, float dz) {

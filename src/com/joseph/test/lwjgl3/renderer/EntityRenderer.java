@@ -84,6 +84,8 @@ public class EntityRenderer {
 		
 		// temp store le texture
 		Texture tex = model.getTex();
+		// load the size of the atlas if it is one
+		shader.loadNumRows(tex.getNumRows());
 		// if tex has pixels that are see through, we dont want to cull the back faces of that
 		if (tex.hasTransparency()) {
 			MainRenderer.disableCulling();
@@ -126,5 +128,7 @@ public class EntityRenderer {
 		Matrix4f transMatrix = MathHelper.createTransformationMatrix(e.getPos(), e.getRotx(), e.getRoty(), e.getRotz(), e.getScale());
 		// USE UNIFORM TO MAKE THE TRANS MATRIX BE A PART OF THE RENDER WOOOOOOOOOOO
 		shader.loadTransformation(transMatrix);
+		// load the offset for which atlas index we are using for the current entitiy, maybe like this could be done differently
+		shader.loadOffset(e.getTextureXOffset(), e.getTextureYOffset());
 	}
 }

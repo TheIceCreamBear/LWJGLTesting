@@ -14,6 +14,9 @@ public class Texture {
 	private boolean hasTransparency = false;
 	private boolean useFakedLighting = false;
 	
+	private int numRows = 1;
+	
+	
 	public Texture(int glTextureID) {
 		this.glTextureID = glTextureID;
 	}
@@ -38,6 +41,10 @@ public class Texture {
 		return this.useFakedLighting;
 	}
 	
+	public int getNumRows() {
+		return this.numRows;
+	}
+	
 	public void setReflectivity(float reflectivity) {
 		this.reflectivity = reflectivity;
 	}
@@ -52,5 +59,9 @@ public class Texture {
 	
 	public void setUseFakedLighting(boolean useFakedLighting) {
 		this.useFakedLighting = useFakedLighting;
+	}
+	
+	public void setNumRows(int numRows) {
+		this.numRows = numRows;
 	}
 }

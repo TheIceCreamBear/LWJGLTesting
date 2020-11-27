@@ -18,6 +18,9 @@ uniform vec3 lightPos;
 
 uniform float useFakeLight;
 
+uniform float numRows;
+uniform vec2 offset;
+
 // TODO mess with this
 const float density = 0.0035;
 const float gradient = 5.0;
@@ -27,7 +30,7 @@ void main(void) {
     vec4 positionRelToCam = viewMatrix * worldPos;
 
     gl_Position = projMatrix * viewMatrix * tMatrix * vec4(position, 1.0);
-    texCord = textureCoords;
+    texCord = (textureCoords / numRows) + offset;
     
     vec3 displayNormal = normal;
     if (useFakeLight > 0.5) {

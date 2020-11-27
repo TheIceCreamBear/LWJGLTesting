@@ -1,6 +1,7 @@
 package com.joseph.test.lwjgl3.shaders;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import com.joseph.test.lwjgl3.entity.Camera;
@@ -28,6 +29,8 @@ public class StaticShader extends ShaderProgram {
 	private int ambientLightLocation;
 	private int fakeLightLocation;
 	private int skyColorLocation;
+	private int numRowsLocation;
+	private int offsetLocation;
 	
 	public StaticShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -52,6 +55,16 @@ public class StaticShader extends ShaderProgram {
 		this.ambientLightLocation = super.getUniformLocation("ambientLight");
 		this.fakeLightLocation = super.getUniformLocation("useFakeLight");
 		this.skyColorLocation = super.getUniformLocation("skyColor");
+		this.numRowsLocation = super.getUniformLocation("numRows");
+		this.offsetLocation = super.getUniformLocation("offset");
+	}
+	
+	public void loadNumRows(int numRows) {
+		super.loadFloat(numRowsLocation, numRows);
+	}
+	
+	public void loadOffset(float x, float y) {
+		super.loadVector(offsetLocation, new Vector2f(x, y));
 	}
 	
 	public void loadSkyColor(float r, float g, float b) {

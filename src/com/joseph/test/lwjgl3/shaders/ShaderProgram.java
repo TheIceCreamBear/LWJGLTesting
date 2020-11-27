@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -139,6 +140,16 @@ public abstract class ShaderProgram {
 	 */
 	protected void loadInt(int location, int val) {
 		GL20.glUniform1i(location, val);
+	}
+	
+	/**
+	 * Also kinda helper to load a vector uniform kinda not the 
+	 * best here but meh
+	 * @param location
+	 * @param val
+	 */
+	protected void loadVector(int location, Vector2f vec) {
+		GL20.glUniform2f(location, vec.x, vec.y);
 	}
 	
 	/**
