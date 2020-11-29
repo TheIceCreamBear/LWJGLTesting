@@ -189,7 +189,7 @@ public class Main {
 		List<Entity> entities = new ArrayList<Entity>();
 		Random r = new Random();
 		for (int i = 0; i < 500; i++) {
-			if (i % 20 == 0) {
+			if (i % 2 == 0) {
 				float x = r.nextFloat() * 800.0f - 400.0f;
 				float z = r.nextFloat() * -600.0f;
 				float y = terrain2.getHeightOfTerrain(x, z);
