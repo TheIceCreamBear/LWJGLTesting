@@ -11,8 +11,7 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.joseph.test.lwjgl3.textures.TextureLoader;
-import com.sun.prism.Texture;
+import com.joseph.test.lwjgl3.models.obj.ModelData;
 
 /**
  * Class to load models up, and saves the vao and vbo IDs associated with them
@@ -26,6 +25,15 @@ public class ModelLoader {
 	// lists that contain all of the created ids of the vaos and vbos, for clean up
 	private List<Integer> vaos = new ArrayList<Integer>();
 	private List<Integer> vbos = new ArrayList<Integer>();
+	
+	/**
+	 * Overload for {@link ModelLoader#loadToVAO(float[], float[], float[], int[])}
+	 * @param data
+	 * @return
+	 */
+	public RawModel loadToVAO(ModelData data) {
+		return this.loadToVAO(data.getVertices(), data.getTextureCoords(), data.getNormals(), data.getIndices());
+	}
 	
 	/**
 	 * loads an array of vertices into a brand new vao and attrib list

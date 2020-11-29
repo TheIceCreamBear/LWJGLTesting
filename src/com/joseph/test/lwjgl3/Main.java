@@ -136,20 +136,20 @@ public class Main {
 		
 		// load a tree model and its texture
 		ModelData treeData = OBJLoader.loadObjModel("res/provided/tree.obj");
-		RawModel treeModel = loader.loadToVAO(treeData.getVertices(), treeData.getTextureCoords(), treeData.getNormals(), treeData.getIndices());
+		RawModel treeModel = loader.loadToVAO(treeData);
 		Texture treeTex = TextureLoader.loadTexture("res/provided/tree.png");
 		TexturedModel tree = new TexturedModel(treeModel, treeTex);
 		
 		// load a "low poly" tree model and its texture
 		ModelData lpTreeData = OBJLoader.loadObjModel("res/provided/lowPolyTree.obj");
-		RawModel lpTreeModel = loader.loadToVAO(lpTreeData.getVertices(), lpTreeData.getTextureCoords(), lpTreeData.getNormals(), lpTreeData.getIndices());
+		RawModel lpTreeModel = loader.loadToVAO(lpTreeData);
 		Texture lpTreeTex = TextureLoader.loadTexture("res/provided/lowPolyTree.png");
 		lpTreeTex.setNumRows(2);
 		TexturedModel lpTree = new TexturedModel(lpTreeModel, lpTreeTex);
 
 		// load a grass model and its texture
 		ModelData grassData = OBJLoader.loadObjModel("res/provided/grassModel.obj");
-		RawModel grassModel = loader.loadToVAO(grassData.getVertices(), grassData.getTextureCoords(), grassData.getNormals(), grassData.getIndices());
+		RawModel grassModel = loader.loadToVAO(grassData);
 		Texture grassTex = TextureLoader.loadTexture("res/provided/grassTexture.png");
 		grassTex.setHasTransparency(true);
 		grassTex.setUseFakedLighting(true);
@@ -157,7 +157,7 @@ public class Main {
 		
 		// load a fern model and its texture
 		ModelData fernData = OBJLoader.loadObjModel("res/provided/fern.obj");
-		RawModel fernModel = loader.loadToVAO(fernData.getVertices(), fernData.getTextureCoords(), fernData.getNormals(), fernData.getIndices());
+		RawModel fernModel = loader.loadToVAO(fernData);
 		Texture fernTex = TextureLoader.loadTexture("res/provided/fern.png");
 		fernTex.setNumRows(2);
 		fernTex.setHasTransparency(true);
@@ -179,7 +179,7 @@ public class Main {
 		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap, "res/provided/heightmap.png");
 		
 		ModelData playerData = OBJLoader.loadObjModel("res/provided/person.obj");
-		RawModel playerModel = loader.loadToVAO(playerData.getVertices(), playerData.getTextureCoords(), playerData.getNormals(), playerData.getIndices());
+		RawModel playerModel = loader.loadToVAO(playerData);
 		Texture playerTex = TextureLoader.loadTexture("res/provided/playerTexture.png");
 		TexturedModel player = new TexturedModel(playerModel, playerTex);
 		Player playa = new Player(player, new Vector3f(100, 0, -50), 0, 180, 0, 0.5f);
