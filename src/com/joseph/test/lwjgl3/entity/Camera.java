@@ -53,16 +53,19 @@ public class Camera {
 	}
 	
 	private void calculateNewPos() {
+		// horizontal distance from the player
 		float horizDist = (float) (distFromPlayer * Math.cos(Math.toRadians(pitch)));
+		// split that into components using Trig(gered)
 		float theta = player.getRoty() + angleAroundPlayer;
 		float xOff = (float) (horizDist * Math.sin(Math.toRadians(theta)));
 		float zOff = (float) (horizDist * Math.cos(Math.toRadians(theta)));
+		// cam pos go brr
 		position.x = player.getPos().x - xOff;
 		position.z = player.getPos().z - zOff;
+		// yup, same stuff but vertical with head offset
 		float vertDist = (float) (distFromPlayer * Math.sin(Math.toRadians(pitch)));
 		float atHead = 5.0f;
 		position.y = player.getPos().y + vertDist + atHead;
-		
 	}
 	
 	private void calculateZoom() {

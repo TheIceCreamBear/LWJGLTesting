@@ -57,6 +57,7 @@ public class Terrain {
 			e.printStackTrace();
 		}
 		
+		// amount of vertices is the number of pixels in the height map
 		int VERTEX_COUNT = img.getHeight();
 		
 		// number of total verticies

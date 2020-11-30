@@ -17,6 +17,8 @@ public class MathHelper {
 	// ALSO, im gonna go on a rant here about people calling a Math class "Maths" like
 	// in the tutorials, LIKE WHAT THE IUASHFOIU WHY IS IT MATH_S_. BRUV, idek, like
 	// i guess it is shorted than math helper but like, WHY
+	// side note, you cannot do just Math because ovbious conflict with java.lang.Math
+	// is obvious
 	
 	/**
 	 * Helper thingy mabober to make a transfromation matrix out of a vector position 

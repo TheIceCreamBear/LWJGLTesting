@@ -78,6 +78,11 @@ public class TerrainRenderer {
 		this.bindTextures(t);
 	}
 	
+	/**
+	 * binds the textures of the given terrain to the specified texture banks,
+	 * allows the blending to read from the right textures
+	 * @param t
+	 */
 	private void bindTextures(Terrain t) {
 		TerrainTexturePack pack = t.getTexPack();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);

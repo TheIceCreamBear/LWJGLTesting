@@ -13,8 +13,6 @@ public class Player extends Entity {
 	private static final float GRAVITY = -50;
 	private static final float JUMP_POWER = 30;
 	
-//	private static final float TERRAIN_HEIGHT = 0;
-	
 	private float yVel;
 	private boolean inAir;
 
@@ -74,7 +72,5 @@ public class Player extends Entity {
 			yVel = 0;
 			super.getPos().y = terrainHeight;
 		}
-		
 	}
-	
 }

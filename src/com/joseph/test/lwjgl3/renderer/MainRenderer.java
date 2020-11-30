@@ -158,39 +158,8 @@ public class MainRenderer {
 		list.add(e);
 	}
 	
-	/**
-	 * okay so this is gonna be commented out because it is REALLY BAD CODE but im including it here
-	 * because i want to meme on the tutorial for how bad the code here is when like my slight modification to
-	 * it above is much more simpler words arent the best for me anyway enjoy this cursed code
-	 * 
-	 * this will be deleted in TUT 16 FINAL (if i dont forget, prob gonna forget, oh well)
-	 * @param e
-	 */
 	/*
-	public void addEntityBAD_BAD_BAD_BAD(Entity e) {
-		// first two lines are the same
-		TexturedModel texMod = e.getModel();
-		List<Entity> list = entities.get(texMod);
-		
-		// this is where it gets bad
-		// BRO THIS IS SO BAD WHY ARE YOU DOING THIS LIKE HERE LEMME SHOW YOU WHY ITS BAD
-		if (list != null) {
-			// this line is repeated in the other case, and the only purpose of the if is so it can run this ONE LINE
-			list.add(e);
-		} else {
-			// this else is just bad in general cause you dont need an else if you do it right and arent bad but like anyway
-			// as you can see the creation of the list happens here which is normal and everything
-			list = new ArrayList<Entity>();
-			entities.put(texMod, list);
-			// bUT AGAIN THIS IS REPEATED LIKE WHY DUDE JUT DO IT THE RIGHT WAY
-			list.add(e);
-			// like this entire else block is unnecessary, you could move the repeated line outside the control structure
-			// because both decision branches execute that line, which then means that you dont need an if check for != null
-			// because there is no code there, which then means you dont need the if, which means now you have a floating else
-			// which then means that you just make the else into the if with the == null check rather than the != null check like
-			// hello that seems so much smarter to do but NOOOOO that is like not what they do so like BRUHHHHHHHHHHHH
-		}
-	}
+	 * Forgot to remove it..... (probably will forget about this as well)
 	 */
 	
 	/**
