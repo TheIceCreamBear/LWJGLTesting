@@ -21,7 +21,7 @@ public class MathHelper {
 	// is obvious
 	
 	/**
-	 * Helper thingy mabober to make a transfromation matrix out of a vector position 
+	 * Helper thingy mabober to make a transformation matrix out of a vector position 
 	 * some rotational data
 	 * @param pos
 	 * @param rx
@@ -41,8 +41,25 @@ public class MathHelper {
 		matrix.rotateY((float) Math.toRadians(ry));
 		// banana, rotate, uh
 		matrix.rotateZ((float) Math.toRadians(rz));
-		// make big
+		// make big (or small)
 		matrix.scale(scale);
+		
+		return matrix;
+	}
+	
+	/**
+	 * Helper thingy mabober to make a transformation matrix out of a gui position and scale
+	 * @param pos
+	 * @param scale
+	 * @return
+	 */
+	public static Matrix4f createTransformationMatrix(Vector2f pos, Vector2f scale) {
+		// make the matrix
+		Matrix4f matrix = new Matrix4f();
+		// skirt it to where it is
+		matrix.translate(new Vector3f(pos, 0.0f));
+		// make big (or small)
+		matrix.scale(new Vector3f(scale, 1.0f));
 		
 		return matrix;
 	}

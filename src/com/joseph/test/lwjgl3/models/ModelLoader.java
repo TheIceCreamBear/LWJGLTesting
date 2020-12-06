@@ -58,9 +58,26 @@ public class ModelLoader {
 		// unbinds the vao because duh
 		unbindVAO();
 		
-		// return the new model with the vao and because the verticies array
-		// is always in triangles, divide it by 3
+		// return the new model with the vao and indices length
 		return new RawModel(vaoID, indices.length);
+	}
+	
+	/**
+	 * one special boi, responsible for loading one only one ping jk one quad to a vao, its a quad
+	 * for gui stuffs
+	 * @param positions
+	 * @return
+	 */
+	public RawModel loadToVAO(float[] positions) {
+		// creates the new vao and returns the id
+		int vaoID = createVAO();
+		// stores the position data in the attrib list at index 0
+		dataToAttribList(0, 2, positions);
+		// lol obviously we need to undind the VAO
+		unbindVAO();
+		
+		// return the thing
+		return new RawModel(vaoID, positions.length / 2);
 	}
 	
 	/**

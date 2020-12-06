@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
@@ -15,6 +16,8 @@ import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.entity.Player;
+import com.joseph.test.lwjgl3.gui.GuiRenderer;
+import com.joseph.test.lwjgl3.gui.GuiTexture;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
@@ -207,6 +210,15 @@ public class Main {
 			}
 		}
 		
+		List<GuiTexture> guis = new ArrayList<GuiTexture>();
+		GuiTexture gui = new GuiTexture(TextureLoader.loadTexture("res/provided/socuwan.png").glTextureID(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		GuiTexture gui2 = new GuiTexture(TextureLoader.loadTexture("res/provided/thinmatrix.png").glTextureID(), new Vector2f(0.30f, 0.58f), new Vector2f(0.4f, 0.4f));
+
+		guis.add(gui);
+		guis.add(gui2);
+		
+		GuiRenderer guiRenderer = new GuiRenderer(loader);
+		
 		// this is how you make it go brrrrrrr and display only wires
 //		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
 		
@@ -242,6 +254,9 @@ public class Main {
 			// of how it was coded, like at all, so expect this to change significantly
 			renderer.render(light, camera);
 			
+			// render the Gui items
+			guiRenderer.render(guis);
+			
 			// this will swap which buffer is currently in the "front" and which is in the "back"
 			// for more reading on why we do this and how it works, see 
 			// https://www.glfw.org/docs/latest/quick_guide.html#quick_swap_buffers
@@ -269,6 +284,7 @@ public class Main {
 		// as mentioned earlier, there is no need for us to follow good practice when trying to 
 		// connect these inter-weaving ideas together.
 		
+		guiRenderer.cleanUp();
 		loader.cleanUp();
 		renderer.cleanUp();
 		TextureLoader.cleanUp();
