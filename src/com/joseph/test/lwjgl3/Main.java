@@ -167,7 +167,11 @@ public class Main {
 		fernTex.setUseFakedLighting(true);
 		TexturedModel fern = new TexturedModel(fernModel, fernTex);
 		
-		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
+		Light light = new Light(new Vector3f(0.0f, 10000.0f, -7000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
+		List<Light> lights = new ArrayList<Light>();
+		lights.add(light);
+		lights.add(new Light(new Vector3f(-200.0f, 10.0f, -200.0f), new Vector3f(5.0f, 0.0f, 0.0f)));
+		lights.add(new Light(new Vector3f(200.0f, 10.0f, 200.0f), new Vector3f(0.0f, 0.0f, 5.0f)));
 		
 		// setup terrain textures
 		TerrainTexture baseTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/grassy.png"));
@@ -214,8 +218,8 @@ public class Main {
 		GuiTexture gui = new GuiTexture(TextureLoader.loadTexture("res/provided/socuwan.png").glTextureID(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
 		GuiTexture gui2 = new GuiTexture(TextureLoader.loadTexture("res/provided/thinmatrix.png").glTextureID(), new Vector2f(0.30f, 0.58f), new Vector2f(0.4f, 0.4f));
 
-		guis.add(gui);
-		guis.add(gui2);
+//		guis.add(gui);
+//		guis.add(gui2);
 		
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		
@@ -252,7 +256,7 @@ public class Main {
 			
 			// responsible for all the rendering, and while this is okay, i dont really like the structure
 			// of how it was coded, like at all, so expect this to change significantly
-			renderer.render(light, camera);
+			renderer.render(lights, camera);
 			
 			// render the Gui items
 			guiRenderer.render(guis);

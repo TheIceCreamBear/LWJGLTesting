@@ -66,7 +66,7 @@ public class MainRenderer {
 	 * @param worldLight - a global light (how do we do more than one light because like thatll be important)
 	 * @param camera - the camera
 	 */
-	public void render(Light worldLight, Camera camera) {
+	public void render(List<Light> lights, Camera camera) {
 		// this will clear the current frame buffer of its contents and set the pixels to the 
 		// pixel color specified in the clearColor funciton call above
 		this.prepare();
@@ -74,8 +74,8 @@ public class MainRenderer {
 		sShader.start();
 		// load the sky color
 		sShader.loadSkyColor(CLEAR_RED, CLEAR_GREEN, CLEAR_BLUE);
-		// load the light and view matrix
-		sShader.loadLight(worldLight);
+		// load the lights and view matrix
+		sShader.loadLights(lights);
 		sShader.loadViewMatrix(camera);
 		// render everything
 		eRender.render(entities);
@@ -86,7 +86,7 @@ public class MainRenderer {
 		// load the sky color
 		tShader.loadSkyColor(CLEAR_RED, CLEAR_GREEN, CLEAR_BLUE);
 		// load the light and view matrix
-		tShader.loadLight(worldLight);
+		tShader.loadLights(lights);
 		tShader.loadViewMatrix(camera);
 		// render the terrains
 		tRender.render(terrains);

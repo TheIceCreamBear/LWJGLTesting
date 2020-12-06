@@ -6,7 +6,7 @@ in vec3 normal;
 
 out vec2 texCord;
 out vec3 surfaceNormal;
-out vec3 toLight;
+out vec3 toLight[4];
 out vec3 toCam;
 out float visibility;
 
@@ -14,7 +14,7 @@ uniform mat4 tMatrix;
 uniform mat4 projMatrix;
 uniform mat4 viewMatrix;
 
-uniform vec3 lightPos;
+uniform vec3 lightPos[4];
 
 uniform float useFakeLight;
 
@@ -38,7 +38,9 @@ void main(void) {
     }
     
     surfaceNormal = (tMatrix * vec4(displayNormal, 0.0)).xyz;
-    toLight = lightPos - worldPos.xyz;
+    for (int i = 0; i < 4; i++) {
+        toLight[i] = lightPos[i] - worldPos.xyz;
+    }
     toCam = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPos.xyz;
     
     float distance = length(positionRelToCam.xyz);

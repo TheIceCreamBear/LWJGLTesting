@@ -2,7 +2,7 @@
 
 in vec2 texCord;
 in vec3 surfaceNormal;
-in vec3 toLight;
+in vec3 toLight[4];
 in vec3 toCam;
 in float visibility;
 
@@ -14,7 +14,7 @@ uniform sampler2D rTex;
 uniform sampler2D gTex;
 uniform sampler2D bTex;
 
-uniform vec3 lightColor;
+uniform vec3 lightColor[4];
 uniform vec3 skyColor;
 uniform float shineDamper;
 uniform float reflectivity;
@@ -33,20 +33,28 @@ void main(void) {
     vec4 totalColor = baseColor + rColor + gColor + bColor;
 
     vec3 normal = normalize(surfaceNormal);
-    vec3 light = normalize(toLight);
-    vec3 lightDir = -light;
     vec3 cam = normalize(toCam);
     
-    float dotProd = dot(normal, light);
-    float brightness = max(dotProd, ambientLight);
-    vec3 diffuse = brightness * lightColor;
+    vec3 totalDiffuse = vec3(0.0);
+    vec3 totalSpecular = vec3(0.0);
     
-    vec3 reflected = reflect(lightDir, normal);
-    float specularFactor = dot(reflected, cam);
-    specularFactor = max(specularFactor, 0.0);
-    float dampedFactor = pow(specularFactor, shineDamper);
-    vec3 specular = dampedFactor * reflectivity * lightColor;
+    for (int i = 0; i < 4; i++) {
+	    vec3 light = normalize(toLight[i]);
+	    vec3 lightDir = -light;
+	    
+	    float dotProd = dot(normal, light);
+	    float brightness = max(dotProd, ambientLight);
+	    
+	    vec3 reflected = reflect(lightDir, normal);
+	    float specularFactor = dot(reflected, cam);
+	    specularFactor = max(specularFactor, 0.0);
+	    float dampedFactor = pow(specularFactor, shineDamper);
+        totalDiffuse += brightness * lightColor[i];
+        totalSpecular += dampedFactor * reflectivity * lightColor[i];
+    }
     
-    out_Color = vec4(diffuse, 1.0) * totalColor + vec4(specular, 1.0);
+    totalDiffuse = max(totalDiffuse, ambientLight);
+    
+    out_Color = vec4(totalDiffuse, 1.0) * totalColor + vec4(totalSpecular, 1.0);
     out_Color = mix(vec4(skyColor,1.0), out_Color, visibility);
 }

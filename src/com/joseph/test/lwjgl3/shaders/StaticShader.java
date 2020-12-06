@@ -1,5 +1,7 @@
 package com.joseph.test.lwjgl3.shaders;
 
+import java.util.List;
+
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -16,14 +18,16 @@ import com.joseph.test.lwjgl3.math.MathHelper;
  *
  */
 public class StaticShader extends ShaderProgram {
+	private static final int MAX_LIGHTS = 4;
+	
 	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/shaders/vertexShader.vert";
 	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/shaders/fragmentShader.frag";
 	
 	private int tMatrixLocation;
 	private int projMatrixLocation;
 	private int viewMatrixLocation;
-	private int lightPosLocation;
-	private int lightColorLocation;
+	private int[] lightPosLocation;
+	private int[] lightColorLocation;
 	private int shineDamperLocation;
 	private int reflectivityLocation;
 	private int ambientLightLocation;
@@ -48,8 +52,6 @@ public class StaticShader extends ShaderProgram {
 		this.tMatrixLocation = super.getUniformLocation("tMatrix");
 		this.projMatrixLocation = super.getUniformLocation("projMatrix");
 		this.viewMatrixLocation = super.getUniformLocation("viewMatrix");
-		this.lightPosLocation = super.getUniformLocation("lightPos");
-		this.lightColorLocation = super.getUniformLocation("lightColor");
 		this.shineDamperLocation = super.getUniformLocation("shineDamper");
 		this.reflectivityLocation = super.getUniformLocation("reflectivity");
 		this.ambientLightLocation = super.getUniformLocation("ambientLight");
@@ -57,6 +59,13 @@ public class StaticShader extends ShaderProgram {
 		this.skyColorLocation = super.getUniformLocation("skyColor");
 		this.numRowsLocation = super.getUniformLocation("numRows");
 		this.offsetLocation = super.getUniformLocation("offset");
+
+		this.lightPosLocation = new int[MAX_LIGHTS];
+		this.lightColorLocation = new int[MAX_LIGHTS];
+		for (int i = 0; i < MAX_LIGHTS; i++) {
+			this.lightPosLocation[i] = super.getUniformLocation("lightPos[" + i + "]");
+			this.lightColorLocation[i] = super.getUniformLocation("lightColor[" + i + "]");
+		}
 	}
 	
 	public void loadNumRows(int numRows) {
@@ -91,9 +100,16 @@ public class StaticShader extends ShaderProgram {
 		super.loadMatrix4(viewMatrixLocation, MathHelper.createViewMatrix(cam));
 	}
 	
-	public void loadLight(Light l) {
-		super.loadVector(lightPosLocation, l.getPosition());
-		super.loadVector(lightColorLocation, l.getColor());
+	public void loadLights(List<Light> lights) {
+		for (int i = 0; i < MAX_LIGHTS; i++) {
+			if (i < lights.size()) {
+				super.loadVector(lightPosLocation[i], lights.get(i).getPosition());
+				super.loadVector(lightColorLocation[i], lights.get(i).getColor());
+			} else {
+				super.loadVector(lightPosLocation[i], new Vector3f(0.0f, 0.0f, 0.0f));
+				super.loadVector(lightColorLocation[i], new Vector3f(0.0f, 0.0f, 0.0f));
+			}
+		}
 	}
 	
 	public void loadAmbientLight(float ambientLight) {
