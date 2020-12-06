@@ -15,6 +15,7 @@ uniform sampler2D gTex;
 uniform sampler2D bTex;
 
 uniform vec3 lightColor[4];
+uniform vec3 attenuation[4];
 uniform vec3 skyColor;
 uniform float shineDamper;
 uniform float reflectivity;
@@ -39,6 +40,8 @@ void main(void) {
     vec3 totalSpecular = vec3(0.0);
     
     for (int i = 0; i < 4; i++) {
+        float distance = length(toLight[i]);
+        float attFactor = attenuation[i].x + (attenuation[i].y * distance) + (attenuation[i].z * distance * distance);
 	    vec3 light = normalize(toLight[i]);
 	    vec3 lightDir = -light;
 	    
@@ -49,8 +52,8 @@ void main(void) {
 	    float specularFactor = dot(reflected, cam);
 	    specularFactor = max(specularFactor, 0.0);
 	    float dampedFactor = pow(specularFactor, shineDamper);
-        totalDiffuse += brightness * lightColor[i];
-        totalSpecular += dampedFactor * reflectivity * lightColor[i];
+        totalDiffuse += (brightness * lightColor[i]) / attFactor;
+        totalSpecular += (dampedFactor * reflectivity * lightColor[i]) / attFactor;
     }
     
     totalDiffuse = max(totalDiffuse, ambientLight);

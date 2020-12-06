@@ -136,19 +136,20 @@ public class Main {
 		// thats how imma do it
 		ModelLoader loader = new ModelLoader();
 		MainRenderer renderer = new MainRenderer();
+		List<Entity> entities = new ArrayList<Entity>();
 		
 		// load a tree model and its texture
-		ModelData treeData = OBJLoader.loadObjModel("res/provided/tree.obj");
+		ModelData treeData = OBJLoader.loadObjModel("res/provided/pine.obj");
 		RawModel treeModel = loader.loadToVAO(treeData);
-		Texture treeTex = TextureLoader.loadTexture("res/provided/tree.png");
+		Texture treeTex = TextureLoader.loadTexture("res/provided/pine.png");
 		TexturedModel tree = new TexturedModel(treeModel, treeTex);
 		
 		// load a "low poly" tree model and its texture
-		ModelData lpTreeData = OBJLoader.loadObjModel("res/provided/lowPolyTree.obj");
-		RawModel lpTreeModel = loader.loadToVAO(lpTreeData);
-		Texture lpTreeTex = TextureLoader.loadTexture("res/provided/lowPolyTree.png");
-		lpTreeTex.setNumRows(2);
-		TexturedModel lpTree = new TexturedModel(lpTreeModel, lpTreeTex);
+//		ModelData lpTreeData = OBJLoader.loadObjModel("res/provided/lowPolyTree.obj");
+//		RawModel lpTreeModel = loader.loadToVAO(lpTreeData);
+//		Texture lpTreeTex = TextureLoader.loadTexture("res/provided/lowPolyTree.png");
+//		lpTreeTex.setNumRows(2);
+//		TexturedModel lpTree = new TexturedModel(lpTreeModel, lpTreeTex);
 
 		// load a grass model and its texture
 		ModelData grassData = OBJLoader.loadObjModel("res/provided/grassModel.obj");
@@ -167,11 +168,21 @@ public class Main {
 		fernTex.setUseFakedLighting(true);
 		TexturedModel fern = new TexturedModel(fernModel, fernTex);
 		
-		Light light = new Light(new Vector3f(0.0f, 10000.0f, -7000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
+		// load a lamp
+		RawModel lampModel = loader.loadToVAO(OBJLoader.loadObjModel("res/provided/lamp.obj"));
+		Texture lampTex = TextureLoader.loadTexture("res/provided/lamp.png");
+		TexturedModel lamp = new TexturedModel(lampModel, lampTex);
+		
+		// setup some lights
 		List<Light> lights = new ArrayList<Light>();
-		lights.add(light);
-		lights.add(new Light(new Vector3f(-200.0f, 10.0f, -200.0f), new Vector3f(5.0f, 0.0f, 0.0f)));
-		lights.add(new Light(new Vector3f(200.0f, 10.0f, 200.0f), new Vector3f(0.0f, 0.0f, 5.0f)));
+		lights.add(new Light(new Vector3f(0.0f, 1000.0f, -7000.0f), new Vector3f(0.4f, 0.4f, 0.4f)));
+		lights.add(new Light(new Vector3f(185.0f, 10.0f, -293.0f), new Vector3f(2.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
+		lights.add(new Light(new Vector3f(370.0f, 17.0f, -300.0f), new Vector3f(0.0f, 2.0f, 2.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
+		lights.add(new Light(new Vector3f(293.0f, 7.0f, -305.0f), new Vector3f(2.0f, 2.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
+		
+		entities.add(new Entity(lamp, new Vector3f(185.0f, -4.7f, -293.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(lamp, new Vector3f(370.0f, 4.2f, -300.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(lamp, new Vector3f(293.0f, -6.8f, -305.0f), 0.0f, 0.0f, 0.0f, 1.0f));
 		
 		// setup terrain textures
 		TerrainTexture baseTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/grassy.png"));
@@ -193,7 +204,6 @@ public class Main {
 		Camera camera = new Camera(playa);
 		
 		// store the random objects into a list
-		List<Entity> entities = new ArrayList<Entity>();
 		Random r = new Random();
 		for (int i = 0; i < 500; i++) {
 			if (i % 2 == 0) {
@@ -206,11 +216,11 @@ public class Main {
 				float x = r.nextFloat() * 800.0f - 400.0f;
 				float z = r.nextFloat() * -600.0f;
 				float y = terrain2.getHeightOfTerrain(x, z);
-				entities.add(new Entity(lpTree, r.nextInt(4),  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.1f + 0.6f));
-				x = r.nextFloat() * 800.0f - 400.0f;
-				z = r.nextFloat() * -600.0f;
-				y = terrain2.getHeightOfTerrain(x, z);
-				entities.add(new Entity(tree,  new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, r.nextFloat() * 1.0f + 4.0f));
+//				entities.add(new Entity(lpTree, r.nextInt(4),  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.1f + 0.6f));
+//				x = r.nextFloat() * 800.0f - 400.0f;
+//				z = r.nextFloat() * -600.0f;
+//				y = terrain2.getHeightOfTerrain(x, z);
+				entities.add(new Entity(tree,  new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, r.nextFloat() * 1.0f + 1.0f));
 			}
 		}
 		
