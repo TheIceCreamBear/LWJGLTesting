@@ -2,6 +2,7 @@ package com.joseph.test.lwjgl3.textures;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
@@ -28,29 +30,7 @@ public class TextureLoader {
 		// store the texture object that is going to be created
 		Texture tex = null;
 		try {
-			// we need some way to decode the PNG so like this is it because decoding the PNG 
-			// is how we get the data
-			PNGDecoder decoder = new PNGDecoder(new FileInputStream(new File(file)));
-			
-			// only support the RGB because thats the only thing that makes sense
-			if (!decoder.isRGB()) {
-				throw new IOException("PNG must be RGB formmated to be loaded.");
-			}
-			
-			// store some information that we need, like the width height how many bytes per pix
-			// and what the final GL pixel format is so yea store things
-			int width = decoder.getWidth();
-			int height = decoder.getHeight();
-			int perPixel = decoder.hasAlpha() ? 4 : 3;
-			int glPixelFormat = decoder.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB;
-			
-			// make a buffer to buffer my buffer of buffers
-			ByteBuffer buffer = BufferUtils.createByteBuffer(4 * decoder.getWidth() * decoder.getHeight());
-			// used the PNG decoder to decode the complex cypher that is the PNG and read it into the buffer
-			decoder.decode(buffer, decoder.getWidth() * perPixel, perPixel == 4 ? PNGDecoder.Format.RGBA : PNGDecoder.Format.RGB);
-			
-			// make le buf redy for le read
-			buffer.flip();
+			TextureData texData = decodeTexture(file);
 			
 			// make a GL texture and bind it
 			int id = GL11.glGenTextures();
@@ -58,13 +38,13 @@ public class TextureLoader {
 			
 			// not sure but might not be needed
 			GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
-			
-			// set these filters as linear because that is what we are supposed to do
+
+			// set these filters as linear because that is what we are supposed to do (see mipMap)
 			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
 			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 			
 			// actually save the information of the textgure into Open GL and save it so it can be used and save it basically
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, glPixelFormat, decoder.getWidth(), decoder.getHeight(), 0, glPixelFormat, GL11.GL_UNSIGNED_BYTE, buffer);
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, texData.getGlPixelFormat(), texData.getWidth(), texData.getHeight(), 0, texData.getGlPixelFormat(), GL11.GL_UNSIGNED_BYTE, texData.getBuffer());
 			
 			// mip map it because why not
 			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
@@ -91,6 +71,40 @@ public class TextureLoader {
 		
 		// retrun the tex
 		return tex;
+	}
+	
+	private static TextureData decodeTexture(String file) throws IOException {
+		// store the input stream so we can close it
+		FileInputStream is = new FileInputStream(new File(file));
+		
+		// we need some way to decode the PNG so like this is it because decoding the PNG 
+		// is how we get the data
+		PNGDecoder decoder = new PNGDecoder(is);
+		
+		// only support the RGB because thats the only thing that makes sense
+		if (!decoder.isRGB()) {
+			throw new IOException("PNG must be RGB formmated to be loaded.");
+		}
+		
+		// store some information that we need, like the width height how many bytes per pix
+		// and what the final GL pixel format is so yea store things
+		int width = decoder.getWidth();
+		int height = decoder.getHeight();
+		int perPixel = decoder.hasAlpha() ? 4 : 3;
+		int glPixelFormat = decoder.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB;
+		
+		// make a buffer to buffer my buffer of buffers
+		ByteBuffer buffer = BufferUtils.createByteBuffer(perPixel * decoder.getWidth() * decoder.getHeight());
+		// used the PNG decoder to decode the complex cypher that is the PNG and read it into the buffer
+		decoder.decode(buffer, decoder.getWidth() * perPixel, perPixel == 4 ? PNGDecoder.Format.RGBA : PNGDecoder.Format.RGB);
+		
+		// close the stream
+		is.close();
+		
+		// make le buf redy for le read
+		buffer.flip();
+		
+		return new TextureData(buffer, width, height, glPixelFormat);
 	}
 	
 	/**
