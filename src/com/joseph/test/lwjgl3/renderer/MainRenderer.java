@@ -10,9 +10,11 @@ import org.lwjgl.opengl.GL11;
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.entity.Light;
+import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.shaders.StaticShader;
 import com.joseph.test.lwjgl3.shaders.TerrainShader;
+import com.joseph.test.lwjgl3.skybox.SkyboxRenderer;
 import com.joseph.test.lwjgl3.terrain.Terrain;
 
 /**
@@ -41,10 +43,13 @@ public class MainRenderer {
 	private TerrainRenderer tRender;
 	private TerrainShader tShader;
 	
+	// skybox thing
+	private SkyboxRenderer sRender;
+	
 	private HashMap<TexturedModel, List<Entity>> entities;
 	private List<Terrain> terrains;
 	
-	public MainRenderer() {
+	public MainRenderer(ModelLoader loader) {
 		enableCulling();
 		
 		// create the projection matrix
@@ -55,6 +60,8 @@ public class MainRenderer {
 		
 		this.tShader = new TerrainShader();
 		this.tRender = new TerrainRenderer(tShader, projMatrix);
+		
+		this.sRender = new SkyboxRenderer(loader, projMatrix);
 		
 		this.entities = new HashMap<TexturedModel, List<Entity>>();
 		this.terrains = new ArrayList<Terrain>();
@@ -92,6 +99,9 @@ public class MainRenderer {
 		tRender.render(terrains);
 		// stop the terrain shader
 		tShader.stop();
+		
+		// render the sky box
+		sRender.render(camera);
 		
 		// remove entities (for some reason think this could be handeled a different way instead of clearing it tho the only thing that
 		// is wasted is the ArrayList because the contents are stored else where
@@ -158,16 +168,13 @@ public class MainRenderer {
 		list.add(e);
 	}
 	
-	/*
-	 * Forgot to remove it..... (probably will forget about this as well)
-	 */
-	
 	/**
 	 * clean up, clean up, everybody everywhere, clean up, clean up, come on do your share
 	 */
 	public void cleanUp() {
 		sShader.cleanUp();
 		tShader.cleanUp();
+		sRender.cleanUp();
 	}
 	
 	/**

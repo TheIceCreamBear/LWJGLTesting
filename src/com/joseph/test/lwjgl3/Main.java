@@ -135,7 +135,7 @@ public class Main {
 		// honestly this should probably be static too but still like, this is the way the tutorial did it so like
 		// thats how imma do it
 		ModelLoader loader = new ModelLoader();
-		MainRenderer renderer = new MainRenderer();
+		MainRenderer renderer = new MainRenderer(loader);
 		List<Entity> entities = new ArrayList<Entity>();
 		
 		// load a tree model and its texture

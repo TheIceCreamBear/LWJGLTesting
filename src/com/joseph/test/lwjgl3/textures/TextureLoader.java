@@ -2,7 +2,6 @@ package com.joseph.test.lwjgl3.textures;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.List;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
@@ -44,7 +44,7 @@ public class TextureLoader {
 			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 			
 			// actually save the information of the textgure into Open GL and save it so it can be used and save it basically
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, texData.getGlPixelFormat(), texData.getWidth(), texData.getHeight(), 0, texData.getGlPixelFormat(), GL11.GL_UNSIGNED_BYTE, texData.getBuffer());
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, texData.getWidth(), texData.getHeight(), 0, texData.getGlPixelFormat(), GL11.GL_UNSIGNED_BYTE, texData.getBuffer());
 			
 			// mip map it because why not
 			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
@@ -71,6 +71,51 @@ public class TextureLoader {
 		
 		// retrun the tex
 		return tex;
+	}
+
+	/**
+	 * Load a cube map from the given files, which must be in the order
+	 * <ul>
+	 * <li>Right Face</li>
+	 * <li>Left Face</li>
+	 * <li>Top Face</li>
+	 * <li>Bottom Face</li>
+	 * <li>Back Face</li>
+	 * <li>Front Face</li>
+	 * </ul>
+	 * @param texFiles
+	 * @return
+	 */
+	public static int loadCubeMap(String[] texFiles) {
+		// make a GL texture and bind it and specify an active bank
+		int texID = GL11.glGenTextures();
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texID);
+		
+		// loop through input files
+		for (int i = 0; i < texFiles.length; i++) {
+			try {
+				// decode the png
+				TextureData data = decodeTexture(texFiles[i]);
+				// and send OGL the data, while specifying that it is the positive X + i face, because they are all in order
+				GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL11.GL_RGBA, data.getWidth(), data.getHeight(), 0, data.getGlPixelFormat(), GL11.GL_UNSIGNED_BYTE, data.getBuffer());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// set these filters as linear because that is what we are supposed to do (see mipMap)
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+		
+		// try to prevent seams
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+		
+		// save the tex id to the list so it will get yeeted into oblivion when we are done
+		textures.add(texID);
+		
+		return texID;
 	}
 	
 	private static TextureData decodeTexture(String file) throws IOException {

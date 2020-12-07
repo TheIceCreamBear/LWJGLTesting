@@ -68,16 +68,16 @@ public class ModelLoader {
 	 * @param positions
 	 * @return
 	 */
-	public RawModel loadToVAO(float[] positions) {
+	public RawModel loadToVAO(float[] positions, int dimensions) {
 		// creates the new vao and returns the id
 		int vaoID = createVAO();
 		// stores the position data in the attrib list at index 0
-		dataToAttribList(0, 2, positions);
+		dataToAttribList(0, dimensions, positions);
 		// lol obviously we need to undind the VAO
 		unbindVAO();
 		
 		// return the thing
-		return new RawModel(vaoID, positions.length / 2);
+		return new RawModel(vaoID, positions.length / dimensions);
 	}
 	
 	/**
