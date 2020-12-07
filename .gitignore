@@ -2,6 +2,7 @@
 /res/provided/*
 !/res/provided/*.png
 !/res/provided/*.obj
+!/res/provided/skybox/
 /res/TestModels/*
 !/res/TestModels/*.png
 !/res/TestModels/*.obj
