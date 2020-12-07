@@ -16,6 +16,7 @@ uniform vec3 skyColor;
 uniform float shineDamper;
 uniform float reflectivity;
 uniform float ambientLight = 0.2;
+uniform float isLightSource = 0.0;
 
 void main(void) {
     vec3 normal = normalize(surfaceNormal);
@@ -32,6 +33,10 @@ void main(void) {
 	    
 	    float dotProd = dot(normal, light);
 	    float brightness = max(dotProd, 0.0);
+	    
+	    if (isLightSource > 0.0) {
+	       brightness = max(abs(dotProd), 0.0);
+	    }
 	    
 	    vec3 reflected = reflect(lightDir, normal);
 	    float specularFactor = dot(reflected, cam);

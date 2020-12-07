@@ -21,12 +21,17 @@ public class Entity {
 	private float scale;
 	
 	private int texIndex;
+	private boolean isLightSource;
 	
 	public Entity(TexturedModel model, Vector3f pos, float rotx, float roty, float rotz, float scale) {
 		this(model, 0, pos, rotx, roty, rotz, scale);
 	}
 	
-	public Entity(TexturedModel model, int index, Vector3f pos, float rotx, float roty, float rotz, float scale) {		
+	public Entity(TexturedModel model, int index, Vector3f pos, float rotx, float roty, float rotz, float scale) {
+		this(model, 0, pos, rotx, roty, rotz, scale, false);
+	}
+	
+	public Entity(TexturedModel model, int index, Vector3f pos, float rotx, float roty, float rotz, float scale, boolean isLightSource) {
 		this.model = model;
 		this.texIndex = index;
 		this.pos = pos;
@@ -34,6 +39,7 @@ public class Entity {
 		this.roty = roty;
 		this.rotz = rotz;
 		this.scale = scale;
+		this.isLightSource = isLightSource;
 	}
 	
 	public float getTextureXOffset() {
@@ -84,6 +90,10 @@ public class Entity {
 		return this.scale;
 	}
 	
+	public boolean isLightSource() {
+		return this.isLightSource;
+	}
+	
 	public void setModel(TexturedModel model) {
 		this.model = model;
 	}
@@ -106,5 +116,5 @@ public class Entity {
 	
 	public void setScale(float scale) {
 		this.scale = scale;
-	}
+	}	
 }

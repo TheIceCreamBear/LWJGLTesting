@@ -186,14 +186,14 @@ public class Main {
 		lights.add(new Light(new Vector3f(293.0f, 4.1f, -305.0f), new Vector3f(2.0f, 2.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
 		
 		// add entities at the light positions to make it easier to know where the light is
-		entities.add(new Entity(icoSphere, lights.get(0).getPosition(), 0.0f, 0.0f, 0.0f, 5.0f));
-		entities.add(new Entity(icoSphere, lights.get(1).getPosition(), 0.0f, 0.0f, 0.0f, 5.0f));
-		entities.add(new Entity(icoSphere, lights.get(2).getPosition(), 0.0f, 0.0f, 0.0f, 5.0f));
-		entities.add(new Entity(icoSphere, lights.get(3).getPosition(), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(icoSphere, 0, lights.get(0).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
+		entities.add(new Entity(icoSphere, 0, lights.get(1).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
+		entities.add(new Entity(icoSphere, 0, lights.get(2).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
+		entities.add(new Entity(icoSphere, 0, lights.get(3).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
 		
-		entities.add(new Entity(lamp, new Vector3f(185.0f, -4.7f, -293.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(lamp, new Vector3f(370.0f, 4.2f, -300.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(lamp, new Vector3f(293.0f, -6.8f, -305.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(lamp, 0, new Vector3f(185.0f, -4.7f, -293.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
+		entities.add(new Entity(lamp, 0, new Vector3f(370.0f, 4.2f, -300.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
+		entities.add(new Entity(lamp, 0, new Vector3f(293.0f, -6.8f, -305.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
 		
 		// setup terrain textures
 		TerrainTexture baseTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/grassy.png"));

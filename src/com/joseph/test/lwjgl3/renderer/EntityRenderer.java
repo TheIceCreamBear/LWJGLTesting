@@ -130,5 +130,7 @@ public class EntityRenderer {
 		shader.loadTransformation(transMatrix);
 		// load the offset for which atlas index we are using for the current entitiy, maybe like this could be done differently
 		shader.loadOffset(e.getTextureXOffset(), e.getTextureYOffset());
+		// load weather or not light can like go through it
+		shader.loadIsLightSource(e.isLightSource());
 	}
 }

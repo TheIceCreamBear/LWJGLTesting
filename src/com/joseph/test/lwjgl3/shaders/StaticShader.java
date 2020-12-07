@@ -36,6 +36,7 @@ public class StaticShader extends ShaderProgram {
 	private int skyColorLocation;
 	private int numRowsLocation;
 	private int offsetLocation;
+	private int isLightSourceLocation;
 	
 	public StaticShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -60,6 +61,7 @@ public class StaticShader extends ShaderProgram {
 		this.skyColorLocation = super.getUniformLocation("skyColor");
 		this.numRowsLocation = super.getUniformLocation("numRows");
 		this.offsetLocation = super.getUniformLocation("offset");
+		this.isLightSourceLocation = super.getUniformLocation("isLightSource");
 
 		this.lightPosLocation = new int[MAX_LIGHTS];
 		this.lightColorLocation = new int[MAX_LIGHTS];
@@ -123,5 +125,9 @@ public class StaticShader extends ShaderProgram {
 	
 	public void loadFakeLightValue(boolean useFake) {
 		super.loadBoolean(fakeLightLocation, useFake);
+	}
+	
+	public void loadIsLightSource(boolean isLight) {
+		super.loadBoolean(isLightSourceLocation, isLight);
 	}
 }
