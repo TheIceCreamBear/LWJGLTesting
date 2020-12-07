@@ -173,12 +173,23 @@ public class Main {
 		Texture lampTex = TextureLoader.loadTexture("res/provided/lamp.png");
 		TexturedModel lamp = new TexturedModel(lampModel, lampTex);
 		
+		// load an icoSphere
+		RawModel icoModel = loader.loadToVAO(OBJLoader.loadObjModel("res/TestModels/icoSphere.obj"));
+		Texture icoTex = TextureLoader.loadTexture("res/provided/white.png");
+		TexturedModel icoSphere = new TexturedModel(icoModel, icoTex);
+		
 		// setup some lights
 		List<Light> lights = new ArrayList<Light>();
 		lights.add(new Light(new Vector3f(0.0f, 1000.0f, -7000.0f), new Vector3f(0.4f, 0.4f, 0.4f)));
-		lights.add(new Light(new Vector3f(185.0f, 10.0f, -293.0f), new Vector3f(2.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
-		lights.add(new Light(new Vector3f(370.0f, 17.0f, -300.0f), new Vector3f(0.0f, 2.0f, 2.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
-		lights.add(new Light(new Vector3f(293.0f, 7.0f, -305.0f), new Vector3f(2.0f, 2.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
+		lights.add(new Light(new Vector3f(185.0f, 6.2f, -293.0f), new Vector3f(2.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
+		lights.add(new Light(new Vector3f(370.0f, 15.1f, -300.0f), new Vector3f(0.0f, 2.0f, 2.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
+		lights.add(new Light(new Vector3f(293.0f, 4.1f, -305.0f), new Vector3f(2.0f, 2.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
+		
+		// add entities at the light positions to make it easier to know where the light is
+		entities.add(new Entity(icoSphere, lights.get(0).getPosition(), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(icoSphere, lights.get(1).getPosition(), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(icoSphere, lights.get(2).getPosition(), 0.0f, 0.0f, 0.0f, 5.0f));
+		entities.add(new Entity(icoSphere, lights.get(3).getPosition(), 0.0f, 0.0f, 0.0f, 5.0f));
 		
 		entities.add(new Entity(lamp, new Vector3f(185.0f, -4.7f, -293.0f), 0.0f, 0.0f, 0.0f, 1.0f));
 		entities.add(new Entity(lamp, new Vector3f(370.0f, 4.2f, -300.0f), 0.0f, 0.0f, 0.0f, 1.0f));
