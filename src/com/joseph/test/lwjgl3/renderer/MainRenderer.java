@@ -29,9 +29,9 @@ public class MainRenderer {
 	private static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 1000f;
 	
-	private static final float CLEAR_RED = 0.75f;
-	private static final float CLEAR_GREEN = 0.75f;
-	private static final float CLEAR_BLUE = 0.75f;
+	private static final float CLEAR_RED = 0.5444f;
+	private static final float CLEAR_GREEN = 0.62f;
+	private static final float CLEAR_BLUE = 0.69f;
 	
 	private Matrix4f projMatrix;
 	

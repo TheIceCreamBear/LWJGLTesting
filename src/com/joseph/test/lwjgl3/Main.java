@@ -211,25 +211,25 @@ public class Main {
 		RawModel playerModel = loader.loadToVAO(playerData);
 		Texture playerTex = TextureLoader.loadTexture("res/provided/playerTexture.png");
 		TexturedModel player = new TexturedModel(playerModel, playerTex);
-		Player playa = new Player(player, new Vector3f(100, 0, -50), 0, 180, 0, 0.5f);
+		Player playa = new Player(player, new Vector3f(160.0f, terrain2.getHeightOfTerrain(160.0f, -260.0f), -260.0f), 0.0f, 90.0f, 0.0f, 0.5f);
 		Camera camera = new Camera(playa);
 		
 		// store the random objects into a list
 		Random r = new Random();
 		for (int i = 0; i < 500; i++) {
 			if (i % 2 == 0) {
-				float x = r.nextFloat() * 800.0f - 400.0f;
-				float z = r.nextFloat() * -600.0f;
+				float x = r.nextFloat() * 800.0f;
+				float z = r.nextFloat() * -800.0f;
 				float y = terrain2.getHeightOfTerrain(x, z);
 				entities.add(new Entity(fern, r.nextInt(4),  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 0.9f));
 			}
 			if (i % 5 == 0) {
-				float x = r.nextFloat() * 800.0f - 400.0f;
-				float z = r.nextFloat() * -600.0f;
+				float x = r.nextFloat() * 800.0f;
+				float z = r.nextFloat() * -800.0f;
 				float y = terrain2.getHeightOfTerrain(x, z);
 //				entities.add(new Entity(lpTree, r.nextInt(4),  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.1f + 0.6f));
-//				x = r.nextFloat() * 800.0f - 400.0f;
-//				z = r.nextFloat() * -600.0f;
+//				x = r.nextFloat() * 800.0f;
+//				z = r.nextFloat() * -800.0f;
 //				y = terrain2.getHeightOfTerrain(x, z);
 				entities.add(new Entity(tree,  new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, r.nextFloat() * 1.0f + 1.0f));
 			}
