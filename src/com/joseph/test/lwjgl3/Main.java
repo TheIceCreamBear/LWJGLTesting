@@ -274,7 +274,7 @@ public class Main {
 			
 			// responsible for all the rendering, and while this is okay, i dont really like the structure
 			// of how it was coded, like at all, so expect this to change significantly
-			renderer.render(lights, camera);
+			renderer.render(lights, camera, (float) delta);
 			
 			// render the Gui items
 			guiRenderer.render(guis);

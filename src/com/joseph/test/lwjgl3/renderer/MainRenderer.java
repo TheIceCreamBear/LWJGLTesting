@@ -29,9 +29,9 @@ public class MainRenderer {
 	private static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 1000f;
 	
-	private static final float CLEAR_RED = 0.5444f;
-	private static final float CLEAR_GREEN = 0.62f;
-	private static final float CLEAR_BLUE = 0.69f;
+	private static final float RED = 0.5444f;
+	private static final float GREEN = 0.62f;
+	private static final float BLUE = 0.69f;
 	
 	private Matrix4f projMatrix;
 	
@@ -73,14 +73,14 @@ public class MainRenderer {
 	 * @param worldLight - a global light (how do we do more than one light because like thatll be important)
 	 * @param camera - the camera
 	 */
-	public void render(List<Light> lights, Camera camera) {
+	public void render(List<Light> lights, Camera camera, float delta) {
 		// this will clear the current frame buffer of its contents and set the pixels to the 
 		// pixel color specified in the clearColor funciton call above
 		this.prepare();
 		// start le shader
 		sShader.start();
 		// load the sky color
-		sShader.loadSkyColor(CLEAR_RED, CLEAR_GREEN, CLEAR_BLUE);
+		sShader.loadSkyColor(RED, GREEN, BLUE);
 		// load the lights and view matrix
 		sShader.loadLights(lights);
 		sShader.loadViewMatrix(camera);
@@ -91,7 +91,7 @@ public class MainRenderer {
 		// start the terrain shader
 		tShader.start();
 		// load the sky color
-		tShader.loadSkyColor(CLEAR_RED, CLEAR_GREEN, CLEAR_BLUE);
+		tShader.loadSkyColor(RED, GREEN, BLUE);
 		// load the light and view matrix
 		tShader.loadLights(lights);
 		tShader.loadViewMatrix(camera);
@@ -101,7 +101,7 @@ public class MainRenderer {
 		tShader.stop();
 		
 		// render the sky box
-		sRender.render(camera);
+		sRender.render(camera, delta, RED, GREEN, BLUE);
 		
 		// remove entities (for some reason think this could be handeled a different way instead of clearing it tho the only thing that
 		// is wasted is the ArrayList because the contents are stored else where
@@ -116,7 +116,7 @@ public class MainRenderer {
 	public void prepare() {
 		// this will set the clear color of the current open GL context. Meaning, when the screen is cleared,
 		// this is the color it will use. the current color is a sky blue
-		GL11.glClearColor(CLEAR_RED, CLEAR_GREEN, CLEAR_BLUE, 1.0f);
+		GL11.glClearColor(RED, GREEN, BLUE, 1.0f);
 		
 		// this will clear the current frame buffer of its contents and set the pixels to the 
 		// pixel color specified in the clearColor funciton call above
