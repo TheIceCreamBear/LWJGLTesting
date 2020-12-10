@@ -244,9 +244,6 @@ public class Main {
 		
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		
-		// this is how you make it go brrrrrrr and display only wires
-//		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
-		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
 		// UPDATES NOT DELTA TIME UPDATES THANKS

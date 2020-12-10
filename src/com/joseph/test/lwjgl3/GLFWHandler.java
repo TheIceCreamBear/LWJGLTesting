@@ -1,6 +1,7 @@
 package com.joseph.test.lwjgl3;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
 
 public class GLFWHandler {
@@ -12,6 +13,8 @@ public class GLFWHandler {
 	
 	private static double lastX = -1.0;
 	private static double lastY = -1.0;
+	
+	private static boolean lineMode = false;
 	
 	/**
 	 * A method to receive errors from GLFW
@@ -31,6 +34,23 @@ public class GLFWHandler {
 			// this will tell the window it should close. it DOES NOT actually close the window
 			// this will cause our main loop to exit and stop.
 			GLFW.glfwSetWindowShouldClose(window, true);
+		}
+		
+		// if the user releases the T key and is pressing the left control key
+		if (key == GLFW.GLFW_KEY_T && action == GLFW.GLFW_RELEASE && keyDown[GLFW.GLFW_KEY_LEFT_CONTROL]) {
+			// then act like youre in a "debug mode" and switch the state of the rendering
+			// from either full faces to only lines
+			if (lineMode) {
+				// disable line mode
+				// this is how you make it go brrrrrrr and display normal polygons
+				GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_FILL);
+				lineMode = false;
+			} else {
+				// endable line mode
+				// this is how you make it go brrrrrrr and display only wires
+				GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
+				lineMode = true;
+			}
 		}
 		
 		// THIS IS TEMPORARY GROSS CODE
