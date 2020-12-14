@@ -1,8 +1,13 @@
 package com.joseph.test.lwjgl3;
 
+import java.nio.DoubleBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
+
+import com.joseph.test.lwjgl3.util.Point;
 
 public class GLFWHandler {
 	// NOT THE FINAL RESTING PLACE FOR THIS, GOOD "for now"
@@ -87,6 +92,18 @@ public class GLFWHandler {
 		dx = 0;
 		dy = 0;
 		scroll = 0;
+	}
+	
+	/**
+	 * Janky solution to return the current point that the mouse is hovering over
+	 * (should be replaced with a frame mouse)
+	 * @return
+	 */
+	public static Point<Double> getMousePos() {
+		DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
+		DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
+		GLFW.glfwGetCursorPos(Main.windowPointer, x, y);
+		return new Point<Double>(x.get(0), y.get(0));
 	}
 	
 	// = = = = = = = = = = this is bloop = = = = = = = =
