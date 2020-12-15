@@ -99,11 +99,11 @@ public class GLFWHandler {
 	 * (should be replaced with a frame mouse)
 	 * @return
 	 */
-	public static Point<Double> getMousePos() {
+	public static Point<Float> getMousePos() {
 		DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
 		DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
 		GLFW.glfwGetCursorPos(Main.windowPointer, x, y);
-		return new Point<Double>(x.get(0), y.get(0));
+		return new Point<Float>((float) x.get(0), (float) y.get(0));
 	}
 	
 	// = = = = = = = = = = this is bloop = = = = = = = =
