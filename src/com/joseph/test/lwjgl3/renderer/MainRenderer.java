@@ -7,6 +7,7 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
+import com.joseph.test.lwjgl3.GLFWHandler;
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.entity.Light;
@@ -128,8 +129,8 @@ public class MainRenderer {
 	 */
 	private void createProjectionMatrix() {
 		// TODO these should not be constant
-		float width = 1600;
-		float height = 900;
+		float width = GLFWHandler.SCREEN_WIDTH;
+		float height = GLFWHandler.SCREEN_HEIGHT;
 		float aspectRatio = width / height;
 		float yScale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
 		float xScale = yScale / aspectRatio;

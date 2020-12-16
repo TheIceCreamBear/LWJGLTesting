@@ -79,7 +79,7 @@ public class Main {
 		// 64 bits on a 64 bit system, and 32 bits on a 32 bit system, the long primitive in Java has enough
 		// space to fully store any value of a pointer, and is therefore the best way to represent the 
 		// reference to the window without the use of pointers
-		windowPointer = GLFW.glfwCreateWindow(1600, 900, "LOLOL this is our main Window", MemoryUtil.NULL, MemoryUtil.NULL);
+		windowPointer = GLFW.glfwCreateWindow(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, "LOLOL this is our main Window", MemoryUtil.NULL, MemoryUtil.NULL);
 		
 		// sets a key call back. all key input is handled via key call backs, and the key, action, and mods 
 		// determine what was pressed. this specific callback will use a lambda (not any more haha lol g3t r3kt),
