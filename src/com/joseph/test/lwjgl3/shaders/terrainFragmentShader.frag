@@ -1,6 +1,6 @@
 #version 400 core
 
-in vec2 texCord;
+in vec2 texCoord;
 in vec3 surfaceNormal;
 in vec3 toLight[4];
 in vec3 toCam;
@@ -22,10 +22,10 @@ uniform float reflectivity;
 uniform float ambientLight = 0.2;
 
 void main(void) {
-    vec4 blendColor = texture(blendMap, texCord);
+    vec4 blendColor = texture(blendMap, texCoord);
     
     float baseAmount = 1 - (blendColor.r + blendColor.g + blendColor.b);
-    vec2 tiledCoords = texCord * 40;
+    vec2 tiledCoords = texCoord * 40;
     vec4 baseColor = texture(baseTex, tiledCoords) * baseAmount;
     vec4 rColor = texture(rTex, tiledCoords) * blendColor.r;
     vec4 gColor = texture(gTex, tiledCoords) * blendColor.g;

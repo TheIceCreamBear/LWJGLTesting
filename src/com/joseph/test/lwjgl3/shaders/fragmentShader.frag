@@ -1,6 +1,6 @@
 #version 400 core
 
-in vec2 texCord;
+in vec2 texCoord;
 in vec3 surfaceNormal;
 in vec3 toLight[4];
 in vec3 toCam;
@@ -48,7 +48,7 @@ void main(void) {
     
     totalDiffuse = max(totalDiffuse, ambientLight);
     
-    vec4 texColor = texture(texSampler, texCord);
+    vec4 texColor = texture(texSampler, texCoord);
     if (texColor.a < 0.5) {
         discard;
     }

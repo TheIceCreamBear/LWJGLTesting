@@ -4,7 +4,7 @@ in vec3 position;
 in vec2 textureCoords;
 in vec3 normal;
 
-out vec2 texCord;
+out vec2 texCoord;
 out vec3 surfaceNormal;
 out vec3 toLight[4];
 out vec3 toCam;
@@ -30,7 +30,7 @@ void main(void) {
     vec4 positionRelToCam = viewMatrix * worldPos;
 
     gl_Position = projMatrix * viewMatrix * tMatrix * vec4(position, 1.0);
-    texCord = (textureCoords / numRows) + offset;
+    texCoord = (textureCoords / numRows) + offset;
     
     vec3 displayNormal = normal;
     if (useFakeLight > 0.5) {

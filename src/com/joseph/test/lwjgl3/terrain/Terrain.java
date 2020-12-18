@@ -85,7 +85,7 @@ public class Terrain {
 				normals[vertexPointer * 3] = norm.x;
 				normals[vertexPointer * 3 + 1] = norm.y;
 				normals[vertexPointer * 3 + 2] = norm.z;
-				// texture uv cords
+				// texture uv coords
 				textureCoords[vertexPointer * 2] = (float) j / ((float) VERTEX_COUNT - 1);
 				textureCoords[vertexPointer * 2 + 1] = (float) i / ((float) VERTEX_COUNT - 1);
 				// ++
@@ -170,12 +170,12 @@ public class Terrain {
 	 * @return
 	 */
 	public float getHeightOfTerrain(float worldX, float worldZ) {
-		// cord relative to the terrain
+		// coord relative to the terrain
 		float terrainX = worldX - this.x;
 		float terrainZ = worldZ - this.z;
 		float gridSquareSize = SIZE / (float) (this.heights.length - 1);
 		
-		// grid cords
+		// grid coords
 		int gridX = (int) Math.floor(terrainX / gridSquareSize);
 		int gridZ = (int) Math.floor(terrainZ / gridSquareSize);
 		
@@ -184,24 +184,24 @@ public class Terrain {
 			return 0;
 		}
 		
-		// the cord of the tile
-		float xCord = (terrainX % gridSquareSize) / gridSquareSize;
-		float zCord = (terrainZ % gridSquareSize) / gridSquareSize;
+		// the coord of the tile
+		float xCoord = (terrainX % gridSquareSize) / gridSquareSize;
+		float zCoord = (terrainZ % gridSquareSize) / gridSquareSize;
 		
 		// determine which triangle, calc answer, and return
-		if (xCord <= (1 - zCord)) {
+		if (xCoord <= (1 - zCoord)) {
 			// normally i would be the type to one line this code, but itll be TOOOO long
 			Vector3f p1 = new Vector3f(0, this.heights[gridX][gridZ], 0);
 			Vector3f p2 = new Vector3f(1, this.heights[gridX + 1][gridZ], 0);
 			Vector3f p3 = new Vector3f(0, this.heights[gridX][gridZ + 1], 1);
-			Vector2f pos = new Vector2f(xCord, zCord);
+			Vector2f pos = new Vector2f(xCoord, zCoord);
 			return MathHelper.barryCentric(p1, p2, p3, pos);
 		} else {
 			// normally i would be the type to one line this code, but itll be TOOOO long
 			Vector3f p1 = new Vector3f(1, this.heights[gridX + 1][gridZ], 0);
 			Vector3f p2 = new Vector3f(1, this.heights[gridX + 1][gridZ + 1], 1);
 			Vector3f p3 = new Vector3f(0, this.heights[gridX][gridZ + 1], 1);
-			Vector2f pos = new Vector2f(xCord, zCord);
+			Vector2f pos = new Vector2f(xCoord, zCoord);
 			return MathHelper.barryCentric(p1, p2, p3, pos);
 		}
 	}
