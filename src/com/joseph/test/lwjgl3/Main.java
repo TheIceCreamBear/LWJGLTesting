@@ -18,6 +18,7 @@ import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.entity.Player;
 import com.joseph.test.lwjgl3.gui.GuiRenderer;
 import com.joseph.test.lwjgl3.gui.GuiTexture;
+import com.joseph.test.lwjgl3.math.MousePicker;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
@@ -244,6 +245,10 @@ public class Main {
 		
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		
+		// really dont like what this is called
+		MousePicker picker = new MousePicker(camera, renderer.getProjMatrix());
+		Entity test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.05f);
+		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
 		// UPDATES NOT DELTA TIME UPDATES THANKS
@@ -263,12 +268,18 @@ public class Main {
 			playa.move(terrain2, (float) delta);
 			camera.move();
 			
+			picker.update();
+			System.out.println(picker.getCurRay());
+			Vector3f position = new Vector3f(camera.getPosition());
+			Vector3f longRay = new Vector3f(picker.getCurRay()).mul(5.0f);
+			test.setPos(position.add(longRay));
 			
 			// load all of the objects (entities) that we are going to render into the main renderer
 			for (Entity e : entities) {
 				renderer.addEntity(e);
 			}
 			renderer.addEntity(playa);
+			renderer.addEntity(test);
 //			renderer.addTerrain(terrain);
 			renderer.addTerrain(terrain2);
 			

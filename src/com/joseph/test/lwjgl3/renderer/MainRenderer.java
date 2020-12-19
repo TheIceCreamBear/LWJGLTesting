@@ -194,4 +194,8 @@ public class MainRenderer {
 		// disable the removal of the cull feature of faces, i want all the faces
 		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
+	
+	public Matrix4f getProjMatrix() {
+		return this.projMatrix;
+	}
 }
