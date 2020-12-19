@@ -7,6 +7,7 @@ import org.joml.Vector4f;
 
 import com.joseph.test.lwjgl3.GLFWHandler;
 import com.joseph.test.lwjgl3.entity.Camera;
+import com.joseph.test.lwjgl3.terrain.Terrain;
 import com.joseph.test.lwjgl3.util.Point;
 
 /**
@@ -20,16 +21,26 @@ import com.joseph.test.lwjgl3.util.Point;
  *
  */
 public class MousePicker {
+	private static final int RECURSION_COUNT = 200;
+	private static final float RAY_RANGE = 600;
+	
 	private Vector3f curRay;
 	private Matrix4f projMat;
 	private Matrix4f viewMat;
 	private Camera cam;
 	
-	public MousePicker(Camera cam, Matrix4f proj) {
+	private Terrain terrain;
+	private Vector3f curTerrainPoint;
+	
+	public MousePicker(Camera cam, Matrix4f proj, Terrain t) {
 		this.cam = cam;
 		this.projMat = proj;
 		this.viewMat = MathHelper.createViewMatrix(cam);
-		this.cam = cam;
+		this.terrain = t;
+	}
+	
+	public Vector3f getCurTerrainPoint() {
+		return this.curTerrainPoint;
 	}
 	
 	public Vector3f getCurRay() {
@@ -39,6 +50,11 @@ public class MousePicker {
 	public void update() {
 		viewMat = MathHelper.createViewMatrix(cam);
 		this.curRay = this.calcRay();
+		if (intersectionInRange(0, RAY_RANGE, this.curRay)) {
+			curTerrainPoint = binarySearch(0, 0, RAY_RANGE, this.curRay);
+		} else {
+			curTerrainPoint = null;
+		}
 	}
 	
 	private Vector3f calcRay() {
@@ -73,5 +89,62 @@ public class MousePicker {
 		float x = (2.0f * pos.getX()) / GLFWHandler.SCREEN_WIDTH - 1.0f;
 		float y = (2.0f * pos.getY()) / GLFWHandler.SCREEN_HEIGHT - 1.0f;
 		return new Vector2f(x, -y);
+	}
+	
+	//**********************************************************
+	// so yea uhhhhhhhhh this is straight out of the tutorial guy's code, and TBH idk that i really vibe with
+	// how this is done and setup, but like not much i can really do, but it does work pretty well IMO
+	// so this is both cool but also poopy
+	
+	private Vector3f getPointOnRay(Vector3f ray, float distance) {
+		Vector3f camPos = cam.getPosition();
+		Vector3f start = new Vector3f(camPos.x, camPos.y, camPos.z);
+		Vector3f scaledRay = new Vector3f(ray.x * distance, ray.y * distance, ray.z * distance);
+		return start.add(scaledRay);
+	}
+	
+	private Vector3f binarySearch(int count, float start, float finish, Vector3f ray) {
+		float half = start + ((finish - start) / 2f);
+		if (count >= RECURSION_COUNT) {
+			Vector3f endPoint = getPointOnRay(ray, half);
+			Terrain terrain = getTerrain(endPoint.x, endPoint.z);
+			if (terrain != null) {
+				return endPoint;
+			} else {
+				return null;
+			}
+		}
+		if (intersectionInRange(start, half, ray)) {
+			return binarySearch(count + 1, start, half, ray);
+		} else {
+			return binarySearch(count + 1, half, finish, ray);
+		}
+	}
+	
+	private boolean intersectionInRange(float start, float finish, Vector3f ray) {
+		Vector3f startPoint = getPointOnRay(ray, start);
+		Vector3f endPoint = getPointOnRay(ray, finish);
+		if (!isUnderGround(startPoint) && isUnderGround(endPoint)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean isUnderGround(Vector3f testPoint) {
+		Terrain terrain = getTerrain(testPoint.x, testPoint.z);
+		float height = 0;
+		if (terrain != null) {
+			height = terrain.getHeightOfTerrain(testPoint.x, testPoint.z);
+		}
+		if (testPoint.y < height) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private Terrain getTerrain(float worldX, float worldZ) {
+		return terrain;
 	}
 }

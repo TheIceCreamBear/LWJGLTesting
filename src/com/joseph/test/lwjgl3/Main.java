@@ -246,8 +246,8 @@ public class Main {
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		
 		// really dont like what this is called
-		MousePicker picker = new MousePicker(camera, renderer.getProjMatrix());
-		Entity test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.05f);
+		MousePicker picker = new MousePicker(camera, renderer.getProjMatrix(), terrain2);
+		Entity test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.5f);
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
@@ -269,10 +269,14 @@ public class Main {
 			camera.move();
 			
 			picker.update();
-			System.out.println(picker.getCurRay());
-			Vector3f position = new Vector3f(camera.getPosition());
-			Vector3f longRay = new Vector3f(picker.getCurRay()).mul(5.0f);
-			test.setPos(position.add(longRay));
+			Vector3f terPoint = picker.getCurTerrainPoint();
+			if (terPoint != null) {
+				test.setPos(terPoint);
+				if (GLFW.glfwGetMouseButton(windowPointer, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
+					entities.add(test);
+					test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.5f);
+				}
+			}
 			
 			// load all of the objects (entities) that we are going to render into the main renderer
 			for (Entity e : entities) {
