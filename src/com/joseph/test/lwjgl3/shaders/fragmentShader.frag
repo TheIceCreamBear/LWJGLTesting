@@ -19,7 +19,7 @@ uniform float ambientLight = 0.2;
 uniform float isLightSource = 0.0;
 
 const float levels = 4;
-const bool celShading = true;
+const bool celShading = false;
 
 void main(void) {
     vec3 normal = normalize(surfaceNormal);

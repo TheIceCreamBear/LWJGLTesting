@@ -22,7 +22,7 @@ uniform float reflectivity;
 uniform float ambientLight = 0.2;
 
 const float levels = 4;
-const bool celShading = true;
+const bool celShading = false;
 
 void main(void) {
     vec4 blendColor = texture(blendMap, texCoord);
