@@ -140,9 +140,9 @@ public class Main {
 		List<Entity> entities = new ArrayList<Entity>();
 		
 		// load a tree model and its texture
-		ModelData treeData = OBJLoader.loadObjModel("res/provided/pine.obj");
+		ModelData treeData = OBJLoader.loadObjModel("res/provided/bobbleTree.obj");
 		RawModel treeModel = loader.loadToVAO(treeData);
-		Texture treeTex = TextureLoader.loadTexture("res/provided/pine.png");
+		Texture treeTex = TextureLoader.loadTexture("res/provided/bobbleTree.png");
 		TexturedModel tree = new TexturedModel(treeModel, treeTex);
 		
 		// load a "low poly" tree model and its texture
@@ -161,12 +161,14 @@ public class Main {
 		TexturedModel grass = new TexturedModel(grassModel, grassTex);
 		
 		// load a fern model and its texture
-		ModelData fernData = OBJLoader.loadObjModel("res/provided/fern.obj");
+		ModelData fernData = OBJLoader.loadObjModel("res/provided/toonRocks.obj");
 		RawModel fernModel = loader.loadToVAO(fernData);
-		Texture fernTex = TextureLoader.loadTexture("res/provided/fern.png");
-		fernTex.setNumRows(2);
-		fernTex.setHasTransparency(true);
-		fernTex.setUseFakedLighting(true);
+		Texture fernTex = TextureLoader.loadTexture("res/provided/toonRocks.png");
+//		fernTex.setNumRows(2);
+//		fernTex.setHasTransparency(true);
+//		fernTex.setUseFakedLighting(true);
+		fernTex.setReflectivity(1);
+		fernTex.setShineDamper(10);
 		TexturedModel fern = new TexturedModel(fernModel, fernTex);
 		
 		// load a lamp
@@ -181,7 +183,7 @@ public class Main {
 		
 		// setup some lights
 		List<Light> lights = new ArrayList<Light>();
-		lights.add(new Light(new Vector3f(0.0f, 1000.0f, -7000.0f), new Vector3f(0.4f, 0.4f, 0.4f)));
+		lights.add(new Light(new Vector3f(0.0f, 1000.0f, -7000.0f), new Vector3f(1.0f, 1.4f, 1.0f)));
 		lights.add(new Light(new Vector3f(185.0f, 6.2f, -293.0f), new Vector3f(2.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
 		lights.add(new Light(new Vector3f(370.0f, 15.1f, -300.0f), new Vector3f(0.0f, 2.0f, 2.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
 		lights.add(new Light(new Vector3f(293.0f, 4.1f, -305.0f), new Vector3f(2.0f, 2.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));

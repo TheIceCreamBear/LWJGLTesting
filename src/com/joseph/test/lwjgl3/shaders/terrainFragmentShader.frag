@@ -21,6 +21,9 @@ uniform float shineDamper;
 uniform float reflectivity;
 uniform float ambientLight = 0.2;
 
+const float levels = 4;
+const bool celShading = true;
+
 void main(void) {
     vec4 blendColor = texture(blendMap, texCoord);
     
@@ -48,10 +51,21 @@ void main(void) {
 	    float dotProd = dot(normal, light);
 	    float brightness = max(dotProd, ambientLight);
 	    
+        if (celShading) {
+           float level = floor(brightness * levels);
+           brightness = level / levels;
+        }
+	    
 	    vec3 reflected = reflect(lightDir, normal);
 	    float specularFactor = dot(reflected, cam);
 	    specularFactor = max(specularFactor, 0.0);
 	    float dampedFactor = pow(specularFactor, shineDamper);
+	    
+        if (celShading) {
+           float level = floor(dampedFactor * levels);
+           dampedFactor = level / levels;
+        }
+        
         totalDiffuse += (brightness * lightColor[i]) / attFactor;
         totalSpecular += (dampedFactor * reflectivity * lightColor[i]) / attFactor;
     }

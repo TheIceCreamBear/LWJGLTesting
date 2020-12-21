@@ -18,6 +18,9 @@ uniform float reflectivity;
 uniform float ambientLight = 0.2;
 uniform float isLightSource = 0.0;
 
+const float levels = 4;
+const bool celShading = true;
+
 void main(void) {
     vec3 normal = normalize(surfaceNormal);
     vec3 cam = normalize(toCam);
@@ -38,10 +41,21 @@ void main(void) {
 	       brightness = max(abs(dotProd), 0.0);
 	    }
 	    
+	    if (celShading) {
+	       float level = floor(brightness * levels);
+	       brightness = level / levels;
+	    }
+	    
 	    vec3 reflected = reflect(lightDir, normal);
 	    float specularFactor = dot(reflected, cam);
 	    specularFactor = max(specularFactor, 0.0);
 	    float dampedFactor = pow(specularFactor, shineDamper);
+	    
+	    if (celShading) {
+           float level = floor(dampedFactor * levels);
+           dampedFactor = level / levels;
+	    }
+	    
 	    totalDiffuse += (brightness * lightColor[i]) / attFactor;
         totalSpecular += (dampedFactor * reflectivity * lightColor[i]) / attFactor;
     }
