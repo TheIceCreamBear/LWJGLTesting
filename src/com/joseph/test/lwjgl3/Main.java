@@ -30,6 +30,9 @@ import com.joseph.test.lwjgl3.textures.TerrainTexture;
 import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 import com.joseph.test.lwjgl3.textures.Texture;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
+import com.joseph.test.lwjgl3.water.WaterRenderer;
+import com.joseph.test.lwjgl3.water.WaterShader;
+import com.joseph.test.lwjgl3.water.WaterTile;
 
 public class Main {
 	// note this is created and explained later in the program
@@ -138,6 +141,7 @@ public class Main {
 		ModelLoader loader = new ModelLoader();
 		MainRenderer renderer = new MainRenderer(loader);
 		List<Entity> entities = new ArrayList<Entity>();
+		List<Terrain> terrains = new ArrayList<Terrain>();
 		
 		// load a tree model and its texture
 		ModelData treeData = OBJLoader.loadObjModel("res/provided/pine.obj");
@@ -207,6 +211,7 @@ public class Main {
 				
 //		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap, "res/provided/heightmap.png");
 		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap, "res/provided/heightmap.png");
+		terrains.add(terrain2);
 		
 		ModelData playerData = OBJLoader.loadObjModel("res/provided/person.obj");
 		RawModel playerModel = loader.loadToVAO(playerData);
@@ -214,6 +219,8 @@ public class Main {
 		TexturedModel player = new TexturedModel(playerModel, playerTex);
 		Player playa = new Player(player, new Vector3f(160.0f, terrain2.getHeightOfTerrain(160.0f, -260.0f), -260.0f), 0.0f, 90.0f, 0.0f, 0.5f);
 		Camera camera = new Camera(playa);
+		// new: add player to list of entites because it is one and it will always be rendered
+		entities.add(playa);
 		
 		// store the random objects into a list
 		Random r = new Random();
@@ -249,6 +256,12 @@ public class Main {
 		MousePicker picker = new MousePicker(camera, renderer.getProjMatrix(), terrain2);
 		Entity test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.5f);
 		
+		// water stuff that really shouldnt be in this location but this project is already a mess so whats some more
+		WaterShader wShader = new WaterShader();
+		WaterRenderer wRenderer = new WaterRenderer(loader, wShader, renderer.getProjMatrix());
+		List<WaterTile> water = new ArrayList<WaterTile>();
+		water.add(new WaterTile(275.0f, -280.0f, -2.0f));
+		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
 		// UPDATES NOT DELTA TIME UPDATES THANKS
@@ -264,32 +277,36 @@ public class Main {
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {			
-			// move le player dude (multiple options to test different timing schemes
+			// move le player dude 
 			playa.move(terrain2, (float) delta);
 			camera.move();
 			
-			picker.update();
-			Vector3f terPoint = picker.getCurTerrainPoint();
-			if (terPoint != null) {
-				test.setPos(terPoint);
-				if (GLFW.glfwGetMouseButton(windowPointer, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
-					entities.add(test);
-					test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.5f);
-				}
-			}
+//			picker.update();
+//			if (terPoint != null) {
+//				test.setPos(terPoint);
+//				if (GLFW.glfwGetMouseButton(windowPointer, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
+//					entities.add(test);
+//					test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.5f);
+//				}
+//			}
 			
 			// load all of the objects (entities) that we are going to render into the main renderer
-			for (Entity e : entities) {
-				renderer.addEntity(e);
-			}
-			renderer.addEntity(playa);
-			renderer.addEntity(test);
+//			for (Entity e : entities) {
+//				renderer.addEntity(e);
+//			}
+//			renderer.addEntity(test);
 //			renderer.addTerrain(terrain);
-			renderer.addTerrain(terrain2);
+//			renderer.addTerrain(terrain2);
 			
 			// responsible for all the rendering, and while this is okay, i dont really like the structure
 			// of how it was coded, like at all, so expect this to change significantly
-			renderer.render(lights, camera, (float) delta);
+//			renderer.render(lights, camera, (float) delta);
+			
+			// render the entire scene with one call, makes everything simpler to an extent
+			renderer.renderScene(entities, terrains, lights, camera, (float) delta);
+			
+			// render water after scene but before gui
+			wRenderer.render(water, camera);
 			
 			// render the Gui items
 			guiRenderer.render(guis);
@@ -321,6 +338,9 @@ public class Main {
 		// as mentioned earlier, there is no need for us to follow good practice when trying to 
 		// connect these inter-weaving ideas together.
 		
+		// ^^^^ so that might have been a lie and a hinderance ^^^^
+		
+		wShader.cleanUp();
 		guiRenderer.cleanUp();
 		loader.cleanUp();
 		renderer.cleanUp();

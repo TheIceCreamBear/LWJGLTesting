@@ -2,6 +2,7 @@ package com.joseph.test.lwjgl3.renderer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.joml.Matrix4f;
@@ -66,6 +67,25 @@ public class MainRenderer {
 		
 		this.entities = new HashMap<TexturedModel, List<Entity>>();
 		this.terrains = new ArrayList<Terrain>();
+	}
+	
+	/**
+	 * Function to render a list of entites and terrains, with the given lights and to the given camera with the given delta.
+	 * Useful so that you dont have to keep track of each thing that needs to get added to the list of things to render
+	 * @param entities - the list of entities
+	 * @param terrains - the list of terrains
+	 * @param lights - a list of lights
+	 * @param camera - the camera to render to
+	 * @param delta - the delta time since the last frame
+	 */
+	public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Camera camera, float delta) {
+		for (Terrain t : terrains) {
+			this.addTerrain(t);
+		}
+		for (Entity e : entities) {
+			this.addEntity(e);
+		}
+		this.render(lights, camera, delta);
 	}
 	
 	/**
