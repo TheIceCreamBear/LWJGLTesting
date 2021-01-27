@@ -131,6 +131,8 @@ public class SkyboxRenderer {
 	}
 	
 	private void bindTextures(float delta) {
+		delta = 0.0f;
+		time = 12000.0f; // (disables time)
 		// weird provided day night cycle type thing
 		// not the best but following the TUT
 		// probably wont have a dynamic skybox in the actual engine

@@ -185,20 +185,21 @@ public class Main {
 		
 		// setup some lights
 		List<Light> lights = new ArrayList<Light>();
-		lights.add(new Light(new Vector3f(0.0f, 1000.0f, -7000.0f), new Vector3f(0.4f, 0.4f, 0.4f)));
-		lights.add(new Light(new Vector3f(185.0f, 6.2f, -293.0f), new Vector3f(2.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
-		lights.add(new Light(new Vector3f(370.0f, 15.1f, -300.0f), new Vector3f(0.0f, 2.0f, 2.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
-		lights.add(new Light(new Vector3f(293.0f, 4.1f, -305.0f), new Vector3f(2.0f, 2.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
+		lights.add(new Light(new Vector3f(0.0f, 100.0f, -100.0f), new Vector3f(1.0f, 1.0f, 1.0f))); // water sun
+//		lights.add(new Light(new Vector3f(0.0f, 1000.0f, -7000.0f), new Vector3f(0.4f, 0.4f, 0.4f))); // sun
+//		lights.add(new Light(new Vector3f(185.0f, 6.2f, -293.0f), new Vector3f(2.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
+//		lights.add(new Light(new Vector3f(370.0f, 15.1f, -300.0f), new Vector3f(0.0f, 2.0f, 2.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
+//		lights.add(new Light(new Vector3f(293.0f, 4.1f, -305.0f), new Vector3f(2.0f, 2.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
 		
 		// add entities at the light positions to make it easier to know where the light is
 		entities.add(new Entity(icoSphere, 0, lights.get(0).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
-		entities.add(new Entity(icoSphere, 0, lights.get(1).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
-		entities.add(new Entity(icoSphere, 0, lights.get(2).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
-		entities.add(new Entity(icoSphere, 0, lights.get(3).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
+//		entities.add(new Entity(icoSphere, 0, lights.get(1).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
+//		entities.add(new Entity(icoSphere, 0, lights.get(2).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
+//		entities.add(new Entity(icoSphere, 0, lights.get(3).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
 		
-		entities.add(new Entity(lamp, 0, new Vector3f(185.0f, -4.7f, -293.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
-		entities.add(new Entity(lamp, 0, new Vector3f(370.0f, 4.2f, -300.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
-		entities.add(new Entity(lamp, 0, new Vector3f(293.0f, -6.8f, -305.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
+//		entities.add(new Entity(lamp, 0, new Vector3f(185.0f, -4.7f, -293.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
+//		entities.add(new Entity(lamp, 0, new Vector3f(370.0f, 4.2f, -300.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
+//		entities.add(new Entity(lamp, 0, new Vector3f(293.0f, -6.8f, -305.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
 		
 		// setup terrain textures
 		TerrainTexture baseTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/grassy.png"));
@@ -207,33 +208,37 @@ public class Main {
 		TerrainTexture bTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/path.png"));
 		
 		TerrainTexturePack pack = new TerrainTexturePack(baseTex, rTex, gTex, bTex);
-		TerrainTexture blendMap = new TerrainTexture(TextureLoader.loadTexture("res/provided/blendMap.png"));
+//		TerrainTexture blendMap = new TerrainTexture(TextureLoader.loadTexture("res/provided/blendMap.png"));
+		TerrainTexture blendMap = new TerrainTexture(TextureLoader.loadTexture("res/provided/blendMapForWater.png"));
 				
 //		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap, "res/provided/heightmap.png");
 		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap, "res/provided/heightmap.png");
-		terrains.add(terrain2);
+		Terrain waterT = new Terrain(0, -1, loader, pack, blendMap, "res/provided/heightmapForWater.png");
+		terrains.add(waterT);
 		
 		ModelData playerData = OBJLoader.loadObjModel("res/provided/person.obj");
 		RawModel playerModel = loader.loadToVAO(playerData);
 		Texture playerTex = TextureLoader.loadTexture("res/provided/playerTexture.png");
 		TexturedModel player = new TexturedModel(playerModel, playerTex);
-		Player playa = new Player(player, new Vector3f(160.0f, terrain2.getHeightOfTerrain(160.0f, -260.0f), -260.0f), 0.0f, 90.0f, 0.0f, 0.5f);
+//		Player playa = new Player(player, new Vector3f(160.0f, terrain2.getHeightOfTerrain(160.0f, -260.0f), -260.0f), 0.0f, 90.0f, 0.0f, 0.5f);
+		Player playa = new Player(player, new Vector3f(10.0f, waterT.getHeightOfTerrain(10.0f, -10.0f), -10.0f), 0.0f, 90.0f, 0.0f, 0.5f);
 		Camera camera = new Camera(playa);
 		// new: add player to list of entites because it is one and it will always be rendered
 		entities.add(playa);
 		
 		// store the random objects into a list
+		/*
 		Random r = new Random();
 		for (int i = 0; i < 500; i++) {
 			if (i % 2 == 0) {
-				float x = r.nextFloat() * 800.0f;
-				float z = r.nextFloat() * -800.0f;
+				float x = r.nextFloat() * Terrain.SIZE;
+				float z = r.nextFloat() * -Terrain.SIZE;
 				float y = terrain2.getHeightOfTerrain(x, z);
 				entities.add(new Entity(fern, r.nextInt(4),  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 0.9f));
 			}
 			if (i % 5 == 0) {
-				float x = r.nextFloat() * 800.0f;
-				float z = r.nextFloat() * -800.0f;
+				float x = r.nextFloat() * Terrain.SIZE;
+				float z = r.nextFloat() * -Terrain.SIZE;
 				float y = terrain2.getHeightOfTerrain(x, z);
 //				entities.add(new Entity(lpTree, r.nextInt(4),  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.1f + 0.6f));
 //				x = r.nextFloat() * 800.0f;
@@ -242,6 +247,23 @@ public class Main {
 				entities.add(new Entity(tree,  new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, r.nextFloat() * 1.0f + 1.0f));
 			}
 		}
+		*/
+		entities.add(new Entity(tree, new Vector3f(38.0f, waterT.getHeightOfTerrain(38.0f, -21.0f), -21.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(tree, new Vector3f(12.0f, waterT.getHeightOfTerrain(12.0f, -48.0f), -48.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(tree, new Vector3f(13.0f, waterT.getHeightOfTerrain(13.0f, -25.0f), -25.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(tree, new Vector3f(97.0f, waterT.getHeightOfTerrain(97.0f, -28.0f), -28.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(tree, new Vector3f(113.0f, waterT.getHeightOfTerrain(113.0f, -20.0f), -20.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(tree, new Vector3f(138.0f, waterT.getHeightOfTerrain(138.0f, -23.0f), -23.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(tree, new Vector3f(92.0f, waterT.getHeightOfTerrain(92.0f, -9.0f), -9.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(tree, new Vector3f(139.0f, waterT.getHeightOfTerrain(139.0f, -128.0f), -128.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(tree, new Vector3f(125.0f, waterT.getHeightOfTerrain(125.0f, -143.0f), -143.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(tree, new Vector3f(15.0f, waterT.getHeightOfTerrain(15.0f, -135.0f), -135.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(tree, new Vector3f(39.0f, waterT.getHeightOfTerrain(39.0f, -123.0f), -123.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		
+		entities.add(new Entity(fern, new Vector3f(18.0f, waterT.getHeightOfTerrain(18.0f, -80.0f), -80.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(fern, new Vector3f(99.0f, waterT.getHeightOfTerrain(99.0f, -42.0f), -42.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(fern, new Vector3f(28.0f, waterT.getHeightOfTerrain(28.0f, -36.0f), -36.0f), 0.0f, 0.0f, 0.0f, 1.0f));
+		entities.add(new Entity(fern, new Vector3f(130.0f, waterT.getHeightOfTerrain(130.0f, -131.0f), -131.0f), 0.0f, 0.0f, 0.0f, 1.0f));
 		
 		List<GuiTexture> guis = new ArrayList<GuiTexture>();
 		GuiTexture gui = new GuiTexture(TextureLoader.loadTexture("res/provided/socuwan.png").glTextureID(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
@@ -253,14 +275,14 @@ public class Main {
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		
 		// really dont like what this is called
-		MousePicker picker = new MousePicker(camera, renderer.getProjMatrix(), terrain2);
+		MousePicker picker = new MousePicker(camera, renderer.getProjMatrix(), waterT);
 		Entity test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.5f);
 		
 		// water stuff that really shouldnt be in this location but this project is already a mess so whats some more
 		WaterShader wShader = new WaterShader();
 		WaterRenderer wRenderer = new WaterRenderer(loader, wShader, renderer.getProjMatrix());
 		List<WaterTile> water = new ArrayList<WaterTile>();
-		water.add(new WaterTile(275.0f, -280.0f, -2.0f));
+		water.add(new WaterTile(75.0f, -75.0f, 0.0f));
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
@@ -278,10 +300,12 @@ public class Main {
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {			
 			// move le player dude 
-			playa.move(terrain2, (float) delta);
+			playa.move(waterT, (float) delta);
 			camera.move();
 			
-//			picker.update();
+			picker.update();
+			Vector3f terPoint = picker.getCurTerrainPoint();
+			System.out.println(picker.getCurTerrainPoint());
 //			if (terPoint != null) {
 //				test.setPos(terPoint);
 //				if (GLFW.glfwGetMouseButton(windowPointer, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {

@@ -16,7 +16,7 @@ import com.joseph.test.lwjgl3.textures.TerrainTexture;
 import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 
 public class Terrain {
-	private static final float SIZE = 800;
+	public static final float SIZE = 150.0f;
 	private static final float MAX_HEIGHT = 40.0f;
 	private static final float MAX_PIXEL_COLOR = 256.0f * 256.0f * 256.0f;
 	
