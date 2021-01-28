@@ -30,6 +30,7 @@ import com.joseph.test.lwjgl3.textures.TerrainTexture;
 import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 import com.joseph.test.lwjgl3.textures.Texture;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
+import com.joseph.test.lwjgl3.water.WaterFrameBuffers;
 import com.joseph.test.lwjgl3.water.WaterRenderer;
 import com.joseph.test.lwjgl3.water.WaterShader;
 import com.joseph.test.lwjgl3.water.WaterTile;
@@ -283,6 +284,9 @@ public class Main {
 		WaterRenderer wRenderer = new WaterRenderer(loader, wShader, renderer.getProjMatrix());
 		List<WaterTile> water = new ArrayList<WaterTile>();
 		water.add(new WaterTile(75.0f, -75.0f, 0.0f));
+		WaterFrameBuffers fbos = new WaterFrameBuffers();
+		GuiTexture viewer = new GuiTexture(fbos.getReflectionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
+		guis.add(viewer);
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
@@ -303,9 +307,8 @@ public class Main {
 			playa.move(waterT, (float) delta);
 			camera.move();
 			
-			picker.update();
-			Vector3f terPoint = picker.getCurTerrainPoint();
-			System.out.println(picker.getCurTerrainPoint());
+//			picker.update();
+//			Vector3f terPoint = picker.getCurTerrainPoint();
 //			if (terPoint != null) {
 //				test.setPos(terPoint);
 //				if (GLFW.glfwGetMouseButton(windowPointer, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
@@ -325,6 +328,10 @@ public class Main {
 			// responsible for all the rendering, and while this is okay, i dont really like the structure
 			// of how it was coded, like at all, so expect this to change significantly
 //			renderer.render(lights, camera, (float) delta);
+			
+			fbos.bindReflectionFrameBuffer();
+			renderer.renderScene(entities, terrains, lights, camera, (float) delta);
+			fbos.unbindCurrentFrameBuffer();
 			
 			// render the entire scene with one call, makes everything simpler to an extent
 			renderer.renderScene(entities, terrains, lights, camera, (float) delta);
