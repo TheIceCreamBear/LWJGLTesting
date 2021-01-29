@@ -5,6 +5,7 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Light;
@@ -37,6 +38,7 @@ public class StaticShader extends ShaderProgram {
 	private int numRowsLocation;
 	private int offsetLocation;
 	private int isLightSourceLocation;
+	private int clipPlaneLocaiton;
 	
 	public StaticShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -62,6 +64,7 @@ public class StaticShader extends ShaderProgram {
 		this.numRowsLocation = super.getUniformLocation("numRows");
 		this.offsetLocation = super.getUniformLocation("offset");
 		this.isLightSourceLocation = super.getUniformLocation("isLightSource");
+		this.clipPlaneLocaiton = super.getUniformLocation("clipPlane");
 
 		this.lightPosLocation = new int[MAX_LIGHTS];
 		this.lightColorLocation = new int[MAX_LIGHTS];
@@ -129,5 +132,9 @@ public class StaticShader extends ShaderProgram {
 	
 	public void loadIsLightSource(boolean isLight) {
 		super.loadBoolean(isLightSourceLocation, isLight);
+	}
+	
+	public void loadClipPlane(Vector4f plane) {
+		super.loadVector(clipPlaneLocaiton, plane);
 	}
 }

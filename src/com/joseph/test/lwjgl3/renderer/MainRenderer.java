@@ -2,10 +2,10 @@ package com.joseph.test.lwjgl3.renderer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 
 import com.joseph.test.lwjgl3.GLFWHandler;
@@ -78,14 +78,14 @@ public class MainRenderer {
 	 * @param camera - the camera to render to
 	 * @param delta - the delta time since the last frame
 	 */
-	public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Camera camera, float delta) {
+	public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Camera camera, Vector4f clipPlane, float delta) {
 		for (Terrain t : terrains) {
 			this.addTerrain(t);
 		}
 		for (Entity e : entities) {
 			this.addEntity(e);
 		}
-		this.render(lights, camera, delta);
+		this.render(lights, camera, clipPlane, delta);
 	}
 	
 	/**
@@ -94,12 +94,14 @@ public class MainRenderer {
 	 * @param worldLight - a global light (how do we do more than one light because like thatll be important)
 	 * @param camera - the camera
 	 */
-	public void render(List<Light> lights, Camera camera, float delta) {
+	public void render(List<Light> lights, Camera camera, Vector4f clipPlane, float delta) {
 		// this will clear the current frame buffer of its contents and set the pixels to the 
 		// pixel color specified in the clearColor funciton call above
 		this.prepare();
 		// start le shader
 		sShader.start();
+		// load le clip plane
+		sShader.loadClipPlane(clipPlane);
 		// load the sky color
 		sShader.loadSkyColor(RED, GREEN, BLUE);
 		// load the lights and view matrix
@@ -111,6 +113,8 @@ public class MainRenderer {
 		sShader.stop();
 		// start the terrain shader
 		tShader.start();
+		// load le clip plane
+		tShader.loadClipPlane(clipPlane);
 		// load the sky color
 		tShader.loadSkyColor(RED, GREEN, BLUE);
 		// load the light and view matrix

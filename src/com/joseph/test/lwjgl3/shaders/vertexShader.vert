@@ -21,6 +21,8 @@ uniform float useFakeLight;
 uniform float numRows;
 uniform vec2 offset;
 
+uniform vec4 clipPlane;
+
 // TODO mess with this
 const float density = 0.0035;
 const float gradient = 5.0;
@@ -28,6 +30,8 @@ const float gradient = 5.0;
 void main(void) {
     vec4 worldPos = tMatrix * vec4(position, 1.0);
     vec4 positionRelToCam = viewMatrix * worldPos;
+    
+    gl_ClipDistance[0] = dot(worldPos, clipPlane);
 
     gl_Position = projMatrix * viewMatrix * tMatrix * vec4(position, 1.0);
     texCoord = (textureCoords / numRows) + offset;

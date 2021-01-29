@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Light;
@@ -35,6 +36,7 @@ public class TerrainShader extends ShaderProgram {
 	private int rTexLocation;
 	private int gTexLocation;
 	private int bTexLocation;
+	private int clipPlaneLocaiton;
 	
 	
 	public TerrainShader() {
@@ -62,6 +64,7 @@ public class TerrainShader extends ShaderProgram {
 		this.rTexLocation = super.getUniformLocation("rTex");
 		this.gTexLocation = super.getUniformLocation("gTex");
 		this.bTexLocation = super.getUniformLocation("bTex");
+		this.clipPlaneLocaiton = super.getUniformLocation("clipPlane");
 
 		this.lightPosLocation = new int[MAX_LIGHTS];
 		this.lightColorLocation = new int[MAX_LIGHTS];
@@ -121,5 +124,9 @@ public class TerrainShader extends ShaderProgram {
 	
 	public void loadAmbientLight(float ambientLight) {
 		super.loadFloat(ambientLightLocation, ambientLight);
+	}
+
+	public void loadClipPlane(Vector4f plane) {
+		super.loadVector(clipPlaneLocaiton, plane);
 	}
 }

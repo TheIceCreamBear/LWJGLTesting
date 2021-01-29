@@ -52,6 +52,10 @@ public class Camera {
 		return this.roll;
 	}
 	
+	public void invertPitch() {
+		this.pitch = -this.pitch;
+	}
+	
 	private void calculateNewPos() {
 		// horizontal distance from the player
 		float horizDist = (float) (distFromPlayer * Math.cos(Math.toRadians(pitch)));

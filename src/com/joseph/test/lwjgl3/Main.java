@@ -6,10 +6,12 @@ import java.util.Random;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
 import com.joseph.test.lwjgl3.entity.Camera;
@@ -283,10 +285,13 @@ public class Main {
 		WaterShader wShader = new WaterShader();
 		WaterRenderer wRenderer = new WaterRenderer(loader, wShader, renderer.getProjMatrix());
 		List<WaterTile> water = new ArrayList<WaterTile>();
-		water.add(new WaterTile(75.0f, -75.0f, 0.0f));
+		WaterTile wt = new WaterTile(75.0f, -75.0f, 0.0f);
+		water.add(wt);
 		WaterFrameBuffers fbos = new WaterFrameBuffers();
-		GuiTexture viewer = new GuiTexture(fbos.getReflectionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
-		guis.add(viewer);
+		GuiTexture refraction = new GuiTexture(fbos.getRefractionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		GuiTexture reflection = new GuiTexture(fbos.getReflectionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		guis.add(refraction);
+		guis.add(reflection);
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
@@ -329,12 +334,34 @@ public class Main {
 			// of how it was coded, like at all, so expect this to change significantly
 //			renderer.render(lights, camera, (float) delta);
 			
+
+			// tells open gl that we want to use the clip plane distance 0, just to make sure that it is enabled
+			// clip distance is just how far a vertex is from the clipping plane (this is signed), so like a positive
+			// clip distance means that it is "below" the plane (below is a relative term cause 3d planes and normals
+			// and wierd calc 3 type stuff but basically on the side where the normal of the plane is positive)
+			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
+			
+			// render reflection
 			fbos.bindReflectionFrameBuffer();
-			renderer.renderScene(entities, terrains, lights, camera, (float) delta);
-			fbos.unbindCurrentFrameBuffer();
+			// set cam to below water
+			float distance = 2 * (camera.getPosition().y - wt.getHeight());
+			camera.getPosition().y -= distance;
+			camera.invertPitch();
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 1, 0, -wt.getHeight()), (float) delta);
+			// reset cam
+			camera.getPosition().y += distance;
+			camera.invertPitch();
+			
+			// render refraction
+			fbos.bindRefractionFrameBuffer();
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, -1, 0, wt.getHeight()), (float) delta);
+			
+			// disables the cliping feature just so that nothing gets accidentally clipped by the shaders during the main pass
+			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			
 			// render the entire scene with one call, makes everything simpler to an extent
-			renderer.renderScene(entities, terrains, lights, camera, (float) delta);
+			fbos.unbindCurrentFrameBuffer();
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 0, 0, 0), (float) delta);
 			
 			// render water after scene but before gui
 			wRenderer.render(water, camera);
