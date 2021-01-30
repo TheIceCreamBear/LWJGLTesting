@@ -186,9 +186,15 @@ public class Main {
 		Texture icoTex = TextureLoader.loadTexture("res/provided/white.png");
 		TexturedModel icoSphere = new TexturedModel(icoModel, icoTex);
 		
+		// loads the rocks for the water tuts
+		RawModel rocksModel = loader.loadToVAO(OBJLoader.loadObjModel("res/provided/rocks.obj"));
+		Texture rocksTex = TextureLoader.loadTexture("res/provided/rocks.png");
+		TexturedModel rocks = new TexturedModel(rocksModel, rocksTex);
+		
 		// setup some lights
 		List<Light> lights = new ArrayList<Light>();
 		lights.add(new Light(new Vector3f(0.0f, 100.0f, -100.0f), new Vector3f(1.0f, 1.0f, 1.0f))); // water sun
+		lights.add(new Light(new Vector3f(0.0f, -1000.0f, -100.0f), new Vector3f(1.0f, 1.0f, 1.0f))); // water bottom sun
 //		lights.add(new Light(new Vector3f(0.0f, 1000.0f, -7000.0f), new Vector3f(0.4f, 0.4f, 0.4f))); // sun
 //		lights.add(new Light(new Vector3f(185.0f, 6.2f, -293.0f), new Vector3f(2.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
 //		lights.add(new Light(new Vector3f(370.0f, 15.1f, -300.0f), new Vector3f(0.0f, 2.0f, 2.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
@@ -251,6 +257,10 @@ public class Main {
 			}
 		}
 		*/
+		
+		// the rocks entity for under the little island type deal
+		entities.add(new Entity(rocks, new Vector3f(75.0f, 4.6f, -75.0f), 0.0f, 0.0f, 0.0f, 75.0f));
+		
 		entities.add(new Entity(tree, new Vector3f(38.0f, waterT.getHeightOfTerrain(38.0f, -21.0f), -21.0f), 0.0f, 0.0f, 0.0f, 1.0f));
 		entities.add(new Entity(tree, new Vector3f(12.0f, waterT.getHeightOfTerrain(12.0f, -48.0f), -48.0f), 0.0f, 0.0f, 0.0f, 1.0f));
 		entities.add(new Entity(tree, new Vector3f(13.0f, waterT.getHeightOfTerrain(13.0f, -25.0f), -25.0f), 0.0f, 0.0f, 0.0f, 1.0f));
