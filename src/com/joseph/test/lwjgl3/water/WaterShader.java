@@ -14,6 +14,8 @@ public class WaterShader extends ShaderProgram {
 	private int tMatrixLocation;
 	private int projMatrixLocation;
 	private int viewMatrixLocation;
+	private int reflectionLocation;
+	private int refractionLocation;
 
 	public WaterShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -29,6 +31,13 @@ public class WaterShader extends ShaderProgram {
 		this.tMatrixLocation = super.getUniformLocation("tMatrix");
 		this.projMatrixLocation = super.getUniformLocation("projMatrix");
 		this.viewMatrixLocation = super.getUniformLocation("viewMatrix");
+		this.reflectionLocation = super.getUniformLocation("reflectionTexture");
+		this.refractionLocation = super.getUniformLocation("refractionTexture");
+	}
+	
+	public void connectTextures() {
+		super.loadInt(reflectionLocation, 0);
+		super.loadInt(refractionLocation, 1);
 	}
 
 	public void loadProjectionMatrix(Matrix4f projection) {

@@ -27,8 +27,8 @@ import com.joseph.test.lwjgl3.GLFWHandler;
  */
 public class WaterFrameBuffers {
 	
-	protected static final int REFLECTION_WIDTH = 320;
-	private static final int REFLECTION_HEIGHT = 180;
+	protected static final int REFLECTION_WIDTH = 640;
+	private static final int REFLECTION_HEIGHT = 360;
 	
 	protected static final int REFRACTION_WIDTH = 1280;
 	private static final int REFRACTION_HEIGHT = 720;

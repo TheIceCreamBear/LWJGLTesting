@@ -293,15 +293,11 @@ public class Main {
 		
 		// water stuff that really shouldnt be in this location but this project is already a mess so whats some more
 		WaterShader wShader = new WaterShader();
-		WaterRenderer wRenderer = new WaterRenderer(loader, wShader, renderer.getProjMatrix());
+		WaterFrameBuffers fbos = new WaterFrameBuffers();
+		WaterRenderer wRenderer = new WaterRenderer(loader, wShader, renderer.getProjMatrix(), fbos);
 		List<WaterTile> water = new ArrayList<WaterTile>();
 		WaterTile wt = new WaterTile(75.0f, -75.0f, 0.0f);
 		water.add(wt);
-		WaterFrameBuffers fbos = new WaterFrameBuffers();
-		GuiTexture refraction = new GuiTexture(fbos.getRefractionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-		GuiTexture reflection = new GuiTexture(fbos.getReflectionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-		guis.add(refraction);
-		guis.add(reflection);
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
