@@ -370,7 +370,7 @@ public class Main {
 			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 0, 0, 0), (float) delta);
 			
 			// render water after scene but before gui
-			wRenderer.render(water, camera);
+			wRenderer.render(water, camera, (float) delta);
 			
 			// render the Gui items
 			guiRenderer.render(guis);
