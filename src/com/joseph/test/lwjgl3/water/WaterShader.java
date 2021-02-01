@@ -18,6 +18,7 @@ public class WaterShader extends ShaderProgram {
 	private int refractionLocation;
 	private int dudvLocation;
 	private int moveFactorLocation;
+	private int camPosLocation;
 
 	public WaterShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -37,6 +38,7 @@ public class WaterShader extends ShaderProgram {
 		this.refractionLocation = super.getUniformLocation("refractionTexture");
 		this.dudvLocation = super.getUniformLocation("dudvMap");
 		this.moveFactorLocation = super.getUniformLocation("moveFactor");
+		this.camPosLocation = super.getUniformLocation("camPos");
 	}
 	
 	public void connectTextures() {
@@ -55,6 +57,7 @@ public class WaterShader extends ShaderProgram {
 	
 	public void loadViewMatrix(Camera camera){
 		super.loadMatrix4(viewMatrixLocation, MathHelper.createViewMatrix(camera));
+		super.loadVector(camPosLocation, camera.getPosition());
 	}
 
 	public void loadModelMatrix(Matrix4f modelMatrix){
