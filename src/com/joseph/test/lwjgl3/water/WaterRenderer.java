@@ -20,7 +20,7 @@ import com.joseph.test.lwjgl3.textures.TextureLoader;
 
 public class WaterRenderer {
 	private static final String DUDV_MAP = "res/provided/waterDUDV.png";
-	private static final String NORMAL_MAP = "res/provided/waterNormalMap.png";
+	private static final String NORMAL_MAP = "res/provided/matchingNormalMap.png";
 	private static final float WAVE_SPEED = 0.03f;
 
 	private RawModel quad;
