@@ -3,6 +3,7 @@ package com.joseph.test.lwjgl3.water;
 import org.joml.Matrix4f;
 
 import com.joseph.test.lwjgl3.entity.Camera;
+import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.shaders.ShaderProgram;
 
@@ -19,6 +20,9 @@ public class WaterShader extends ShaderProgram {
 	private int dudvLocation;
 	private int moveFactorLocation;
 	private int camPosLocation;
+	private int normalMapLocation;
+	private int lightPosLocation;
+	private int lightColorLocation;
 
 	public WaterShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -39,12 +43,21 @@ public class WaterShader extends ShaderProgram {
 		this.dudvLocation = super.getUniformLocation("dudvMap");
 		this.moveFactorLocation = super.getUniformLocation("moveFactor");
 		this.camPosLocation = super.getUniformLocation("camPos");
+		this.normalMapLocation = super.getUniformLocation("normalMap");
+		this.lightColorLocation = super.getUniformLocation("lightColor");
+		this.lightPosLocation = super.getUniformLocation("lightPos");
 	}
 	
 	public void connectTextures() {
 		super.loadInt(reflectionLocation, 0);
 		super.loadInt(refractionLocation, 1);
 		super.loadInt(dudvLocation, 2);
+		super.loadInt(normalMapLocation, 3);
+	}
+	
+	public void loadLight(Light sky) {
+		super.loadVector(lightColorLocation, sky.getColor());
+		super.loadVector(lightPosLocation, sky.getPosition());
 	}
 	
 	public void loadMoveFactor(float factor) {

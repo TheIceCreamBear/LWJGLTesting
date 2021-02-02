@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.joseph.test.lwjgl3.entity.Camera;
+import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
@@ -19,6 +20,7 @@ import com.joseph.test.lwjgl3.textures.TextureLoader;
 
 public class WaterRenderer {
 	private static final String DUDV_MAP = "res/provided/waterDUDV.png";
+	private static final String NORMAL_MAP = "res/provided/waterNormalMap.png";
 	private static final float WAVE_SPEED = 0.03f;
 
 	private RawModel quad;
@@ -26,12 +28,14 @@ public class WaterRenderer {
 	private WaterFrameBuffers wfb;
 	
 	private Texture dudvTex;
+	private Texture normalMap;
 	private float moveFactor = 0.0f;
 
 	public WaterRenderer(ModelLoader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers wfb) {
 		this.shader = shader;
 		this.wfb = wfb;
 		this.dudvTex = TextureLoader.loadTexture(DUDV_MAP);
+		this.normalMap = TextureLoader.loadTexture(NORMAL_MAP);
 		shader.start();
 		shader.connectTextures();
 		shader.loadProjectionMatrix(projectionMatrix);
@@ -39,8 +43,8 @@ public class WaterRenderer {
 		setUpVAO(loader);
 	}
 
-	public void render(List<WaterTile> water, Camera camera, float delta) {
-		prepareRender(camera, delta);	
+	public void render(List<WaterTile> water, Camera camera, float delta, Light sky) {
+		prepareRender(camera, delta, sky);	
 		for (WaterTile tile : water) {
 			Matrix4f modelMatrix = MathHelper.createTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, WaterTile.TILE_SIZE);
 			shader.loadModelMatrix(modelMatrix);
@@ -49,9 +53,10 @@ public class WaterRenderer {
 		unbind();
 	}
 	
-	private void prepareRender(Camera camera, float delta) {
+	private void prepareRender(Camera camera, float delta, Light sky) {
 		shader.start();
 		shader.loadViewMatrix(camera);
+		shader.loadLight(sky);
 		moveFactor += WAVE_SPEED * delta;
 		moveFactor %= 1;
 		shader.loadMoveFactor(moveFactor);
@@ -63,6 +68,8 @@ public class WaterRenderer {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.wfb.getRefractionTexture());
 		GL13.glActiveTexture(GL13.GL_TEXTURE2);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.dudvTex.glTextureID());
+		GL13.glActiveTexture(GL13.GL_TEXTURE3);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.normalMap.glTextureID());
 	}
 	
 	private void unbind(){
