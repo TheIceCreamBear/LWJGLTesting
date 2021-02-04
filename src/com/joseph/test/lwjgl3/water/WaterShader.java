@@ -23,6 +23,7 @@ public class WaterShader extends ShaderProgram {
 	private int normalMapLocation;
 	private int lightPosLocation;
 	private int lightColorLocation;
+	private int depthMapLocation;
 
 	public WaterShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -46,6 +47,7 @@ public class WaterShader extends ShaderProgram {
 		this.normalMapLocation = super.getUniformLocation("normalMap");
 		this.lightColorLocation = super.getUniformLocation("lightColor");
 		this.lightPosLocation = super.getUniformLocation("lightPos");
+		this.depthMapLocation = super.getUniformLocation("depthMap");
 	}
 	
 	public void connectTextures() {
@@ -53,6 +55,7 @@ public class WaterShader extends ShaderProgram {
 		super.loadInt(refractionLocation, 1);
 		super.loadInt(dudvLocation, 2);
 		super.loadInt(normalMapLocation, 3);
+		super.loadInt(depthMapLocation, 4);
 	}
 	
 	public void loadLight(Light sky) {

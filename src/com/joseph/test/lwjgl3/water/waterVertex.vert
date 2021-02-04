@@ -14,7 +14,7 @@ uniform vec3 lightPos;
 
 uniform vec3 camPos;
 
-const float tiling = 2.0;
+const float tiling = 4.0;
 
 void main(void) {
     vec4 worldPosition = tMatrix * vec4(position.x, 0.0, position.y, 1.0);

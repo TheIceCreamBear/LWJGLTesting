@@ -353,14 +353,14 @@ public class Main {
 			float distance = 2 * (camera.getPosition().y - wt.getHeight());
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
-			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 1, 0, -wt.getHeight()), (float) delta);
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 1, 0, -wt.getHeight() + 0.15f), (float) delta);
 			// reset cam
 			camera.getPosition().y += distance;
 			camera.invertPitch();
 			
 			// render refraction
 			fbos.bindRefractionFrameBuffer();
-			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, -1, 0, wt.getHeight()), (float) delta);
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, -1, 0, wt.getHeight() + 0.15f), (float) delta);
 			
 			// disables the cliping feature just so that nothing gets accidentally clipped by the shaders during the main pass
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
