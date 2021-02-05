@@ -42,6 +42,8 @@ public class Main {
 	// default value is null
 	public static long windowPointer = MemoryUtil.NULL;
 	
+	public static float delta = 0.0f;
+	
 	public static void main(String[] args) {		
 		// lol this is the main method bois
 		
@@ -289,7 +291,7 @@ public class Main {
 		
 		// really dont like what this is called
 		MousePicker picker = new MousePicker(camera, renderer.getProjMatrix(), waterT);
-		Entity test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.5f);
+//		Entity test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.5f);
 		
 		// water stuff that really shouldnt be in this location but this project is already a mess so whats some more
 		WaterShader wShader = new WaterShader();
@@ -307,7 +309,7 @@ public class Main {
 		// which returns a double. an alternative, would be replacing Sys in the TUT with GLFW.glfw[^] 
 		// where [^] represents making that following letter capitalized
 		double lastFrameTime = GLFW.glfwGetTime();
-		double delta = 0.0;
+		double dDelta = 0.0;
 		
 		// this is the loop portion of our code. this is the "main game loop" area
 		// it will continue to run until the window hint that the window should close is set to true
@@ -315,7 +317,7 @@ public class Main {
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {			
 			// move le player dude 
-			playa.move(waterT, (float) delta);
+			playa.move(waterT);
 			camera.move();
 			
 //			picker.update();
@@ -353,24 +355,24 @@ public class Main {
 			float distance = 2 * (camera.getPosition().y - wt.getHeight());
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
-			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 1, 0, -wt.getHeight() + 0.15f), (float) delta);
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 1, 0, -wt.getHeight() + 0.15f));
 			// reset cam
 			camera.getPosition().y += distance;
 			camera.invertPitch();
 			
 			// render refraction
 			fbos.bindRefractionFrameBuffer();
-			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, -1, 0, wt.getHeight() + 0.15f), (float) delta);
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, -1, 0, wt.getHeight() + 0.15f));
 			
 			// disables the cliping feature just so that nothing gets accidentally clipped by the shaders during the main pass
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			
 			// render the entire scene with one call, makes everything simpler to an extent
 			fbos.unbindCurrentFrameBuffer();
-			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 0, 0, 0), (float) delta);
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 0, 0, 0));
 			
 			// render water after scene but before gui
-			wRenderer.render(water, camera, (float) delta, lights.get(0));
+			wRenderer.render(water, camera, lights.get(0));
 			
 			// render the Gui items
 			guiRenderer.render(guis);
@@ -393,8 +395,9 @@ public class Main {
 			
 			// this is where we update how long this frame took to render
 			double curFrame = GLFW.glfwGetTime();
-			delta = curFrame - lastFrameTime;
+			dDelta = curFrame - lastFrameTime;
 			lastFrameTime = curFrame;
+			delta = (float) dDelta;
 		}
 		
 		// if we have reached this part of the program, we have exited the main loop

@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.joseph.test.lwjgl3.Main;
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.math.MathHelper;
@@ -43,8 +44,8 @@ public class WaterRenderer {
 		setUpVAO(loader);
 	}
 
-	public void render(List<WaterTile> water, Camera camera, float delta, Light sky) {
-		prepareRender(camera, delta, sky);	
+	public void render(List<WaterTile> water, Camera camera, Light sky) {
+		prepareRender(camera, sky);	
 		for (WaterTile tile : water) {
 			Matrix4f modelMatrix = MathHelper.createTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, WaterTile.TILE_SIZE);
 			shader.loadModelMatrix(modelMatrix);
@@ -53,11 +54,11 @@ public class WaterRenderer {
 		unbind();
 	}
 	
-	private void prepareRender(Camera camera, float delta, Light sky) {
+	private void prepareRender(Camera camera, Light sky) {
 		shader.start();
 		shader.loadViewMatrix(camera);
 		shader.loadLight(sky);
-		moveFactor += WAVE_SPEED * delta;
+		moveFactor += WAVE_SPEED * Main.delta;
 		moveFactor %= 1;
 		shader.loadMoveFactor(moveFactor);
 		GL30.glBindVertexArray(quad.getVaoID());

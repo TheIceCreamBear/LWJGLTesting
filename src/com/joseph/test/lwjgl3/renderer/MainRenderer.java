@@ -78,14 +78,14 @@ public class MainRenderer {
 	 * @param camera - the camera to render to
 	 * @param delta - the delta time since the last frame
 	 */
-	public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Camera camera, Vector4f clipPlane, float delta) {
+	public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Camera camera, Vector4f clipPlane) {
 		for (Terrain t : terrains) {
 			this.addTerrain(t);
 		}
 		for (Entity e : entities) {
 			this.addEntity(e);
 		}
-		this.render(lights, camera, clipPlane, delta);
+		this.render(lights, camera, clipPlane);
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public class MainRenderer {
 	 * @param worldLight - a global light (how do we do more than one light because like thatll be important)
 	 * @param camera - the camera
 	 */
-	public void render(List<Light> lights, Camera camera, Vector4f clipPlane, float delta) {
+	public void render(List<Light> lights, Camera camera, Vector4f clipPlane) {
 		// this will clear the current frame buffer of its contents and set the pixels to the 
 		// pixel color specified in the clearColor funciton call above
 		this.prepare();
@@ -126,7 +126,7 @@ public class MainRenderer {
 		tShader.stop();
 		
 		// render the sky box
-		sRender.render(camera, delta, RED, GREEN, BLUE);
+		sRender.render(camera, RED, GREEN, BLUE);
 		
 		// remove entities (for some reason think this could be handeled a different way instead of clearing it tho the only thing that
 		// is wasted is the ArrayList because the contents are stored else where

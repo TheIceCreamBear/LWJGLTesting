@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.joseph.test.lwjgl3.Main;
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
@@ -101,14 +102,14 @@ public class SkyboxRenderer {
 		shader.stop();
 	}
 	
-	public void render(Camera cam, float delta, float r, float g, float b) {
+	public void render(Camera cam, float r, float g, float b) {
 		// disable depth testing for the skybox
 //		GL11.glDepthMask(false);
 //		GL11.glDepthRange(1.0f, 1.0f);
 		// start it back up again
 		shader.start();
 		// load the view of the cam
-		shader.loadViewMatrix(cam, delta);
+		shader.loadViewMatrix(cam, Main.delta);
 		// load the fog color
 		shader.loadFogColor(r, g, b);
 		// bind the vao of the cube
@@ -116,7 +117,7 @@ public class SkyboxRenderer {
 		// enable the positions
 		GL20.glEnableVertexAttribArray(0);
 		// do it in a method
-		this.bindTextures(delta);
+		this.bindTextures(Main.delta);
 		// draw the sky box
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, cube.getVertexCount());
 		// disable

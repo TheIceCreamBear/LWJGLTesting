@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import com.joseph.test.lwjgl3.GLFWHandler;
+import com.joseph.test.lwjgl3.Main;
 import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.terrain.Terrain;
 
@@ -20,18 +21,18 @@ public class Player extends Entity {
 		super(model, pos, rotx, roty, rotz, scale);
 	}
 	
-	public void move(Terrain terrain, float delta) {
+	public void move(Terrain terrain) {
 		// rotate the dude
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_KP_6]) {
-			super.increaseRotation(0, delta * -TURN_SPEED, 0);
+			super.increaseRotation(0, Main.delta * -TURN_SPEED, 0);
 		}
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_KP_4]) {
-			super.increaseRotation(0, delta * TURN_SPEED, 0);
+			super.increaseRotation(0, Main.delta * TURN_SPEED, 0);
 		}
 		
 		Vector3f displacement = new Vector3f(0, 0, 0);
 		// calculate the frame speed
-		float speed = MOVE_SPEED * delta;
+		float speed = MOVE_SPEED * Main.delta;
 		// different action based on key
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_W]) {
 			float speeed = speed;
@@ -59,8 +60,8 @@ public class Player extends Entity {
 			yVel = JUMP_POWER;
 		}
 		// handle gravity
-		yVel += GRAVITY * delta;
-		displacement.y = yVel * delta;
+		yVel += GRAVITY * Main.delta;
+		displacement.y = yVel * Main.delta;
 		
 		// move the dude
 		super.displace(displacement);
