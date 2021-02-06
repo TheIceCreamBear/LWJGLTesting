@@ -330,18 +330,6 @@ public class Main {
 //				}
 //			}
 			
-			// load all of the objects (entities) that we are going to render into the main renderer
-//			for (Entity e : entities) {
-//				renderer.addEntity(e);
-//			}
-//			renderer.addEntity(test);
-//			renderer.addTerrain(terrain);
-//			renderer.addTerrain(terrain2);
-			
-			// responsible for all the rendering, and while this is okay, i dont really like the structure
-			// of how it was coded, like at all, so expect this to change significantly
-//			renderer.render(lights, camera, (float) delta);
-			
 
 			// tells open gl that we want to use the clip plane distance 0, just to make sure that it is enabled
 			// clip distance is just how far a vertex is from the clipping plane (this is signed), so like a positive
