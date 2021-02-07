@@ -143,7 +143,8 @@ public class Main {
 		
 		// honestly this should probably be static too but still like, this is the way the tutorial did it so like
 		// thats how imma do it
-		ModelLoader loader = new ModelLoader();
+		// HAHA old me, i have said f it and made it static
+		ModelLoader loader = ModelLoader.instance;
 		MainRenderer renderer = new MainRenderer(loader);
 		List<Entity> entities = new ArrayList<Entity>();
 		List<Terrain> terrains = new ArrayList<Terrain>();

@@ -26,6 +26,13 @@ public class ModelLoader {
 	private List<Integer> vaos = new ArrayList<Integer>();
 	private List<Integer> vbos = new ArrayList<Integer>();
 	
+	// im tired of this not being static
+	public static final ModelLoader instance = new ModelLoader();
+	
+	private ModelLoader() {
+		// so nobody decides its a smart idea to try and construct this
+	}
+	
 	/**
 	 * Overload for {@link ModelLoader#loadToVAO(float[], float[], float[], int[])}
 	 * @param data
