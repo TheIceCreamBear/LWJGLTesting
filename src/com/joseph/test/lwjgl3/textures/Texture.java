@@ -7,6 +7,7 @@ package com.joseph.test.lwjgl3.textures;
  */
 public class Texture {
 	private int glTextureID;
+	private int normalMapID;
 	
 	private float shineDamper = 1.0f;
 	private float reflectivity = 0.0f;
@@ -16,13 +17,21 @@ public class Texture {
 	
 	private int numRows = 1;
 	
-	
 	public Texture(int glTextureID) {
+		this(glTextureID, 0);
+	}
+	
+	public Texture(int glTextureID, int normalMapID) {
 		this.glTextureID = glTextureID;
+		this.normalMapID = normalMapID;
 	}
 	
 	public int glTextureID() {
 		return this.glTextureID;
+	}
+	
+	public int normalMapID() {
+		return this.normalMapID;
 	}
 	
 	public float getReflectivity() {

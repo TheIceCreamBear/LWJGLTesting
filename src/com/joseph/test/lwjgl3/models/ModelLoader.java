@@ -70,6 +70,35 @@ public class ModelLoader {
 	}
 	
 	/**
+	 * 
+	 * @param vertices
+	 * @param textureCoords
+	 * @param normals
+	 * @param tangents
+	 * @param indices
+	 * @return
+	 */
+	public RawModel loadToVAO(float[] vertices, float[] textureCoords, float[] normals, float[] tangents, int[] indices) {
+		// creates the new vao and returns the id
+		int vaoID = createVAO();
+		// create the indices buffer and bind it
+		bindIndicesBuffer(indices);
+		// stores the vertex data in the attribute list at index 0 
+		dataToAttribList(0, 3, vertices);
+		// stores the texture uv data in the attribute list at index 1
+		dataToAttribList(1, 2, textureCoords);
+		// store le normal vectorsssssssss in the attribute list at index 2
+		dataToAttribList(2, 3, normals);
+		// store the tangent values in the attribute list at index 3
+		dataToAttribList(3, 3, tangents);
+		// unbinds the vao because duh
+		unbindVAO();
+		
+		// return the new model with the vao and indices length
+		return new RawModel(vaoID, indices.length);
+	}
+	
+	/**
 	 * one special boi, responsible for loading one only one ping jk one quad to a vao, its a quad
 	 * for gui stuffs
 	 * @param positions

@@ -14,6 +14,7 @@ import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.TexturedModel;
+import com.joseph.test.lwjgl3.renderer.nm.NormalMapRenderer;
 import com.joseph.test.lwjgl3.shaders.StaticShader;
 import com.joseph.test.lwjgl3.shaders.TerrainShader;
 import com.joseph.test.lwjgl3.skybox.SkyboxRenderer;
@@ -31,9 +32,9 @@ public class MainRenderer {
 	private static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 1000f;
 	
-	private static final float RED = 0.5444f;
-	private static final float GREEN = 0.62f;
-	private static final float BLUE = 0.69f;
+	public static final float RED = 0.5444f;
+	public static final float GREEN = 0.62f;
+	public static final float BLUE = 0.69f;
 	
 	private Matrix4f projMatrix;
 	
@@ -45,10 +46,13 @@ public class MainRenderer {
 	private TerrainRenderer tRender;
 	private TerrainShader tShader;
 	
+	private NormalMapRenderer nmRender;
+	
 	// skybox thing
 	private SkyboxRenderer sRender;
 	
 	private HashMap<TexturedModel, List<Entity>> entities;
+	private HashMap<TexturedModel, List<Entity>> nmEntities;
 	private List<Terrain> terrains;
 	
 	public MainRenderer(ModelLoader loader) {
@@ -63,9 +67,12 @@ public class MainRenderer {
 		this.tShader = new TerrainShader();
 		this.tRender = new TerrainRenderer(tShader, projMatrix);
 		
+		this.nmRender = new NormalMapRenderer(projMatrix);
+		
 		this.sRender = new SkyboxRenderer(loader, projMatrix);
 		
 		this.entities = new HashMap<TexturedModel, List<Entity>>();
+		this.nmEntities = new HashMap<TexturedModel, List<Entity>>();
 		this.terrains = new ArrayList<Terrain>();
 	}
 	
@@ -78,12 +85,15 @@ public class MainRenderer {
 	 * @param camera - the camera to render to
 	 * @param delta - the delta time since the last frame
 	 */
-	public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Camera camera, Vector4f clipPlane) {
+	public void renderScene(List<Entity> entities, List<Entity> nmEntities, List<Terrain> terrains, List<Light> lights, Camera camera, Vector4f clipPlane) {
 		for (Terrain t : terrains) {
 			this.addTerrain(t);
 		}
 		for (Entity e : entities) {
 			this.addEntity(e);
+		}
+		for (Entity e : nmEntities) {
+			this.addNMEntity(e);
 		}
 		this.render(lights, camera, clipPlane);
 	}
@@ -111,6 +121,8 @@ public class MainRenderer {
 		eRender.render(entities);
 		// stop shader
 		sShader.stop();
+		// render the entities with normal maps
+		nmRender.render(nmEntities, clipPlane, lights, camera);
 		// start the terrain shader
 		tShader.start();
 		// load le clip plane
@@ -131,6 +143,7 @@ public class MainRenderer {
 		// remove entities (for some reason think this could be handeled a different way instead of clearing it tho the only thing that
 		// is wasted is the ArrayList because the contents are stored else where
 		entities.clear();
+		nmEntities.clear();
 		terrains.clear();
 	}
 	
@@ -194,12 +207,33 @@ public class MainRenderer {
 	}
 	
 	/**
+	 * add the E to the list of entities for its given tex model
+	 * @param e
+	 */
+	public void addNMEntity(Entity e) {
+		// get le tex model
+		TexturedModel texMod = e.getModel();
+		// get the list of entities if it exists
+		List<Entity> list = nmEntities.get(texMod);
+		// if we dont have the list for that entity type, make a new one
+		if (list == null) {
+			// make it
+			list = new ArrayList<Entity>();
+			// put it in the list for later
+			nmEntities.put(texMod, list);
+		}
+		// actually add the darn thing
+		list.add(e);
+	}
+	
+	/**
 	 * clean up, clean up, everybody everywhere, clean up, clean up, come on do your share
 	 */
 	public void cleanUp() {
 		sShader.cleanUp();
 		tShader.cleanUp();
 		sRender.cleanUp();
+		nmRender.cleanUp();
 	}
 	
 	/**

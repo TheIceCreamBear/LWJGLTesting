@@ -26,6 +26,7 @@ import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.models.obj.ModelData;
 import com.joseph.test.lwjgl3.models.obj.OBJLoader;
+import com.joseph.test.lwjgl3.models.obj.nm.NormalMapOBJLoader;
 import com.joseph.test.lwjgl3.renderer.MainRenderer;
 import com.joseph.test.lwjgl3.terrain.Terrain;
 import com.joseph.test.lwjgl3.textures.TerrainTexture;
@@ -183,7 +184,7 @@ public class Main {
 		// load a lamp
 		RawModel lampModel = loader.loadToVAO(OBJLoader.loadObjModel("res/provided/lamp.obj"));
 		Texture lampTex = TextureLoader.loadTexture("res/provided/lamp.png");
-		TexturedModel lamp = new TexturedModel(lampModel, lampTex);
+		TexturedModel lamp = new TexturedModel(lampModel, lampTex); // TODO lamp hack is pointless, just set that the texture uses fake lighting
 		
 		// load an icoSphere
 		RawModel icoModel = loader.loadToVAO(OBJLoader.loadObjModel("res/TestModels/icoSphere.obj"));
@@ -260,6 +261,13 @@ public class Main {
 				}
 			}
 		}
+		
+		Texture barrelTex = TextureLoader.loadTextureWithNormal("res/provided/barrel.png", "res/provided/barrelNormal.png");
+		barrelTex.setShineDamper(10.0f);
+		barrelTex.setReflectivity(0.5f);
+		TexturedModel barrelModel = new TexturedModel(NormalMapOBJLoader.loadObjModel("res/provided/barrel.obj"), barrelTex);
+		
+		nmEntities.add(new Entity(barrelModel, new Vector3f(75.0f, 10.0f, -75.0f), 0.0f, 0.0f, 0.0f, 1.0f));
 		
 		// the rocks entity for under the little island type deal
 		entities.add(new Entity(rocks, new Vector3f(75.0f, 4.6f, -75.0f), 0.0f, 0.0f, 0.0f, 75.0f));

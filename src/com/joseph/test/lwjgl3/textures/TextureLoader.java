@@ -72,6 +72,30 @@ public class TextureLoader {
 		// retrun the tex
 		return tex;
 	}
+	
+	/**
+	 * Creates a texture from the given PNGs, this texture stores both the regular texture
+	 * and the supplied normal map. It is assumed that normal is not null, if you want to load only
+	 * one texture file, use {@link TextureLoader#loadTexture(String)} instead. The normal map
+	 * will be available throught {@link Texture#normalMapID()}.
+	 * @param texture - the png file of the texture
+	 * @param normal - the png file of the normal map
+	 * @return a new texture
+	 * @see TextureLoader#loadTexture(String)
+	 * @see Texture#normalMapID()
+	 */
+	public static Texture loadTextureWithNormal(String texture, String normal) {
+		// load the regular texture
+		Texture tex = loadTexture(texture);
+		// load the normal map
+		Texture norm = loadTexture(normal);
+		// create a new texture object. it is created with .glTextureID cause loadTexture stores the 
+		// id in that. in reality, this class should really have the actual loading of the texture
+		// done in a seperate private method, and have that return the id (similar to decodeTexture),
+		// and then have this and the regular load texture piggy back off of that, but that is soemthing 
+		// for antoher time
+		return new Texture(tex.glTextureID(), norm.glTextureID());
+	}
 
 	/**
 	 * Load a cube map from the given files, which must be in the order
