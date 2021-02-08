@@ -147,6 +147,7 @@ public class Main {
 		ModelLoader loader = ModelLoader.instance;
 		MainRenderer renderer = new MainRenderer(loader);
 		List<Entity> entities = new ArrayList<Entity>();
+		List<Entity> nmEntities = new ArrayList<Entity>();
 		List<Terrain> terrains = new ArrayList<Terrain>();
 		
 		// load a tree model and its texture
@@ -196,8 +197,7 @@ public class Main {
 		
 		// setup some lights
 		List<Light> lights = new ArrayList<Light>();
-		lights.add(new Light(new Vector3f(0.0f, 100.0f, -100.0f), new Vector3f(1.0f, 1.0f, 1.0f))); // water sun
-		lights.add(new Light(new Vector3f(0.0f, -1000.0f, -100.0f), new Vector3f(1.0f, 1.0f, 1.0f))); // water bottom sun
+		lights.add(new Light(new Vector3f(10000.0f, 10000.0f, -10000.0f), new Vector3f(1.3f, 1.3f, 1.3f))); // water sun
 //		lights.add(new Light(new Vector3f(0.0f, 1000.0f, -7000.0f), new Vector3f(0.4f, 0.4f, 0.4f))); // sun
 //		lights.add(new Light(new Vector3f(185.0f, 6.2f, -293.0f), new Vector3f(2.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
 //		lights.add(new Light(new Vector3f(370.0f, 15.1f, -300.0f), new Vector3f(0.0f, 2.0f, 2.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
@@ -239,47 +239,30 @@ public class Main {
 		entities.add(playa);
 		
 		// store the random objects into a list
-		/*
-		Random r = new Random();
-		for (int i = 0; i < 500; i++) {
+		Random r = new Random(5666778);
+		for (int i = 0; i < 60; i++) {
+			if (i % 3 == 0) {
+				float x = r.nextFloat() * Terrain.SIZE;
+				float z = r.nextFloat() * -Terrain.SIZE;
+				// if outside the water area, add fern
+				if ((x < 50.0f || x > 100.0f) && (z > -50.0f || z < -100.0f)) {
+					float y = waterT.getHeightOfTerrain(x, z);
+					entities.add(new Entity(fern, 3,  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 0.9f));
+				}
+			}
 			if (i % 2 == 0) {
 				float x = r.nextFloat() * Terrain.SIZE;
 				float z = r.nextFloat() * -Terrain.SIZE;
-				float y = terrain2.getHeightOfTerrain(x, z);
-				entities.add(new Entity(fern, r.nextInt(4),  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 0.9f));
-			}
-			if (i % 5 == 0) {
-				float x = r.nextFloat() * Terrain.SIZE;
-				float z = r.nextFloat() * -Terrain.SIZE;
-				float y = terrain2.getHeightOfTerrain(x, z);
-//				entities.add(new Entity(lpTree, r.nextInt(4),  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.1f + 0.6f));
-//				x = r.nextFloat() * 800.0f;
-//				z = r.nextFloat() * -800.0f;
-//				y = terrain2.getHeightOfTerrain(x, z);
-				entities.add(new Entity(tree,  new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, r.nextFloat() * 1.0f + 1.0f));
+				// if outside the water area, add tree
+				if ((x < 50.0f || x > 100.0f) && (z > -50.0f || z < -100.0f)) {
+					float y = waterT.getHeightOfTerrain(x, z);
+					entities.add(new Entity(tree, 1, new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.6f + 0.8f));
+				}
 			}
 		}
-		*/
 		
 		// the rocks entity for under the little island type deal
 		entities.add(new Entity(rocks, new Vector3f(75.0f, 4.6f, -75.0f), 0.0f, 0.0f, 0.0f, 75.0f));
-		
-		entities.add(new Entity(tree, new Vector3f(38.0f, waterT.getHeightOfTerrain(38.0f, -21.0f), -21.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(tree, new Vector3f(12.0f, waterT.getHeightOfTerrain(12.0f, -48.0f), -48.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(tree, new Vector3f(13.0f, waterT.getHeightOfTerrain(13.0f, -25.0f), -25.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(tree, new Vector3f(97.0f, waterT.getHeightOfTerrain(97.0f, -28.0f), -28.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(tree, new Vector3f(113.0f, waterT.getHeightOfTerrain(113.0f, -20.0f), -20.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(tree, new Vector3f(138.0f, waterT.getHeightOfTerrain(138.0f, -23.0f), -23.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(tree, new Vector3f(92.0f, waterT.getHeightOfTerrain(92.0f, -9.0f), -9.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(tree, new Vector3f(139.0f, waterT.getHeightOfTerrain(139.0f, -128.0f), -128.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(tree, new Vector3f(125.0f, waterT.getHeightOfTerrain(125.0f, -143.0f), -143.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(tree, new Vector3f(15.0f, waterT.getHeightOfTerrain(15.0f, -135.0f), -135.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(tree, new Vector3f(39.0f, waterT.getHeightOfTerrain(39.0f, -123.0f), -123.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		
-		entities.add(new Entity(fern, new Vector3f(18.0f, waterT.getHeightOfTerrain(18.0f, -80.0f), -80.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(fern, new Vector3f(99.0f, waterT.getHeightOfTerrain(99.0f, -42.0f), -42.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(fern, new Vector3f(28.0f, waterT.getHeightOfTerrain(28.0f, -36.0f), -36.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		entities.add(new Entity(fern, new Vector3f(130.0f, waterT.getHeightOfTerrain(130.0f, -131.0f), -131.0f), 0.0f, 0.0f, 0.0f, 1.0f));
 		
 		List<GuiTexture> guis = new ArrayList<GuiTexture>();
 		GuiTexture gui = new GuiTexture(TextureLoader.loadTexture("res/provided/socuwan.png").glTextureID(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
@@ -344,21 +327,21 @@ public class Main {
 			float distance = 2 * (camera.getPosition().y - wt.getHeight());
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
-			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 1, 0, -wt.getHeight() + 0.15f));
+			renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, 1, 0, -wt.getHeight() + 0.15f));
 			// reset cam
 			camera.getPosition().y += distance;
 			camera.invertPitch();
 			
 			// render refraction
 			fbos.bindRefractionFrameBuffer();
-			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, -1, 0, wt.getHeight() + 0.15f));
+			renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, -1, 0, wt.getHeight() + 0.15f));
 			
 			// disables the cliping feature just so that nothing gets accidentally clipped by the shaders during the main pass
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			
 			// render the entire scene with one call, makes everything simpler to an extent
 			fbos.unbindCurrentFrameBuffer();
-			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 0, 0, 0));
+			renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, 0, 0, 0));
 			
 			// render water after scene but before gui
 			wRenderer.render(water, camera, lights.get(0));
