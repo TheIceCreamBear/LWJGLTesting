@@ -117,6 +117,31 @@ public class ModelLoader {
 	}
 	
 	/**
+	 * loads an array of vertices into a brand new vao and attrib list
+	 * and returns it as a raw model for use in rendering, used for text rendering
+	 * @param vertecies - the vertices of the object
+	 * @param textureCoords
+	 * @param normals
+	 * @param indices - the list of vertices to use when constructing the object
+	 * @return
+	 * 
+	 * TODO this should be named different and take different args, cause this is just, wtf
+	 */
+	public int loadToVAO(float[] positions, float[] textureCoords) {
+		// creates the new vao and returns the id
+		int vaoID = createVAO();
+		// stores the vertex data in the attribute list at index 0 
+		dataToAttribList(0, 2, positions);
+		// stores the texture uv data in the attribute list at index 1
+		dataToAttribList(1, 2, textureCoords);
+		// unbinds the vao because duh
+		unbindVAO();
+		
+		// return the new model with the vao and indices length
+		return vaoID;
+	}
+	
+	/**
 	 * kinda self explanatory, but like all this does is delets the 
 	 * created vaos and vbos because like memory management
 	 */

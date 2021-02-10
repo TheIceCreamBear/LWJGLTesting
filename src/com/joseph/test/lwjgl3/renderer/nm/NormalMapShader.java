@@ -88,7 +88,7 @@ public class NormalMapShader extends ShaderProgram {
 		super.loadVector(offsetLocation, new Vector2f(x, y));
 	}
 	
-	protected void loadSkyColour(float r, float g, float b) {
+	protected void loadSkyColor(float r, float g, float b) {
 		super.loadVector(skyColorLocation, new Vector3f(r, g, b));
 	}
 

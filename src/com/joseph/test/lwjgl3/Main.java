@@ -1,5 +1,6 @@
 package com.joseph.test.lwjgl3;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,6 +29,9 @@ import com.joseph.test.lwjgl3.models.obj.ModelData;
 import com.joseph.test.lwjgl3.models.obj.OBJLoader;
 import com.joseph.test.lwjgl3.models.obj.nm.NormalMapOBJLoader;
 import com.joseph.test.lwjgl3.renderer.MainRenderer;
+import com.joseph.test.lwjgl3.renderer.text.Text;
+import com.joseph.test.lwjgl3.renderer.text.mesh.FontType;
+import com.joseph.test.lwjgl3.renderer.text.mesh.GUIText;
 import com.joseph.test.lwjgl3.terrain.Terrain;
 import com.joseph.test.lwjgl3.textures.TerrainTexture;
 import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
@@ -293,6 +297,11 @@ public class Main {
 		WaterTile wt = new WaterTile(75.0f, -75.0f, 0.0f);
 		water.add(wt);
 		
+		Text.init();
+		FontType font = new FontType(TextureLoader.loadTexture("res/generated/consolas.png").glTextureID(), new File("res/generated/consolas.fnt"));
+		GUIText text = new GUIText("When you, when...", 5.0f, font, new Vector2f(0, 0), 1.0f, true);
+		GUIText text2 = new GUIText("Bottom Text", 5.0f, font, new Vector2f(0, .9f), 1.0f, true);
+		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
 		// UPDATES NOT DELTA TIME UPDATES THANKS
@@ -357,6 +366,9 @@ public class Main {
 			// render the Gui items
 			guiRenderer.render(guis);
 			
+			// render the text
+			Text.render();
+			
 			// this will swap which buffer is currently in the "front" and which is in the "back"
 			// for more reading on why we do this and how it works, see 
 			// https://www.glfw.org/docs/latest/quick_guide.html#quick_swap_buffers
@@ -392,6 +404,7 @@ public class Main {
 		loader.cleanUp();
 		renderer.cleanUp();
 		TextureLoader.cleanUp();
+		Text.cleanUp();
 		
 		// this will free our call backs, as well as destroy the window we created
 		Callbacks.glfwFreeCallbacks(windowPointer);

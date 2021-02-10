@@ -19,6 +19,9 @@ import de.matthiasmann.twl.utils.PNGDecoder;
 public class TextureLoader {
 	private static List<Integer> textures = new ArrayList<Integer>();
 	
+	// TODO create load methods that allow for custom mipmap bias
+	// (text should have 0 bias)
+	
 	/**
 	 * Creats a texture from the given PNG only PNG file and like does all
 	 * the reading in of it into memory and allows for both RGB and RBGA PNGS
