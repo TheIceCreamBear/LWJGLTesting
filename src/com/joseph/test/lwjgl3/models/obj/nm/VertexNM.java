@@ -27,7 +27,6 @@ public class VertexNM {
 	}
 	
 	protected void addTangent(Vector3f tangent) {
-		System.out.println(tangent);
 		tangents.add(tangent);
 	}
 	

@@ -299,8 +299,8 @@ public class Main {
 		
 		Text.init();
 		FontType font = new FontType(TextureLoader.loadTexture("res/generated/consolas.png").glTextureID(), new File("res/generated/consolas.fnt"));
-		GUIText text = new GUIText("When you, when...", 5.0f, font, new Vector2f(0, 0), 1.0f, true);
-		GUIText text2 = new GUIText("Bottom Text", 5.0f, font, new Vector2f(0, .9f), 1.0f, true);
+		GUIText text = new GUIText("When you, when...", 3.0f, font, new Vector2f(0, 0), 1.0f, true);
+		GUIText text2 = new GUIText("Bottom Text", 3.0f, font, new Vector2f(0, .9f), 1.0f, true);
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME

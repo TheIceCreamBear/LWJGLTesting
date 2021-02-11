@@ -101,8 +101,6 @@ public class NormalMapOBJLoader {
 		float furthest = convertDataToArrays(verticies, textures, normals, vertexData, textureData, normalData, tangentsData);
 		indexData = convertIndicesListToArray(indicies);
 		
-		System.out.println(Arrays.toString(tangentsData));
-		
 		// retrun
 		return ModelLoader.instance.loadToVAO(vertexData, textureData, normalData, tangentsData, indexData);
 	}
@@ -215,7 +213,6 @@ public class NormalMapOBJLoader {
 			tangentsData[i * 3 + 2] = tangent.z;
 		}
 
-		System.out.println(Arrays.toString(tangentsData));
 		return furthestPoint;
 	}
 	
