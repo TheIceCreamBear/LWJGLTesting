@@ -11,7 +11,7 @@ public class ParticleShader extends ShaderProgram {
 	private static final String FRAGMENT_SHADER = "src/com/joseph/test/lwjgl3/particle/fragment.frag";
 	
 	private int projMatrixLocation;
-	private int viewMatrixLocation;
+	private int modelViewMatrixLocation;
 	
 	public ParticleShader() {
 		super(VERTEX_SHADER, FRAGMENT_SHADER);
@@ -25,14 +25,14 @@ public class ParticleShader extends ShaderProgram {
 	@Override
 	protected void getUniformLocations() {
 		this.projMatrixLocation = super.getUniformLocation("projMatrix");
-		this.viewMatrixLocation = super.getUniformLocation("viewMatrix");
+		this.modelViewMatrixLocation = super.getUniformLocation("modelViewMatrix");
 	}
 	
 	public void loadProjection(Matrix4f mat) {
 		super.loadMatrix4(projMatrixLocation, mat);
 	}
 	
-	public void loadViewMatrix(Matrix4f mat) {
-		super.loadMatrix4(viewMatrixLocation, mat);
+	public void loadModelViewMatrix(Matrix4f mat) {
+		super.loadMatrix4(modelViewMatrixLocation, mat);
 	}
 }

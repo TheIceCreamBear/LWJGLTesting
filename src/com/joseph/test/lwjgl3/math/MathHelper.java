@@ -70,6 +70,12 @@ public class MathHelper {
 	 * @return
 	 */
 	public static Matrix4f createViewMatrix(Camera camera) {
+		// so i have though of this before but ive never like written it down
+		// but it would be a nice thing to only actually create this matrix once per frame
+		// maybe in the camera.move() and then just do camera .getView rather than creating a new
+		// one every single time
+		// so TODO the above lines
+		
 		// make the matrix
 		Matrix4f matrix = new Matrix4f();
 		// rotate x

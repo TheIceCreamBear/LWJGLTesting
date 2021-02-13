@@ -28,6 +28,10 @@ import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.models.obj.ModelData;
 import com.joseph.test.lwjgl3.models.obj.OBJLoader;
 import com.joseph.test.lwjgl3.models.obj.nm.NormalMapOBJLoader;
+import com.joseph.test.lwjgl3.particle.Particle;
+import com.joseph.test.lwjgl3.particle.Particles;
+import com.joseph.test.lwjgl3.particle.example.ComplexParticleExample;
+import com.joseph.test.lwjgl3.particle.example.SimpleParticleExample;
 import com.joseph.test.lwjgl3.renderer.MainRenderer;
 import com.joseph.test.lwjgl3.renderer.text.Text;
 import com.joseph.test.lwjgl3.renderer.text.mesh.FontType;
@@ -302,6 +306,15 @@ public class Main {
 		GUIText text = new GUIText("When you, when...", 3.0f, font, new Vector2f(0, 0), 1.0f, true);
 		GUIText text2 = new GUIText("Bottom Text", 3.0f, font, new Vector2f(0, .9f), 1.0f, true);
 		
+		Particles.init(renderer.getProjMatrix());
+		SimpleParticleExample spe = new SimpleParticleExample(50.0f, 25.0f, 0.3f, 4.0f);
+		ComplexParticleExample cpe = new ComplexParticleExample(50.0f, 25.0f, 0.3f, 4.0f, 1.0f);
+		cpe.randomizeRotation();
+		cpe.setDirection(new Vector3f(0.0f, 1.0f, 0.0f), 0.1f);
+		cpe.setLifeError(0.1f);
+		cpe.setSpeedError(0.4f);
+		cpe.setScaleError(0.8f);
+		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
 		// UPDATES NOT DELTA TIME UPDATES THANKS
@@ -320,6 +333,22 @@ public class Main {
 			// move le player dude 
 			playa.move(waterT);
 			camera.move();
+			Particles.update();
+			
+			// particle piss stream
+			if (GLFWHandler.keyDown[GLFW.GLFW_KEY_F]) {
+				new Particle(new Vector3f(playa.getPos()), new Vector3f(0.0f, 30.0f, 0.0f), 1.0f, 4.0f, 0.0f, 1.0f);
+			}
+			
+			// simple particle system
+			if (GLFWHandler.keyDown[GLFW.GLFW_KEY_X]) {
+				spe.generateParticles(playa.getPos());
+			}
+
+			// complex particle system
+			if (GLFWHandler.keyDown[GLFW.GLFW_KEY_C]) {
+				cpe.generateParticles(playa.getPos());
+			}
 			
 //			picker.update();
 //			Vector3f terPoint = picker.getCurTerrainPoint();
@@ -363,6 +392,9 @@ public class Main {
 			// render water after scene but before gui
 			wRenderer.render(water, camera, lights.get(0));
 			
+			// render particles after all 3d and before 2d
+			Particles.renderParticles(camera);
+			
 			// render the Gui items
 			guiRenderer.render(guis);
 			
@@ -397,7 +429,7 @@ public class Main {
 		// as mentioned earlier, there is no need for us to follow good practice when trying to 
 		// connect these inter-weaving ideas together.
 		
-		// ^^^^ so that might have been a lie and a hinderance ^^^^
+		// ^^^^ so that might have been a lie and a hindrance ^^^^
 		
 		wShader.cleanUp();
 		guiRenderer.cleanUp();
@@ -405,6 +437,7 @@ public class Main {
 		renderer.cleanUp();
 		TextureLoader.cleanUp();
 		Text.cleanUp();
+		Particles.cleanUp();
 		
 		// this will free our call backs, as well as destroy the window we created
 		Callbacks.glfwFreeCallbacks(windowPointer);
