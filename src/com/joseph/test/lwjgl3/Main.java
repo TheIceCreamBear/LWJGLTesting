@@ -53,7 +53,7 @@ public class Main {
 	
 	public static float delta = 0.0f;
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		// lol this is the main method bois
 		
 		// the lines following this will not stay here, they will be put into a different class.
@@ -130,7 +130,6 @@ public class Main {
 		// honestly, the most self explanatory piece of code so far, makes the window visible
 		GLFW.glfwShowWindow(windowPointer);
 		
-		
 		// this would normally be the end of the "init" step of the program, and we would now move onto
 		// the "loop" step of the program
 		
@@ -171,7 +170,7 @@ public class Main {
 //		Texture lpTreeTex = TextureLoader.loadTexture("res/provided/lowPolyTree.png");
 //		lpTreeTex.setNumRows(2);
 //		TexturedModel lpTree = new TexturedModel(lpTreeModel, lpTreeTex);
-
+		
 		// load a grass model and its texture
 		ModelData grassData = OBJLoader.loadObjModel("res/provided/grassModel.obj");
 		RawModel grassModel = loader.loadToVAO(grassData);
@@ -283,7 +282,7 @@ public class Main {
 		List<GuiTexture> guis = new ArrayList<GuiTexture>();
 		GuiTexture gui = new GuiTexture(TextureLoader.loadTexture("res/provided/socuwan.png").glTextureID(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
 		GuiTexture gui2 = new GuiTexture(TextureLoader.loadTexture("res/provided/thinmatrix.png").glTextureID(), new Vector2f(0.30f, 0.58f), new Vector2f(0.4f, 0.4f));
-
+		
 //		guis.add(gui);
 //		guis.add(gui2);
 		
@@ -329,7 +328,7 @@ public class Main {
 		// it will continue to run until the window hint that the window should close is set to true
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
 		// the user hits escape
-		while (!GLFW.glfwWindowShouldClose(windowPointer)) {			
+		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
 			// move le player dude 
 			playa.move(waterT);
 			camera.move();
@@ -344,7 +343,7 @@ public class Main {
 			if (GLFWHandler.keyDown[GLFW.GLFW_KEY_X]) {
 				spe.generateParticles(playa.getPos());
 			}
-
+			
 			// complex particle system
 			if (GLFWHandler.keyDown[GLFW.GLFW_KEY_C]) {
 				cpe.generateParticles(playa.getPos());
@@ -360,7 +359,7 @@ public class Main {
 //				}
 //			}
 			
-
+			
 			// tells open gl that we want to use the clip plane distance 0, just to make sure that it is enabled
 			// clip distance is just how far a vertex is from the clipping plane (this is signed), so like a positive
 			// clip distance means that it is "below" the plane (below is a relative term cause 3d planes and normals

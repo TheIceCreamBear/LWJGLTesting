@@ -65,7 +65,7 @@ public class GLFWHandler {
 		if (action == GLFW.GLFW_PRESS) {
 			keyDown[key] = true;
 		}
-
+		
 		// THIS IS TEMPORARY GROSS CODE
 		if (action == GLFW.GLFW_RELEASE) {
 			keyDown[key] = false;
