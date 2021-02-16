@@ -301,7 +301,7 @@ public class Main {
 		water.add(wt);
 		
 		Text.init();
-		FontType font = new FontType(TextureLoader.loadTexture("res/generated/consolas.png").glTextureID(), new File("res/generated/consolas.fnt"));
+		FontType font = new FontType(TextureLoader.loadTextTexture("res/generated/consolas.png"), new File("res/generated/consolas.fnt"));
 		GUIText text = new GUIText("When you, when...", 3.0f, font, new Vector2f(0, 0), 1.0f, true);
 		GUIText text2 = new GUIText("Bottom Text", 3.0f, font, new Vector2f(0, .9f), 1.0f, true);
 		

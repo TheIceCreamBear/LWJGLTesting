@@ -30,6 +30,10 @@ public class FontType {
 	 *            the texture atlas.
 	 */
 	public FontType(int textureAtlas, File fontFile) {
+		// safegaurd against this possibility
+		if (textureAtlas == -1) {
+			throw new IllegalArgumentException("Texture Atlas for file " + fontFile.toString() + " is -1. This is a problem.");
+		}
 		this.textureAtlas = textureAtlas;
 		this.loader = new TextMeshCreator(fontFile);
 	}

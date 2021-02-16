@@ -19,54 +19,25 @@ import de.matthiasmann.twl.utils.PNGDecoder;
 public class TextureLoader {
 	private static List<Integer> textures = new ArrayList<Integer>();
 	
-	// TODO create load methods that allow for custom mipmap bias
-	// (text should have 0 bias)
+	// TODO does open GL have an invalid texture default texture number or like does 
+	// that need to be created by me, and if it does how should i do that
 	
 	/**
-	 * Creats a texture from the given PNG only PNG file and like does all
+	 * Creates a texture from the given PNG only PNG file and like does all
 	 * the reading in of it into memory and allows for both RGB and RBGA PNGS
 	 * and it might return null if it encounters an error because thats what it does
 	 * @param file
 	 * @return
 	 */
-	public static Texture loadTexture(String file) {
+	public static Texture loadTexture(String file, float bias) {
 		// store the texture object that is going to be created
 		Texture tex = null;
 		try {
-			TextureData texData = decodeTexture(file);
-			
-			// make a GL texture and bind it
-			int id = GL11.glGenTextures();
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
-			
-			// not sure but might not be needed
-			GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
-
-			// set these filters as linear because that is what we are supposed to do (see mipMap)
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-			
-			// actually save the information of the textgure into Open GL and save it so it can be used and save it basically
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, texData.getWidth(), texData.getHeight(), 0, texData.getGlPixelFormat(), GL11.GL_UNSIGNED_BYTE, texData.getBuffer());
-			
-			// mip map it because why not
-			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-			
-			// oh wow, so um when i did the image decoding, i forgot that i didnt need the above mipmap line (and infact
-			// i never used it anywhere or enabled it LOL) but this line will enable that for this newly generated texture
-			// in the furture, this should probably be a type of deal where they do the ting and pass in a bool to signify
-			// if they want a mip map
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-			
-			// effects the bias of the above mip mapping and how far away it starts to do it and what not, negative means 
-			// more detail, positive means less
-			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -0.5f);
+			// load the texture
+			int id = loadTextureInternal(file, bias);
 			
 			// actually create the texture object
 			tex = new Texture(id);
-			
-			// dad it to the list
-			textures.add(id);
 		} catch (IOException e) {
 			// print if bug or error because thats what we do
 			e.printStackTrace();
@@ -74,6 +45,40 @@ public class TextureLoader {
 		
 		// retrun the tex
 		return tex;
+	}
+	
+	/**
+	 * Overload for {@link TextureLoader#loadTexture(String, float)} to use the default bias value
+	 * of -0.4f. Short hands make life easier
+	 * @param file
+	 * @return
+	 */
+	public static Texture loadTexture(String file) {
+		return loadTexture(file, -0.4f);
+	}
+	
+
+	/**
+	 * Creates a texture for text from the given PNG only PNG file and like does all
+	 * the reading in of it into memory and allows for both RGB and RBGA PNGS
+	 * and it might return null if it encounters an error because thats what it does
+	 * and it uses a LOD bias of 0.0f
+	 * @param file
+	 * @return
+	 */
+	public static int loadTextTexture(String file) {
+		try {
+			// load the texture
+			int id = loadTextureInternal(file, 0.0f);
+			
+			// return the id
+			return id;
+		} catch (IOException e) {
+			// print if bug or error because thats what we do
+			e.printStackTrace();
+			// return -1 if something went weird
+			return -1;
+		}
 	}
 	
 	/**
@@ -88,16 +93,19 @@ public class TextureLoader {
 	 * @see Texture#normalMapID()
 	 */
 	public static Texture loadTextureWithNormal(String texture, String normal) {
-		// load the regular texture
-		Texture tex = loadTexture(texture);
-		// load the normal map
-		Texture norm = loadTexture(normal);
-		// create a new texture object. it is created with .glTextureID cause loadTexture stores the 
-		// id in that. in reality, this class should really have the actual loading of the texture
-		// done in a seperate private method, and have that return the id (similar to decodeTexture),
-		// and then have this and the regular load texture piggy back off of that, but that is soemthing 
-		// for antoher time
-		return new Texture(tex.glTextureID(), norm.glTextureID());
+		try {
+			// load the regular texture
+			int tex = loadTextureInternal(texture, -0.4f);
+			// load the normal map
+			int norm = loadTextureInternal(normal, -0.4f);
+			// create a new texture object
+			return new Texture(tex, norm);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			// return a null texture here
+			return null;
+		}
 	}
 
 	/**
@@ -144,7 +152,57 @@ public class TextureLoader {
 		
 		return texID;
 	}
+
+	/**
+	 * Actually does the job of loading the texture from the file, and loading it to OpenGL. The specified bias
+	 * will be used for the LOD bias
+	 * @param file - file to load from
+	 * @param bias - bias to use
+	 * @return a new opengl texture id
+	 * @throws IOException
+	 */
+	private static int loadTextureInternal(String file, float bias) throws IOException {
+		TextureData texData = decodeTexture(file);
+		
+		// make a GL texture and bind it
+		int id = GL11.glGenTextures();
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
+		
+		// not sure but might not be needed
+		GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+
+		// set these filters as linear because that is what we are supposed to do (see mipMap)
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+		
+		// actually save the information of the textgure into Open GL and save it so it can be used and save it basically
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, texData.getWidth(), texData.getHeight(), 0, texData.getGlPixelFormat(), GL11.GL_UNSIGNED_BYTE, texData.getBuffer());
+		
+		// mip map it because why not
+		GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+		
+		// oh wow, so um when i did the image decoding, i forgot that i didnt need the above mipmap line (and infact
+		// i never used it anywhere or enabled it LOL) but this line will enable that for this newly generated texture
+		// in the furture, this should probably be a type of deal where they do the ting and pass in a bool to signify
+		// if they want a mip map
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+		
+		// effects the bias of the above mip mapping and how far away it starts to do it and what not, negative means 
+		// more detail, positive means less
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, bias);
+
+		// add it to the list
+		textures.add(id);
+		
+		return id;
+	}
 	
+	/**
+	 * reads the texture into a class that stores its data and some meta data like side and format
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
 	private static TextureData decodeTexture(String file) throws IOException {
 		// store the input stream so we can close it
 		FileInputStream is = new FileInputStream(new File(file));
@@ -176,6 +234,7 @@ public class TextureLoader {
 		// make le buf redy for le read
 		buffer.flip();
 		
+		// store the data and return it
 		return new TextureData(buffer, width, height, glPixelFormat);
 	}
 	
@@ -185,6 +244,7 @@ public class TextureLoader {
 	 */
 	public static void cleanUp() {
 		for (int tex : textures) {
+			// yeet
 			GL11.glDeleteTextures(tex);
 		}
 	}
