@@ -29,6 +29,7 @@ import com.joseph.test.lwjgl3.models.obj.ModelData;
 import com.joseph.test.lwjgl3.models.obj.OBJLoader;
 import com.joseph.test.lwjgl3.models.obj.nm.NormalMapOBJLoader;
 import com.joseph.test.lwjgl3.particle.Particle;
+import com.joseph.test.lwjgl3.particle.ParticleTexture;
 import com.joseph.test.lwjgl3.particle.Particles;
 import com.joseph.test.lwjgl3.particle.example.ComplexParticleExample;
 import com.joseph.test.lwjgl3.particle.example.SimpleParticleExample;
@@ -306,8 +307,9 @@ public class Main {
 		GUIText text2 = new GUIText("Bottom Text", 3.0f, font, new Vector2f(0, .9f), 1.0f, true);
 		
 		Particles.init(renderer.getProjMatrix());
-		SimpleParticleExample spe = new SimpleParticleExample(50.0f, 25.0f, 0.3f, 4.0f);
-		ComplexParticleExample cpe = new ComplexParticleExample(50.0f, 25.0f, 0.3f, 4.0f, 1.0f);
+		ParticleTexture simpleTex = TextureLoader.loadParticleTex("res/provided/particleAtlas.png", 4);
+		SimpleParticleExample spe = new SimpleParticleExample(simpleTex, 50.0f, 25.0f, 0.3f, 4.0f);
+		ComplexParticleExample cpe = new ComplexParticleExample(simpleTex, 50.0f, 25.0f, 0.3f, 4.0f, 1.0f);
 		cpe.randomizeRotation();
 		cpe.setDirection(new Vector3f(0.0f, 1.0f, 0.0f), 0.1f);
 		cpe.setLifeError(0.1f);
@@ -332,11 +334,11 @@ public class Main {
 			// move le player dude 
 			playa.move(waterT);
 			camera.move();
-			Particles.update();
+			Particles.update(camera);
 			
 			// particle piss stream
 			if (GLFWHandler.keyDown[GLFW.GLFW_KEY_F]) {
-				new Particle(new Vector3f(playa.getPos()), new Vector3f(0.0f, 30.0f, 0.0f), 1.0f, 4.0f, 0.0f, 1.0f);
+				new Particle(simpleTex, new Vector3f(playa.getPos()), new Vector3f(0.0f, 30.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f);
 			}
 			
 			// simple particle system

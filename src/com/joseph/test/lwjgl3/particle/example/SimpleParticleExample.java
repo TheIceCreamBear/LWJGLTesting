@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 
 import com.joseph.test.lwjgl3.Main;
 import com.joseph.test.lwjgl3.particle.Particle;
+import com.joseph.test.lwjgl3.particle.ParticleTexture;
 
 /**
  * Provided example class of a particle system and how it would generate particles
@@ -17,7 +18,10 @@ public class SimpleParticleExample {
 	private float gravityComplient;
 	private float lifeLength;
 	
-	public SimpleParticleExample(float pps, float speed, float gravityComplient, float lifeLength) {
+	private ParticleTexture texture;
+	
+	public SimpleParticleExample(ParticleTexture texture, float pps, float speed, float gravityComplient, float lifeLength) {
+		this.texture = texture;
 		this.pps = pps;
 		this.speed = speed;
 		this.gravityComplient = gravityComplient;
@@ -43,7 +47,7 @@ public class SimpleParticleExample {
 		Vector3f velocity = new Vector3f(dirX, 1, dirZ);
 		velocity.normalize();
 		velocity.mul(speed);
-		new Particle(new Vector3f(center), velocity, gravityComplient, lifeLength, 0, 1);
+		new Particle(texture, new Vector3f(center), velocity, gravityComplient, lifeLength, 0, 1);
 	}
 	
 }

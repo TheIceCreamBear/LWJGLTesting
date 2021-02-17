@@ -1,10 +1,12 @@
 package com.joseph.test.lwjgl3.particle;
 
 import java.util.List;
+import java.util.Map;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
@@ -27,12 +29,17 @@ public class ParticleRenderer {
 		shader.stop();
 	}
 	
-	public void render(List<Particle> particles, Camera cam) {
+	public void render(Map<ParticleTexture, List<Particle>> particles, Camera cam) {
 		Matrix4f viewMat = MathHelper.createViewMatrix(cam);
 		this.prepare();
-		for (Particle particle : particles) {
-			this.updateModelViewMatrix(particle.getPosition(), particle.getRotation(), particle.getScale(), viewMat);
-			GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
+		for (ParticleTexture tex : particles.keySet()) {
+			GL13.glActiveTexture(GL13.GL_TEXTURE0);
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.getId());
+			for (Particle particle : particles.get(tex)) {
+				this.updateModelViewMatrix(particle.getPosition(), particle.getRotation(), particle.getScale(), viewMat);
+				shader.loadTextureInfo(particle.getCurOffset(), particle.getNextOffset(), tex.getNumRows(), particle.getBlendFactor());
+				GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
+			}
 		}
 		this.postRender();
 	}

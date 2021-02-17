@@ -14,6 +14,8 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
+import com.joseph.test.lwjgl3.particle.ParticleTexture;
+
 import de.matthiasmann.twl.utils.PNGDecoder;
 
 public class TextureLoader {
@@ -106,6 +108,24 @@ public class TextureLoader {
 			// return a null texture here
 			return null;
 		}
+	}
+	
+	public static ParticleTexture loadParticleTex(String texture, int numRows) {
+		// store the texture object that is going to be created
+		ParticleTexture tex = null;
+		try {
+			// load the texture
+			int id = loadTextureInternal(texture, -0.4f);
+			
+			// actually create the texture object
+			tex = new ParticleTexture(id, numRows);
+		} catch (IOException e) {
+			// print if bug or error because thats what we do
+			e.printStackTrace();
+		}
+		
+		// retrun the tex
+		return tex;
 	}
 
 	/**

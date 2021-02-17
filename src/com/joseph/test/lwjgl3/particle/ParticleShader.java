@@ -1,9 +1,8 @@
 package com.joseph.test.lwjgl3.particle;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 
-import com.joseph.test.lwjgl3.entity.Camera;
-import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.shaders.ShaderProgram;
 
 public class ParticleShader extends ShaderProgram {
@@ -12,6 +11,9 @@ public class ParticleShader extends ShaderProgram {
 	
 	private int projMatrixLocation;
 	private int modelViewMatrixLocation;
+	private int texOffsetCurLocation;
+	private int texOffsetNextLocation;
+	private int texCoordInfoLocation;
 	
 	public ParticleShader() {
 		super(VERTEX_SHADER, FRAGMENT_SHADER);
@@ -26,6 +28,9 @@ public class ParticleShader extends ShaderProgram {
 	protected void getUniformLocations() {
 		this.projMatrixLocation = super.getUniformLocation("projMatrix");
 		this.modelViewMatrixLocation = super.getUniformLocation("modelViewMatrix");
+		this.texOffsetCurLocation = super.getUniformLocation("texOffsetCur");
+		this.texOffsetNextLocation = super.getUniformLocation("texOffsetNext");
+		this.texCoordInfoLocation = super.getUniformLocation("texCoordInfo");
 	}
 	
 	public void loadProjection(Matrix4f mat) {
@@ -34,5 +39,11 @@ public class ParticleShader extends ShaderProgram {
 	
 	public void loadModelViewMatrix(Matrix4f mat) {
 		super.loadMatrix4(modelViewMatrixLocation, mat);
+	}
+	
+	public void loadTextureInfo(Vector2f curOffset, Vector2f nextOffset, int numRows, float blend) {
+		super.loadVector(texOffsetCurLocation, curOffset);
+		super.loadVector(texOffsetNextLocation, nextOffset);
+		super.loadVector(texCoordInfoLocation, new Vector2f(numRows, blend));
 	}
 }

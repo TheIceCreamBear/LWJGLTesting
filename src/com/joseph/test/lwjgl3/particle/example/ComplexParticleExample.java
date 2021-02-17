@@ -8,6 +8,7 @@ import org.joml.Vector4f;
 
 import com.joseph.test.lwjgl3.Main;
 import com.joseph.test.lwjgl3.particle.Particle;
+import com.joseph.test.lwjgl3.particle.ParticleTexture;
 
 /**
  * Provided example class of a particle system and how it would generate particles
@@ -16,7 +17,7 @@ import com.joseph.test.lwjgl3.particle.Particle;
  * adjusting code to not cause syntax errors
  */
 public class ComplexParticleExample {
-	
+	// there is something wrong in this class math wise and im not sure what
 	private float pps, averageSpeed, gravityComplient, averageLifeLength, averageScale;
 	
 	private float speedError, lifeError, scaleError = 0;
@@ -24,9 +25,12 @@ public class ComplexParticleExample {
 	private Vector3f direction;
 	private float directionDeviation = 0;
 	
+	private ParticleTexture texture;
+	
 	private Random random = new Random();
 	
-	public ComplexParticleExample(float pps, float speed, float gravityComplient, float lifeLength, float scale) {
+	public ComplexParticleExample(ParticleTexture texture, float pps, float speed, float gravityComplient, float lifeLength, float scale) {
+		this.texture = texture;
 		this.pps = pps;
 		this.averageSpeed = speed;
 		this.gravityComplient = gravityComplient;
@@ -93,7 +97,7 @@ public class ComplexParticleExample {
 		velocity.mul(generateValue(averageSpeed, speedError));
 		float scale = generateValue(averageScale, scaleError);
 		float lifeLength = generateValue(averageLifeLength, lifeError);
-		new Particle(new Vector3f(center), velocity, gravityComplient, lifeLength, generateRotation(), scale);
+		new Particle(texture, new Vector3f(center), velocity, gravityComplient, lifeLength, generateRotation(), scale);
 	}
 	
 	private float generateValue(float average, float errorMargin) {
