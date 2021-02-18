@@ -124,7 +124,7 @@ public class ComplexParticleExample {
 		
 		Vector4f direction = new Vector4f(x, y, z, 1);
 		if (coneDirection.x != 0 || coneDirection.y != 0 || (coneDirection.z != 1 && coneDirection.z != -1)) {
-			Vector3f rotateAxis = coneDirection.cross(new Vector3f(0, 0, 1));
+			Vector3f rotateAxis = coneDirection.cross(new Vector3f(0, 0, 1), new Vector3f());
 			rotateAxis.normalize();
 			float rotateAngle = (float) Math.acos(coneDirection.dot(new Vector3f(0, 0, 1)));
 			Matrix4f rotationMatrix = new Matrix4f();

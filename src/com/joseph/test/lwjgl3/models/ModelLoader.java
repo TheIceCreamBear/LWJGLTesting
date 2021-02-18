@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL33;
 
 import com.joseph.test.lwjgl3.models.obj.ModelData;
 
@@ -139,6 +140,73 @@ public class ModelLoader {
 		
 		// return the new model with the vao and indices length
 		return vaoID;
+	}
+	
+	/**
+	 * Creates an empty vbo with float count number of floats, used for instance rendering
+	 * @param floatCount
+	 * @return
+	 */
+	public int createEmptyVBO(int floatCount) {
+		// create vbo
+		int vbo = GL15.glGenBuffers();
+		// add to list
+		vbos.add(vbo);
+		// bind it
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		// set the data limit and that it is going to be stream draw
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, floatCount * 4, GL15.GL_STREAM_DRAW);
+		// unbind
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		return vbo;
+	}
+	
+	/**
+	 * adds to the vao the vbo data, into the specified attribute, with size number of values stored per
+	 * unit, and with data length stride and offset offset
+	 * @param vao
+	 * @param vbo
+	 * @param attribute
+	 * @param size
+	 * @param dataLength
+	 * @param offset
+	 */
+	public void addInstancedAttribute(int vao, int vbo, int attribute, int size, int dataLength, int offset) {
+		// bind the buffer
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		// bind the vao
+		GL30.glBindVertexArray(vao);
+		// set the attribute into the list with the size, datalength stride, and offset
+		GL20.glVertexAttribPointer(attribute, size, GL11.GL_FLOAT, false, dataLength * 4, offset * 4);
+		// say that it is instanced data
+		GL33.glVertexAttribDivisor(attribute, 1);
+		// unbind
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		// unbind
+		GL30.glBindVertexArray(0);
+	}
+	
+	/**
+	 * update the data in the vbo with the given data array, and reuse the given float buffer
+	 * @param vbo
+	 * @param data
+	 * @param buffer
+	 */
+	public void updateVbo(int vbo, float[] data, FloatBuffer buffer) {
+		// clear the buffer of the old data
+		buffer.clear();
+		// put the new data in
+		buffer.put(data);
+		// flip the buffer to the other direction to be able to read
+		buffer.flip();
+		// bind the vbo
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		// say what type of data goes in it and how much
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity() * 4, GL15.GL_STREAM_DRAW);
+		// put the data in the buffer
+		GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer);
+		// unbind
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}
 	
 	/**

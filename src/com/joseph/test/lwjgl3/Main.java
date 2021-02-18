@@ -308,7 +308,7 @@ public class Main {
 		
 		Particles.init(renderer.getProjMatrix());
 		ParticleTexture simpleTex = TextureLoader.loadParticleTex("res/provided/particleAtlas.png", 4);
-		SimpleParticleExample spe = new SimpleParticleExample(simpleTex, 50.0f, 25.0f, 0.3f, 4.0f);
+		SimpleParticleExample spe = new SimpleParticleExample(simpleTex, 500.0f, 25.0f, 0.3f, 4.0f);
 		ComplexParticleExample cpe = new ComplexParticleExample(simpleTex, 50.0f, 25.0f, 0.3f, 4.0f, 1.0f);
 		cpe.randomizeRotation();
 		cpe.setDirection(new Vector3f(0.0f, 1.0f, 0.0f), 0.1f);
