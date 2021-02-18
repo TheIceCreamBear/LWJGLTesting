@@ -16,7 +16,7 @@ import com.joseph.test.lwjgl3.textures.TerrainTexture;
 import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 
 public class Terrain {
-	public static final float SIZE = 150.0f;
+	public static final float SIZE = 800.0f;
 	private static final float MAX_HEIGHT = 40.0f;
 	private static final float MAX_PIXEL_COLOR = 256.0f * 256.0f * 256.0f;
 	
@@ -50,6 +50,8 @@ public class Terrain {
 	 * @return
 	 */
 	private RawModel generateTerrain(ModelLoader loader, String heightMap) {
+		HeightGenerator hg = new HeightGenerator();
+		
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(new File(heightMap));
@@ -58,7 +60,7 @@ public class Terrain {
 		}
 		
 		// amount of vertices is the number of pixels in the height map
-		int VERTEX_COUNT = img.getHeight();
+		int VERTEX_COUNT = 128;
 		
 		// number of total verticies
 		int count = VERTEX_COUNT * VERTEX_COUNT;
@@ -73,7 +75,7 @@ public class Terrain {
 		int vertexPointer = 0;
 		for(int i = 0; i < VERTEX_COUNT; i++) {
 			for(int j = 0; j < VERTEX_COUNT; j++) {
-				float height = getHeight(j, i, img);
+				float height = getHeight(j, i, hg);
 				// position in x, y, z. all y are 0
 				vertices[vertexPointer * 3] = (float) j / ((float) VERTEX_COUNT - 1) * SIZE;
 				vertices[vertexPointer * 3 + 1] = height;
@@ -81,7 +83,7 @@ public class Terrain {
 				// update heights table
 				this.heights[j][i] = height;				
 				// normal vector, special calculated
-				Vector3f norm = calculateNormal(j, i, img);
+				Vector3f norm = calculateNormal(j, i, hg);
 				normals[vertexPointer * 3] = norm.x;
 				normals[vertexPointer * 3 + 1] = norm.y;
 				normals[vertexPointer * 3 + 2] = norm.z;
@@ -121,12 +123,12 @@ public class Terrain {
 	 * @param img
 	 * @return
 	 */
-	private Vector3f calculateNormal(int x, int z, BufferedImage img) {
+	private Vector3f calculateNormal(int x, int z, HeightGenerator hg) {
 		// get the goods
-		float heightL = getHeight(x - 1, z, img);
-		float heightR = getHeight(x + 1, z, img);
-		float heightD = getHeight(x, z - 1, img);
-		float heightU = getHeight(x, z + 1, img);
+		float heightL = getHeight(x - 1, z, hg);
+		float heightR = getHeight(x + 1, z, hg);
+		float heightD = getHeight(x, z - 1, hg);
+		float heightU = getHeight(x, z + 1, hg);
 		
 		// create the Vec based on the differences in the heights and also then normalize that
 		Vector3f normal = new Vector3f(heightL - heightR, 2.0f, heightD - heightU);
@@ -140,27 +142,8 @@ public class Terrain {
 	 * @param img
 	 * @return
 	 */
-	private float getHeight(int x, int z, BufferedImage img) {
-		// make bounds wrap, only have to handle the range where it is -1 and img.getHieght because of how this is called
-		if (x < 0) {
-			x = img.getHeight() - 1;
-		}
-		if (x >= img.getHeight()) {
-			x = 0;
-		}
-		if (z < 0) {
-			z = img.getHeight() - 1;
-		}
-		if (z >= img.getHeight()) {
-			z = 0;
-		}
-		
-		// get the height and scale it into a range of +/- MAX_HEIGHT
-		float height = img.getRGB(x, z);
-		height += MAX_PIXEL_COLOR / 2f;
-		height /= MAX_PIXEL_COLOR / 2f;
-		height *= MAX_HEIGHT;
-		return height;
+	private float getHeight(int x, int z, HeightGenerator hg) {
+		return hg.generateHeight(x, z);
 	}
 	
 	/**

@@ -241,8 +241,8 @@ public class Main {
 		RawModel playerModel = loader.loadToVAO(playerData);
 		Texture playerTex = TextureLoader.loadTexture("res/provided/playerTexture.png");
 		TexturedModel player = new TexturedModel(playerModel, playerTex);
-//		Player playa = new Player(player, new Vector3f(160.0f, terrain2.getHeightOfTerrain(160.0f, -260.0f), -260.0f), 0.0f, 90.0f, 0.0f, 0.5f);
-		Player playa = new Player(player, new Vector3f(10.0f, waterT.getHeightOfTerrain(10.0f, -10.0f), -10.0f), 0.0f, 90.0f, 0.0f, 0.5f);
+		Player playa = new Player(player, new Vector3f(160.0f, waterT.getHeightOfTerrain(160.0f, -260.0f), -260.0f), 0.0f, 90.0f, 0.0f, 0.5f);
+//		Player playa = new Player(player, new Vector3f(10.0f, waterT.getHeightOfTerrain(10.0f, -10.0f), -10.0f), 0.0f, 90.0f, 0.0f, 0.5f);
 		Camera camera = new Camera(playa);
 		// new: add player to list of entites because it is one and it will always be rendered
 		entities.add(playa);
@@ -256,7 +256,7 @@ public class Main {
 				// if outside the water area, add fern
 				if ((x < 50.0f || x > 100.0f) && (z > -50.0f || z < -100.0f)) {
 					float y = waterT.getHeightOfTerrain(x, z);
-					entities.add(new Entity(fern, 3,  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 0.9f));
+//					entities.add(new Entity(fern, 3,  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 0.9f));
 				}
 			}
 			if (i % 2 == 0) {
@@ -265,20 +265,10 @@ public class Main {
 				// if outside the water area, add tree
 				if ((x < 50.0f || x > 100.0f) && (z > -50.0f || z < -100.0f)) {
 					float y = waterT.getHeightOfTerrain(x, z);
-					entities.add(new Entity(tree, 1, new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.6f + 0.8f));
+//					entities.add(new Entity(tree, 1, new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.6f + 0.8f));
 				}
 			}
 		}
-		
-		Texture barrelTex = TextureLoader.loadTextureWithNormal("res/provided/barrel.png", "res/provided/barrelNormal.png");
-		barrelTex.setShineDamper(10.0f);
-		barrelTex.setReflectivity(0.5f);
-		TexturedModel barrelModel = new TexturedModel(NormalMapOBJLoader.loadObjModel("res/provided/barrel.obj"), barrelTex);
-		
-		nmEntities.add(new Entity(barrelModel, new Vector3f(75.0f, 10.0f, -75.0f), 0.0f, 0.0f, 0.0f, 1.0f));
-		
-		// the rocks entity for under the little island type deal
-		entities.add(new Entity(rocks, new Vector3f(75.0f, 4.6f, -75.0f), 0.0f, 0.0f, 0.0f, 75.0f));
 		
 		List<GuiTexture> guis = new ArrayList<GuiTexture>();
 		GuiTexture gui = new GuiTexture(TextureLoader.loadTexture("res/provided/socuwan.png").glTextureID(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
@@ -298,7 +288,7 @@ public class Main {
 		WaterFrameBuffers fbos = new WaterFrameBuffers();
 		WaterRenderer wRenderer = new WaterRenderer(loader, wShader, renderer.getProjMatrix(), fbos);
 		List<WaterTile> water = new ArrayList<WaterTile>();
-		WaterTile wt = new WaterTile(75.0f, -75.0f, 0.0f);
+		WaterTile wt = new WaterTile(400.0f, -400.0f, 0.0f);
 		water.add(wt);
 		
 		Text.init();
