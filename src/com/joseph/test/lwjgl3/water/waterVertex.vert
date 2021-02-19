@@ -25,5 +25,5 @@ void main(void) {
 	
 	toCam = camPos - worldPosition.xyz;
 	
-	fromLight = worldPosition.syx - lightPos;
+	fromLight = worldPosition.xyz - lightPos;
 }
