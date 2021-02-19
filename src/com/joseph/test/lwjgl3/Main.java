@@ -165,76 +165,37 @@ public class Main {
 		Texture treeTex = TextureLoader.loadTexture("res/provided/pine.png");
 		TexturedModel tree = new TexturedModel(treeModel, treeTex);
 		
-		// load a "low poly" tree model and its texture
-//		ModelData lpTreeData = OBJLoader.loadObjModel("res/provided/lowPolyTree.obj");
-//		RawModel lpTreeModel = loader.loadToVAO(lpTreeData);
-//		Texture lpTreeTex = TextureLoader.loadTexture("res/provided/lowPolyTree.png");
-//		lpTreeTex.setNumRows(2);
-//		TexturedModel lpTree = new TexturedModel(lpTreeModel, lpTreeTex);
-		
-		// load a grass model and its texture
-		ModelData grassData = OBJLoader.loadObjModel("res/provided/grassModel.obj");
-		RawModel grassModel = loader.loadToVAO(grassData);
-		Texture grassTex = TextureLoader.loadTexture("res/provided/grassTexture.png");
-		grassTex.setHasTransparency(true);
-		grassTex.setUseFakedLighting(true);
-		TexturedModel grass = new TexturedModel(grassModel, grassTex);
-		
-		// load a fern model and its texture
-		ModelData fernData = OBJLoader.loadObjModel("res/provided/fern.obj");
-		RawModel fernModel = loader.loadToVAO(fernData);
-		Texture fernTex = TextureLoader.loadTexture("res/provided/fern.png");
-		fernTex.setNumRows(2);
-		fernTex.setHasTransparency(true);
-		fernTex.setUseFakedLighting(true);
-		TexturedModel fern = new TexturedModel(fernModel, fernTex);
-		
-		// load a lamp
-		RawModel lampModel = loader.loadToVAO(OBJLoader.loadObjModel("res/provided/lamp.obj"));
-		Texture lampTex = TextureLoader.loadTexture("res/provided/lamp.png");
-		TexturedModel lamp = new TexturedModel(lampModel, lampTex); // TODO lamp hack is pointless, just set that the texture uses fake lighting
-		
 		// load an icoSphere
 		RawModel icoModel = loader.loadToVAO(OBJLoader.loadObjModel("res/TestModels/icoSphere.obj"));
 		Texture icoTex = TextureLoader.loadTexture("res/provided/white.png");
 		TexturedModel icoSphere = new TexturedModel(icoModel, icoTex);
 		
 		// loads the rocks for the water tuts
-		RawModel rocksModel = loader.loadToVAO(OBJLoader.loadObjModel("res/provided/rocks.obj"));
-		Texture rocksTex = TextureLoader.loadTexture("res/provided/rocks.png");
-		TexturedModel rocks = new TexturedModel(rocksModel, rocksTex);
+		RawModel boulderModel = NormalMapOBJLoader.loadObjModel("res/provided/boulder.obj");
+		Texture boulderTex = TextureLoader.loadTextureWithNormal("res/provided/boulder.png", "res/provided/boulderNormal.png");
+		boulderTex.setShineDamper(10.0f);
+		boulderTex.setReflectivity(1.0f);
+		TexturedModel boulder = new TexturedModel(boulderModel, boulderTex);
 		
 		// setup some lights
 		List<Light> lights = new ArrayList<Light>();
 		lights.add(new Light(new Vector3f(10000.0f, 10000.0f, -10000.0f), new Vector3f(1.3f, 1.3f, 1.3f))); // water sun
-//		lights.add(new Light(new Vector3f(0.0f, 1000.0f, -7000.0f), new Vector3f(0.4f, 0.4f, 0.4f))); // sun
-//		lights.add(new Light(new Vector3f(185.0f, 6.2f, -293.0f), new Vector3f(2.0f, 0.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
-//		lights.add(new Light(new Vector3f(370.0f, 15.1f, -300.0f), new Vector3f(0.0f, 2.0f, 2.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
-//		lights.add(new Light(new Vector3f(293.0f, 4.1f, -305.0f), new Vector3f(2.0f, 2.0f, 0.0f), new Vector3f(1.0f, 0.01f, 0.002f)));
 		
 		// add entities at the light positions to make it easier to know where the light is
 		entities.add(new Entity(icoSphere, 0, lights.get(0).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
-//		entities.add(new Entity(icoSphere, 0, lights.get(1).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
-//		entities.add(new Entity(icoSphere, 0, lights.get(2).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
-//		entities.add(new Entity(icoSphere, 0, lights.get(3).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
-		
-//		entities.add(new Entity(lamp, 0, new Vector3f(185.0f, -4.7f, -293.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
-//		entities.add(new Entity(lamp, 0, new Vector3f(370.0f, 4.2f, -300.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
-//		entities.add(new Entity(lamp, 0, new Vector3f(293.0f, -6.8f, -305.0f), 0.0f, 0.0f, 0.0f, 1.0f, true));
 		
 		// setup terrain textures
 		TerrainTexture baseTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/grassy.png"));
-		TerrainTexture rTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/dirt.png"));
+		TerrainTexture rTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/mud.png"));
 		TerrainTexture gTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/grassFlowers.png"));
 		TerrainTexture bTex = new TerrainTexture(TextureLoader.loadTexture("res/provided/path.png"));
 		
 		TerrainTexturePack pack = new TerrainTexturePack(baseTex, rTex, gTex, bTex);
-//		TerrainTexture blendMap = new TerrainTexture(TextureLoader.loadTexture("res/provided/blendMap.png"));
 		TerrainTexture blendMap = new TerrainTexture(TextureLoader.loadTexture("res/provided/blendMapForWater.png"));
 				
-//		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap, "res/provided/heightmap.png");
-		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap, "res/provided/heightmap.png");
-		Terrain waterT = new Terrain(0, -1, loader, pack, blendMap, "res/provided/heightmapForWater.png");
+//		Terrain terrain = new Terrain(-1, -1, loader, pack, blendMap);
+		Terrain terrain2 = new Terrain(0, -1, loader, pack, blendMap);
+		Terrain waterT = new Terrain(0, -1, loader, pack, blendMap);
 		terrains.add(waterT);
 		
 		ModelData playerData = OBJLoader.loadObjModel("res/provided/person.obj");
@@ -242,30 +203,29 @@ public class Main {
 		Texture playerTex = TextureLoader.loadTexture("res/provided/playerTexture.png");
 		TexturedModel player = new TexturedModel(playerModel, playerTex);
 		Player playa = new Player(player, new Vector3f(160.0f, waterT.getHeightOfTerrain(160.0f, -260.0f), -260.0f), 0.0f, 90.0f, 0.0f, 0.5f);
-//		Player playa = new Player(player, new Vector3f(10.0f, waterT.getHeightOfTerrain(10.0f, -10.0f), -10.0f), 0.0f, 90.0f, 0.0f, 0.5f);
 		Camera camera = new Camera(playa);
 		// new: add player to list of entites because it is one and it will always be rendered
 		entities.add(playa);
 		
 		// store the random objects into a list
 		Random r = new Random(5666778);
-		for (int i = 0; i < 60; i++) {
+		for (int i = 0; i < 600; i++) {
 			if (i % 3 == 0) {
 				float x = r.nextFloat() * Terrain.SIZE;
 				float z = r.nextFloat() * -Terrain.SIZE;
+				float y = waterT.getHeightOfTerrain(x, z);
 				// if outside the water area, add fern
-				if ((x < 50.0f || x > 100.0f) && (z > -50.0f || z < -100.0f)) {
-					float y = waterT.getHeightOfTerrain(x, z);
-//					entities.add(new Entity(fern, 3,  new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 0.9f));
+				if (y > 0) {
+					nmEntities.add(new Entity(boulder, new Vector3f(x, y, z), r.nextFloat() * 360.0f, r.nextFloat() * 360.0f, r.nextFloat() * 360.0f, r.nextFloat() * 0.5f + 0.3f));
 				}
 			}
 			if (i % 2 == 0) {
 				float x = r.nextFloat() * Terrain.SIZE;
 				float z = r.nextFloat() * -Terrain.SIZE;
+				float y = waterT.getHeightOfTerrain(x, z);
 				// if outside the water area, add tree
-				if ((x < 50.0f || x > 100.0f) && (z > -50.0f || z < -100.0f)) {
-					float y = waterT.getHeightOfTerrain(x, z);
-//					entities.add(new Entity(tree, 1, new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.6f + 0.8f));
+				if (y > 0) {
+					entities.add(new Entity(tree, 1, new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, r.nextFloat() * 0.6f + 0.8f));
 				}
 			}
 		}
@@ -288,8 +248,11 @@ public class Main {
 		WaterFrameBuffers fbos = new WaterFrameBuffers();
 		WaterRenderer wRenderer = new WaterRenderer(loader, wShader, renderer.getProjMatrix(), fbos);
 		List<WaterTile> water = new ArrayList<WaterTile>();
-		WaterTile wt = new WaterTile(400.0f, -400.0f, 0.0f);
+		WaterTile wt = new WaterTile(200.0f, -200.0f, 0.0f);
 		water.add(wt);
+		water.add(new WaterTile(200.0f, -600.0f, 0.0f));
+		water.add(new WaterTile(600.0f, -200.0f, 0.0f));
+		water.add(new WaterTile(600.0f, -600.0f, 0.0f));
 		
 		Text.init();
 		FontType font = new FontType(TextureLoader.loadTextTexture("res/generated/consolas.png"), new File("res/generated/consolas.fnt"));

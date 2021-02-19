@@ -16,7 +16,7 @@ public class HeightGenerator {
 	private static final int OCTAVES = 3;
 	private static final float ROUGHNESS = 0.3f;
 	
-	private Random rand = new Random(5555);
+	private Random rand = new Random(555);
 	private int seed;
 	
 	public HeightGenerator() {

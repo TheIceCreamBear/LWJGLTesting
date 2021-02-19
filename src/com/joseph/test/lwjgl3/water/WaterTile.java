@@ -2,7 +2,7 @@ package com.joseph.test.lwjgl3.water;
 
 public class WaterTile {
 	
-	public static final float TILE_SIZE = 400;
+	public static final float TILE_SIZE = 200;
 	
 	private float height;
 	private float x, z;

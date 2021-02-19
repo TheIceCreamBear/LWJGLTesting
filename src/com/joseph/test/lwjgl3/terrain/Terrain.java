@@ -36,12 +36,12 @@ public class Terrain {
 	 * @param loader
 	 * @param texture
 	 */
-	public Terrain(int gridX, int gridZ, ModelLoader loader, TerrainTexturePack texPack, TerrainTexture blendMap, String heightMap) {
+	public Terrain(int gridX, int gridZ, ModelLoader loader, TerrainTexturePack texPack, TerrainTexture blendMap) {
 		this.texPack = texPack;
 		this.blendMap = blendMap;
 		this.x = gridX * SIZE;
 		this.z = gridZ * SIZE;
-		this.model = this.generateTerrain(loader, heightMap);
+		this.model = this.generateTerrain(loader);
 	}
 	
 	/**
@@ -49,15 +49,8 @@ public class Terrain {
 	 * @param loader
 	 * @return
 	 */
-	private RawModel generateTerrain(ModelLoader loader, String heightMap) {
+	private RawModel generateTerrain(ModelLoader loader) {
 		HeightGenerator hg = new HeightGenerator();
-		
-		BufferedImage img = null;
-		try {
-			img = ImageIO.read(new File(heightMap));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		
 		// amount of vertices is the number of pixels in the height map
 		int VERTEX_COUNT = 128;
