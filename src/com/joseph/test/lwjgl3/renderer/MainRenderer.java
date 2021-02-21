@@ -28,9 +28,9 @@ import com.joseph.test.lwjgl3.terrain.Terrain;
  */
 public class MainRenderer {
 	// bruv, what if le user wants to change this (although i dont like that idea so)
-	private static final float FOV = 70;
-	private static final float NEAR_PLANE = 0.1f;
-	private static final float FAR_PLANE = 1000f;
+	public static final float FOV = 70;
+	public static final float NEAR_PLANE = 0.1f;
+	public static final float FAR_PLANE = 1000f;
 	
 	public static final float RED = 0.5444f;
 	public static final float GREEN = 0.62f;
