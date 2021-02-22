@@ -165,11 +165,10 @@ public class MainRenderer {
 	 * Creates a projection matrix to project the z axis and stuff
 	 */
 	private void createProjectionMatrix() {
-		// TODO these should not be constant
 		float width = GLFWHandler.SCREEN_WIDTH;
 		float height = GLFWHandler.SCREEN_HEIGHT;
 		float aspectRatio = width / height;
-		float yScale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
+		float yScale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
 		float xScale = yScale / aspectRatio;
 		float frustumLength = FAR_PLANE - NEAR_PLANE;
 		
