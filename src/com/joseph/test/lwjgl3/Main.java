@@ -154,7 +154,6 @@ public class Main {
 		// thats how imma do it
 		// HAHA old me, i have said f it and made it static
 		ModelLoader loader = ModelLoader.instance;
-		MainRenderer renderer = new MainRenderer(loader);
 		List<Entity> entities = new ArrayList<Entity>();
 		List<Entity> nmEntities = new ArrayList<Entity>();
 		List<Terrain> terrains = new ArrayList<Terrain>();
@@ -230,13 +229,12 @@ public class Main {
 			}
 		}
 		
+		// moved
+		MainRenderer renderer = new MainRenderer(loader, camera);
+		
 		List<GuiTexture> guis = new ArrayList<GuiTexture>();
-		GuiTexture gui = new GuiTexture(TextureLoader.loadTexture("res/provided/socuwan.png").glTextureID(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-		GuiTexture gui2 = new GuiTexture(TextureLoader.loadTexture("res/provided/thinmatrix.png").glTextureID(), new Vector2f(0.30f, 0.58f), new Vector2f(0.4f, 0.4f));
-		
-//		guis.add(gui);
-//		guis.add(gui2);
-		
+		GuiTexture shadowMap = new GuiTexture(renderer.getShadowMap(), new Vector2f(0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
+		guis.add(shadowMap);
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		
 		// really dont like what this is called
@@ -314,6 +312,9 @@ public class Main {
 //				}
 //			}
 			
+			
+			// = = = = = = = = = = = = = = = = = = = = RENDER = = = = = = = = = = = = = = = = = = = = =
+			renderer.renderShadowMap(entities, lights.get(0));
 			
 			// tells open gl that we want to use the clip plane distance 0, just to make sure that it is enabled
 			// clip distance is just how far a vertex is from the clipping plane (this is signed), so like a positive

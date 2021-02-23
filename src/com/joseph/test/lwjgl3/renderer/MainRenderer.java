@@ -17,6 +17,7 @@ import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.renderer.nm.NormalMapRenderer;
 import com.joseph.test.lwjgl3.shaders.StaticShader;
 import com.joseph.test.lwjgl3.shaders.TerrainShader;
+import com.joseph.test.lwjgl3.shadow.ShadowMapRenderer;
 import com.joseph.test.lwjgl3.skybox.SkyboxRenderer;
 import com.joseph.test.lwjgl3.terrain.Terrain;
 
@@ -51,11 +52,13 @@ public class MainRenderer {
 	// skybox thing
 	private SkyboxRenderer sRender;
 	
+	private ShadowMapRenderer shadows;
+	
 	private HashMap<TexturedModel, List<Entity>> entities;
 	private HashMap<TexturedModel, List<Entity>> nmEntities;
 	private List<Terrain> terrains;
 	
-	public MainRenderer(ModelLoader loader) {
+	public MainRenderer(ModelLoader loader, Camera cam) {
 		enableCulling();
 		
 		// create the projection matrix
@@ -70,6 +73,8 @@ public class MainRenderer {
 		this.nmRender = new NormalMapRenderer(projMatrix);
 		
 		this.sRender = new SkyboxRenderer(loader, projMatrix);
+		
+		this.shadows = new ShadowMapRenderer(cam);
 		
 		this.entities = new HashMap<TexturedModel, List<Entity>>();
 		this.nmEntities = new HashMap<TexturedModel, List<Entity>>();
@@ -145,6 +150,15 @@ public class MainRenderer {
 		entities.clear();
 		nmEntities.clear();
 		terrains.clear();
+	}
+	
+	public void renderShadowMap(List<Entity> entities, Light sun) {
+		for (Entity e : entities) {
+			this.addEntity(e);
+		}
+		
+		shadows.render(this.entities, sun);
+		this.entities.clear();
 	}
 	
 	/**
@@ -233,6 +247,7 @@ public class MainRenderer {
 		tShader.cleanUp();
 		sRender.cleanUp();
 		nmRender.cleanUp();
+		shadows.cleanUp();
 	}
 	
 	/**
@@ -254,5 +269,9 @@ public class MainRenderer {
 	
 	public Matrix4f getProjMatrix() {
 		return this.projMatrix;
+	}
+	
+	public int getShadowMap() {
+		return this.shadows.getShadowMap();
 	}
 }

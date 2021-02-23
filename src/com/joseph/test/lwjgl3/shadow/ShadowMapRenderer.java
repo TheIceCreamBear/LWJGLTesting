@@ -25,7 +25,7 @@ import com.joseph.test.lwjgl3.models.TexturedModel;
  * @author Karl
  *
  */
-public class ShadowMapMainRenderer {
+public class ShadowMapRenderer {
 	
 	private static final int SHADOW_MAP_SIZE = 2048;
 	
@@ -49,7 +49,7 @@ public class ShadowMapMainRenderer {
 	 * 
 	 * @param camera - the camera being used in the scene.
 	 */
-	public ShadowMapMainRenderer(Camera camera) {
+	public ShadowMapRenderer(Camera camera) {
 		shader = new ShadowShader();
 		shadowBox = new ShadowBox(lightViewMatrix, camera);
 		shadowFbo = new ShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
