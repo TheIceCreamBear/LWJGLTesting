@@ -17,6 +17,7 @@ import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.renderer.nm.NormalMapRenderer;
 import com.joseph.test.lwjgl3.shaders.StaticShader;
 import com.joseph.test.lwjgl3.shaders.TerrainShader;
+import com.joseph.test.lwjgl3.shadows.ShadowMapRenderer;
 import com.joseph.test.lwjgl3.skybox.SkyboxRenderer;
 import com.joseph.test.lwjgl3.terrain.Terrain;
 
@@ -51,6 +52,8 @@ public class MainRenderer {
 	// skybox thing
 	private SkyboxRenderer sRender;
 	
+	private ShadowMapRenderer shadows;
+	
 	private HashMap<TexturedModel, List<Entity>> entities;
 	private HashMap<TexturedModel, List<Entity>> nmEntities;
 	private List<Terrain> terrains;
@@ -71,6 +74,7 @@ public class MainRenderer {
 		
 		this.sRender = new SkyboxRenderer(loader, projMatrix);
 		
+		this.shadows = new ShadowMapRenderer(cam);
 		
 		this.entities = new HashMap<TexturedModel, List<Entity>>();
 		this.nmEntities = new HashMap<TexturedModel, List<Entity>>();
@@ -152,6 +156,8 @@ public class MainRenderer {
 		for (Entity e : entities) {
 			this.addEntity(e);
 		}
+		
+		shadows.render(this.entities, sun);
 		
 		this.entities.clear();
 	}
@@ -242,6 +248,7 @@ public class MainRenderer {
 		tShader.cleanUp();
 		sRender.cleanUp();
 		nmRender.cleanUp();
+		shadows.cleanUp();
 	}
 	
 	/**
@@ -265,7 +272,7 @@ public class MainRenderer {
 		return this.projMatrix;
 	}
 	
-//	public int getShadowMap() {
-//		return this.shadows.getShadowMap();
-//	}
+	public int getShadowMap() {
+		return this.shadows.getShadowMap();
+	}
 }
