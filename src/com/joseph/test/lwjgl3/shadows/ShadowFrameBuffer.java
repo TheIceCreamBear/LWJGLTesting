@@ -1,4 +1,4 @@
-package shadows;
+package com.joseph.test.lwjgl3.shadows;
 
 import java.nio.ByteBuffer;
 

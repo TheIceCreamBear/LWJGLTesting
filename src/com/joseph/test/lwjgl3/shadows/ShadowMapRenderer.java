@@ -1,17 +1,17 @@
-package shadows;
+package com.joseph.test.lwjgl3.shadows;
 
 import java.util.List;
 import java.util.Map;
 
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
 
-import entities.Camera;
-import entities.Entity;
-import entities.Light;
-import models.TexturedModel;
+import com.joseph.test.lwjgl3.entity.Camera;
+import com.joseph.test.lwjgl3.entity.Entity;
+import com.joseph.test.lwjgl3.entity.Light;
+import com.joseph.test.lwjgl3.models.TexturedModel;
 
 /**
  * This class is in charge of using all of the classes in the shadows package to
@@ -22,7 +22,7 @@ import models.TexturedModel;
  * @author Karl
  *
  */
-public class ShadowMapMasterRenderer {
+public class ShadowMapRenderer {
 
 	private static final int SHADOW_MAP_SIZE = 2048;
 
@@ -47,7 +47,7 @@ public class ShadowMapMasterRenderer {
 	 * @param camera
 	 *            - the camera being used in the scene.
 	 */
-	public ShadowMapMasterRenderer(Camera camera) {
+	public ShadowMapRenderer(Camera camera) {
 		shader = new ShadowShader();
 		shadowBox = new ShadowBox(lightViewMatrix, camera);
 		shadowFbo = new ShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);

@@ -1,16 +1,17 @@
-package shadows;
+package com.joseph.test.lwjgl3.shadows;
 
 import java.util.List;
 import java.util.Map;
 
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.vector.Matrix4f;
 
-import entities.Entity;
-import models.RawModel;
-import models.TexturedModel;
+import com.joseph.test.lwjgl3.entity.Entity;
+import com.joseph.test.lwjgl3.models.RawModel;
+import com.joseph.test.lwjgl3.models.TexturedModel;
+
 import toolbox.Maths;
 
 public class ShadowMapEntityRenderer {

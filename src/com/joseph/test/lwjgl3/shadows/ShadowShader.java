@@ -1,8 +1,8 @@
-package shadows;
+package com.joseph.test.lwjgl3.shadows;
 
-import org.lwjgl.util.vector.Matrix4f;
+import org.joml.Matrix4f;
 
-import shaders.ShaderProgram;
+import com.joseph.test.lwjgl3.shaders.ShaderProgram;
 
 public class ShadowShader extends ShaderProgram {
 	
