@@ -5,9 +5,9 @@ import org.joml.Matrix4f;
 import com.joseph.test.lwjgl3.shaders.ShaderProgram;
 
 public class ShadowShader extends ShaderProgram {
-	
-	private static final String VERTEX_FILE = "src/shadows/shadowVertexShader.txt";
-	private static final String FRAGMENT_FILE = "src/shadows/shadowFragmentShader.txt";
+
+	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/shadows/shadow.vert";
+	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/shadows/shadow.frag";
 	
 	private int mvpMatrixLocation;
 	

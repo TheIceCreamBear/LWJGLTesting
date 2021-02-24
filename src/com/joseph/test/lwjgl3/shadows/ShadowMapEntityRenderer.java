@@ -70,7 +70,7 @@ public class ShadowMapEntityRenderer {
 	 */
 	private void prepareInstance(Entity entity) {
 		Matrix4f modelMatrix = MathHelper.createTransformationMatrix(entity.getPos(), entity.getRotx(), entity.getRoty(), entity.getRotz(), entity.getScale());
-		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
+		Matrix4f mvpMatrix = projectionViewMatrix.mul(modelMatrix, new Matrix4f());
 		shader.loadMvpMatrix(mvpMatrix);
 	}
 	
