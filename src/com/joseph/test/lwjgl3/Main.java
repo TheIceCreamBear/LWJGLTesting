@@ -277,6 +277,53 @@ public class Main {
 		FrustrumViewer fv = new FrustrumViewer();
 		GuiTexture frustrumResult = new GuiTexture(fvfb.getTexture(), new Vector2f(-0.5f, -0.5f), new Vector2f(0.5f, 0.5f));
 		guis.add(frustrumResult);
+		boolean canCamMove = true;
+		Camera fvCam = new Camera(new Vector3f(camera.getPosition()), camera.getPitch(), camera.getYaw(), 180.0f) {
+			final float FV_CAM_MOVE_SPEED = 100.0f;
+			final float FV_CAM_TURN_SPEED = 160.0f;
+			@Override
+			// custom implementation of move, for debugging purposes of course
+			public void move() {
+				Vector3f displacement = new Vector3f(0, 0, 0);
+				float speed = FV_CAM_MOVE_SPEED * Main.delta;
+				float turnSpeed = FV_CAM_TURN_SPEED * Main.delta;
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_W]) {
+					displacement.x -= speed * Math.sin(Math.toRadians(this.yaw));
+					displacement.z -= speed * Math.cos(Math.toRadians(this.yaw));
+				}
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_S]) {
+					displacement.x += speed * Math.sin(Math.toRadians(this.yaw));
+					displacement.z += speed * Math.cos(Math.toRadians(this.yaw));
+				}
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_A]) {
+					displacement.x += speed * Math.cos(Math.toRadians(this.yaw));
+					displacement.z -= speed * Math.sin(Math.toRadians(this.yaw));
+				}
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_D]) {
+					displacement.x -= speed * Math.cos(Math.toRadians(this.yaw));
+					displacement.z += speed * Math.sin(Math.toRadians(this.yaw));
+				}
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_SPACE]) {
+					displacement.y += speed / 2;
+				}
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_LEFT_SHIFT]) {
+					displacement.y -= speed / 2;
+				}
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_UP]) {
+					this.pitch += turnSpeed;
+				}
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_DOWN]) {
+					this.pitch -= turnSpeed;
+				}
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_LEFT]) {
+					this.yaw -= turnSpeed;
+				}
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_RIGHT]) {
+					this.yaw += turnSpeed;
+				}
+				this.position.add(displacement);
+			}
+		};
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
@@ -294,8 +341,9 @@ public class Main {
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
 			// move le player dude 
-			playa.move(waterT);
+			playa.move(waterT, !canCamMove);
 			camera.move();
+			fvCam.move();
 			Particles.update(camera);
 			
 			// particle piss stream
@@ -366,23 +414,22 @@ public class Main {
 				fvfb.bindBuffer();
 				fv.update();
 				// calculate new camera
-				float yawRad = (float) Math.toRadians(camera.getYaw() + 30);
-				Vector3f camPos = camera.getPosition();
-				float displacement = 150.0f;
-				float offX = (float) Math.cos(yawRad) * displacement;
-				float offZ = (float) Math.sin(yawRad) * displacement;
-				Vector3f pos = new Vector3f(camPos.x + offX , camPos.y, camPos.z + offZ);
-				Camera testCam = new Camera(pos, camera.getPitch(), camera.getYaw() + 90.0f, camera.getRoll());
+//				float yawRad = (float) Math.toRadians(camera.getYaw() + 30);
+//				Vector3f camPos = camera.getPosition();
+//				float displacement = 150.0f;
+//				float offX = (float) Math.cos(yawRad) * displacement;
+//				float offZ = (float) Math.sin(yawRad) * displacement;
+//				Vector3f pos = new Vector3f(camPos.x + offX , camPos.y, camPos.z + offZ);
+//				Camera testCam = new Camera(pos, camera.getPitch(), camera.getYaw() + 90.0f, camera.getRoll());
 				// render scene and water
-				renderer.renderScene(entities, nmEntities, terrains, lights, testCam, new Vector4f(0, 0, 0, 0));
-				wRenderer.render(water, testCam, lights.get(0));
+				renderer.renderScene(entities, nmEntities, terrains, lights, fvCam, new Vector4f(0, 0, 0, 0));
+//				wRenderer.render(water, fvCam, lights.get(0));
 				// disable depth (want this on top)
 				GL11.glDisable(GL11.GL_DEPTH_TEST);
 				// prepare
 				fv.start();
 				// create view mat
-				Matrix4f view = MathHelper.createViewMatrix(testCam);
-				view.translate(pos.negate());
+				Matrix4f view = MathHelper.createViewMatrix(fvCam);
 				Matrix4f projView = renderer.getProjMatrix().mul(view, new Matrix4f());
 				fv.loadProjectionView(projView);
 				// prepare render data

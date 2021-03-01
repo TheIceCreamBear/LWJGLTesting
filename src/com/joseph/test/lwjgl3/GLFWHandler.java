@@ -10,8 +10,8 @@ import org.lwjgl.system.MemoryUtil;
 import com.joseph.test.lwjgl3.util.Point;
 
 public class GLFWHandler {
-	public static final int SCREEN_WIDTH = 1600;
-	public static final int SCREEN_HEIGHT = 900;
+	public static final int SCREEN_WIDTH = 1600 * 2;
+	public static final int SCREEN_HEIGHT = 900 * 2;
 	
 	// NOT THE FINAL RESTING PLACE FOR THIS, GOOD "for now"
 	public static boolean[] keyDown = new boolean[GLFW.GLFW_KEY_LAST + 1];

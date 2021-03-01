@@ -14,10 +14,10 @@ import com.joseph.test.lwjgl3.Main;
  */
 public class Camera {
 	private static final float CAM_SPEED = 0.5f;
-	private Vector3f position = new Vector3f(100.0f, 35.0f, 50.0f);
-	private float pitch = 10.0f;
-	private float yaw;
-	private float roll;
+	protected Vector3f position = new Vector3f(100.0f, 35.0f, 50.0f);
+	protected float pitch = 10.0f;
+	protected float yaw;
+	protected float roll;
 	
 	private Player player;
 	

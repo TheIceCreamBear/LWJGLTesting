@@ -16,12 +16,16 @@ public class Player extends Entity {
 	
 	private float yVel;
 	private boolean inAir;
-
+	
 	public Player(TexturedModel model, Vector3f pos, float rotx, float roty, float rotz, float scale) {
 		super(model, pos, rotx, roty, rotz, scale);
 	}
 	
-	public void move(Terrain terrain) {
+	public void move(Terrain terrain, boolean disableMovement) {
+		if (disableMovement) {
+			return;
+		}
+		
 		// rotate the dude
 		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_KP_6]) {
 			super.increaseRotation(0, Main.delta * -TURN_SPEED, 0);
