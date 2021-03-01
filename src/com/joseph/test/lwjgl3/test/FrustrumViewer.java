@@ -1,6 +1,7 @@
 package com.joseph.test.lwjgl3.test;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
@@ -24,9 +25,20 @@ public class FrustrumViewer extends ShaderProgram {
 	private static final int NUM_VERTS = 8;
 	private static final int NUM_FLOATS_PER = 3;
 	private static final FloatBuffer buf = BufferUtils.createFloatBuffer(NUM_VERTS * NUM_FLOATS_PER);
+	private static final int[] indicies = {
+											0, 1, 2,
+											1, 2, 3,
+											1, 5, 3,
+											3, 5, 7,
+											0, 4, 2,
+											2, 6, 4,
+											4, 5, 6,
+											5, 6, 7
+										  };
 	
 	private int vaoID;
 	private int vboID;
+	private int indiciesVbo;
 	private int projectionViewLocation;
 
 	public FrustrumViewer() {
@@ -39,6 +51,13 @@ public class FrustrumViewer extends ShaderProgram {
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, NUM_VERTS * NUM_FLOATS_PER * 4, GL15.GL_DYNAMIC_DRAW);
 		// put the buffer into the vertex attrib of the vao
 		GL20.glVertexAttribPointer(0, NUM_FLOATS_PER, GL11.GL_FLOAT, false, 0, 0);
+		// create and store the indicies in an index buffer
+		indiciesVbo = GL15.glGenBuffers();
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indiciesVbo);
+		IntBuffer b = BufferUtils.createIntBuffer(indicies.length);
+		b.put(indicies);
+		b.flip();
+		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, b, GL15.GL_DYNAMIC_DRAW);
 		// unbind
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		GL30.glBindVertexArray(0);
@@ -92,12 +111,13 @@ public class FrustrumViewer extends ShaderProgram {
 	}
 	
 	public int getVerts() {
-		return NUM_VERTS;
+		return indicies.length;
 	}
 	
 	@Override
 	public void cleanUp() {
 		super.cleanUp();
 		GL15.glDeleteBuffers(vboID);
+		GL15.glDeleteBuffers(indiciesVbo);
 	}
 }

@@ -341,7 +341,7 @@ public class Main {
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
 			// move le player dude 
-			playa.move(waterT, !canCamMove);
+			playa.move(waterT, canCamMove);
 			camera.move();
 			fvCam.move();
 			Particles.update(camera);
@@ -413,19 +413,10 @@ public class Main {
 				// bind buffer
 				fvfb.bindBuffer();
 				fv.update();
-				// calculate new camera
-//				float yawRad = (float) Math.toRadians(camera.getYaw() + 30);
-//				Vector3f camPos = camera.getPosition();
-//				float displacement = 150.0f;
-//				float offX = (float) Math.cos(yawRad) * displacement;
-//				float offZ = (float) Math.sin(yawRad) * displacement;
-//				Vector3f pos = new Vector3f(camPos.x + offX , camPos.y, camPos.z + offZ);
-//				Camera testCam = new Camera(pos, camera.getPitch(), camera.getYaw() + 90.0f, camera.getRoll());
 				// render scene and water
 				renderer.renderScene(entities, nmEntities, terrains, lights, fvCam, new Vector4f(0, 0, 0, 0));
-//				wRenderer.render(water, fvCam, lights.get(0));
 				// disable depth (want this on top)
-				GL11.glDisable(GL11.GL_DEPTH_TEST);
+//				GL11.glDisable(GL11.GL_DEPTH_TEST);
 				// prepare
 				fv.start();
 				// create view mat
@@ -435,13 +426,17 @@ public class Main {
 				// prepare render data
 				GL30.glBindVertexArray(fv.getVaoID());
 				GL20.glEnableVertexAttribArray(0);
+				MainRenderer.disableCulling();
+				GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
 				// draw call
-				GL11.glDrawArrays(GL11.GL_POINTS, 0, fv.getVerts());
-				fv.stop();
+				GL11.glDrawElements(GL11.GL_TRIANGLES, fv.getVerts(), GL11.GL_UNSIGNED_INT, 0);
 				// reset state
+				MainRenderer.enableCulling();
+				GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_FILL);
+				fv.stop();
 				GL30.glBindVertexArray(0);
 				GL20.glDisableVertexAttribArray(0);
-				GL11.glEnable(GL11.GL_DEPTH_TEST);
+//				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				fvfb.unbindCurrentFrameBuffer();
 			}
 			
