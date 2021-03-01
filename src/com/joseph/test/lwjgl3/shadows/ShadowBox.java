@@ -3,6 +3,7 @@ package com.joseph.test.lwjgl3.shadows;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.glfw.GLFW;
 
 import com.joseph.test.lwjgl3.GLFWHandler;
 import com.joseph.test.lwjgl3.entity.Camera;
@@ -35,6 +36,8 @@ public class ShadowBox {
 	private Camera cam;
 	
 	private float farHeight, farWidth, nearHeight, nearWidth;
+	
+	public static Vector4f[] temp = null;
 	
 	/**
 	 * Creates a new shadow box and calculates some initial values relating to
@@ -72,6 +75,13 @@ public class ShadowBox {
 		Vector3f centerFar = toFar.add(cam.getPosition());
 		
 		Vector4f[] points = calculateFrustumVertices(rotation, forwardVector, centerNear, centerFar);
+		temp = points;
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_P]) {
+			for (int i = 0; i < points.length; i++) {
+				System.out.println(points[i]);
+			}
+			System.out.println("\n");
+		}
 		
 		boolean first = true;
 		for (Vector4f point : points) {
@@ -198,8 +208,8 @@ public class ShadowBox {
 	 */
 	private Matrix4f calculateCameraRotationMatrix() {
 		Matrix4f rotation = new Matrix4f();
-		rotation.rotate((float) Math.toRadians(-cam.getYaw()), new Vector3f(0, 1, 0));
-		rotation.rotate((float) Math.toRadians(-cam.getPitch()), new Vector3f(1, 0, 0));
+		rotation.rotateY((float) Math.toRadians(-cam.getYaw()));
+		rotation.rotateX((float) Math.toRadians(-cam.getPitch()));
 		return rotation;
 	}
 	

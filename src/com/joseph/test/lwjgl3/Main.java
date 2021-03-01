@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -12,6 +13,7 @@ import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
@@ -21,6 +23,7 @@ import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.entity.Player;
 import com.joseph.test.lwjgl3.gui.GuiRenderer;
 import com.joseph.test.lwjgl3.gui.GuiTexture;
+import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.math.MousePicker;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
@@ -38,6 +41,8 @@ import com.joseph.test.lwjgl3.renderer.text.Text;
 import com.joseph.test.lwjgl3.renderer.text.mesh.FontType;
 import com.joseph.test.lwjgl3.renderer.text.mesh.GUIText;
 import com.joseph.test.lwjgl3.terrain.Terrain;
+import com.joseph.test.lwjgl3.test.FrustrumViewer;
+import com.joseph.test.lwjgl3.test.FrustrumViewerFrameBuffer;
 import com.joseph.test.lwjgl3.textures.TerrainTexture;
 import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 import com.joseph.test.lwjgl3.textures.Texture;
@@ -267,6 +272,12 @@ public class Main {
 		cpe.setSpeedError(0.4f);
 		cpe.setScaleError(0.8f);
 		
+		// setup the stuff needed to render the frustrum viewer
+		FrustrumViewerFrameBuffer fvfb = new FrustrumViewerFrameBuffer();
+		FrustrumViewer fv = new FrustrumViewer();
+		GuiTexture frustrumResult = new GuiTexture(fvfb.getTexture(), new Vector2f(-0.5f, -0.5f), new Vector2f(0.5f, 0.5f));
+		guis.add(frustrumResult);
+		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
 		// UPDATES NOT DELTA TIME UPDATES THANKS
@@ -348,6 +359,46 @@ public class Main {
 			// render water after scene but before gui
 			wRenderer.render(water, camera, lights.get(0));
 			
+			// temp render the scene with water to the frustrum view buffer then render the frustrum viewer then render the color
+			// tex to the main frame buffer via a gui (this happens as part of the gui renderer)
+			{
+				// bind buffer
+				fvfb.bindBuffer();
+				fv.update();
+				// calculate new camera
+				float yawRad = (float) Math.toRadians(camera.getYaw() + 30);
+				Vector3f camPos = camera.getPosition();
+				float displacement = 150.0f;
+				float offX = (float) Math.cos(yawRad) * displacement;
+				float offZ = (float) Math.sin(yawRad) * displacement;
+				Vector3f pos = new Vector3f(camPos.x + offX , camPos.y, camPos.z + offZ);
+				Camera testCam = new Camera(pos, camera.getPitch(), camera.getYaw() + 90.0f, camera.getRoll());
+				// render scene and water
+				renderer.renderScene(entities, nmEntities, terrains, lights, testCam, new Vector4f(0, 0, 0, 0));
+				wRenderer.render(water, testCam, lights.get(0));
+				// disable depth (want this on top)
+				GL11.glDisable(GL11.GL_DEPTH_TEST);
+				// prepare
+				fv.start();
+				// create view mat
+				Matrix4f view = MathHelper.createViewMatrix(testCam);
+				view.translate(pos.negate());
+				Matrix4f projView = renderer.getProjMatrix().mul(view, new Matrix4f());
+				fv.loadProjectionView(projView);
+				// prepare render data
+				GL30.glBindVertexArray(fv.getVaoID());
+				GL20.glEnableVertexAttribArray(0);
+				// draw call
+				GL11.glDrawArrays(GL11.GL_POINTS, 0, fv.getVerts());
+				fv.stop();
+				// reset state
+				GL30.glBindVertexArray(0);
+				GL20.glDisableVertexAttribArray(0);
+				GL11.glEnable(GL11.GL_DEPTH_TEST);
+				fvfb.unbindCurrentFrameBuffer();
+			}
+			
+
 			// render particles after all 3d and before 2d
 			Particles.renderParticles(camera);
 			
@@ -391,6 +442,8 @@ public class Main {
 		guiRenderer.cleanUp();
 		loader.cleanUp();
 		renderer.cleanUp();
+		fv.cleanUp();
+		fvfb.cleanUp();
 		TextureLoader.cleanUp();
 		Text.cleanUp();
 		Particles.cleanUp();

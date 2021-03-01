@@ -75,6 +75,7 @@ public class MathHelper {
 		// maybe in the camera.move() and then just do camera .getView rather than creating a new
 		// one every single time
 		// so TODO the above lines
+		// the amout of times i have thought about that and still havent done it is amazing
 		
 		// make the matrix
 		Matrix4f matrix = new Matrix4f();

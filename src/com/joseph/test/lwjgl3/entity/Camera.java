@@ -28,6 +28,13 @@ public class Camera {
 		this.player = p;
 	}
 	
+	public Camera(Vector3f pos, float pitch, float yaw, float roll) {
+		this.position = pos;
+		this.pitch = pitch;
+		this.yaw = yaw;
+		this.roll = roll;
+	}
+	
 	public void move() {
 		this.calculateZoom();
 		this.calculatePitch();

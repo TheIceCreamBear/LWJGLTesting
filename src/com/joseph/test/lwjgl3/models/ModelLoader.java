@@ -229,7 +229,8 @@ public class ModelLoader {
 	 * and binds it for use
 	 * @return the id of the created vao
 	 */
-	private int createVAO() {
+	// this being public is temp
+	public int createVAO() {
 		// create vao and get the id
 		int vaoID = GL30.glGenVertexArrays();
 		// add id to the list
@@ -239,6 +240,7 @@ public class ModelLoader {
 		// JAVA! its 4pm, time for you to return the vaoID created by this method
 		return vaoID;
 		// yes honey
+		// that comment is so dumb
 	}
 	
 	/**
