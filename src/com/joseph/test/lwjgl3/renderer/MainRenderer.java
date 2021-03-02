@@ -152,14 +152,17 @@ public class MainRenderer {
 		terrains.clear();
 	}
 	
-	public void renderShadowMap(List<Entity> entities, Light sun) {
+	public void renderShadowMap(List<Entity> entities, List<Entity> nmEntities, Light sun) {
 		for (Entity e : entities) {
 			this.addEntity(e);
 		}
+		for (Entity e : nmEntities) {
+			this.addNMEntity(e);
+		}
 		
-		shadows.render(this.entities, sun);
-		
+		shadows.render(this.entities, this.nmEntities, sun);
 		this.entities.clear();
+		this.nmEntities.clear();
 	}
 	
 	/**

@@ -66,12 +66,13 @@ public class ShadowMapRenderer {
 	 *            entities in that list use.
 	 * @param sun - the light acting as the sun in the scene.
 	 */
-	public void render(Map<TexturedModel, List<Entity>> entities, Light sun) {
+	public void render(Map<TexturedModel, List<Entity>> entities, Map<TexturedModel, List<Entity>> nmEntities, Light sun) {
 		shadowBox.update();
 		Vector3f sunPosition = sun.getPosition();
 		Vector3f lightDirection = new Vector3f(-sunPosition.x, -sunPosition.y, -sunPosition.z);
 		prepare(lightDirection, shadowBox);
 		entityRenderer.render(entities);
+		entityRenderer.render(nmEntities);
 		finish();
 	}
 	

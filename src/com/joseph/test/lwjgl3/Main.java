@@ -376,7 +376,7 @@ public class Main {
 			
 			
 			// = = = = = = = = = = = = = = = = = = = = RENDER = = = = = = = = = = = = = = = = = = = = =
-			renderer.renderShadowMap(entities, lights.get(0));
+			renderer.renderShadowMap(entities, nmEntities, lights.get(0));
 			// its not working
 			
 			// tells open gl that we want to use the clip plane distance 0, just to make sure that it is enabled
