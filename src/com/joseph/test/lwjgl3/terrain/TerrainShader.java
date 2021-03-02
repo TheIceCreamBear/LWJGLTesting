@@ -1,4 +1,4 @@
-package com.joseph.test.lwjgl3.shaders;
+package com.joseph.test.lwjgl3.terrain;
 
 import java.util.List;
 
@@ -9,6 +9,8 @@ import org.joml.Vector4f;
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.math.MathHelper;
+import com.joseph.test.lwjgl3.shaders.ShaderProgram;
+import com.joseph.test.lwjgl3.shaders.StaticShader;
 
 /**
  * for now, see {@link StaticShader}
@@ -18,8 +20,8 @@ import com.joseph.test.lwjgl3.math.MathHelper;
 public class TerrainShader extends ShaderProgram {
 	private static final int MAX_LIGHTS = 4;
 	
-	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/shaders/terrainVertexShader.vert";
-	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/shaders/terrainFragmentShader.frag";
+	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/terrain/terrain.vert";
+	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/terrain/terrain.frag";
 	
 	private int tMatrixLocation;
 	private int projMatrixLocation;

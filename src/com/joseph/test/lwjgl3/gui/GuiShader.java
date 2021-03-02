@@ -8,8 +8,8 @@ import com.joseph.test.lwjgl3.shaders.ShaderProgram;
  * throws shade on those guis
  */
 public class GuiShader extends ShaderProgram {
-	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/gui/vertexShader.vert";
-	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/gui/fragmentShader.frag";
+	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/gui/gui.vert";
+	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/gui/gui.frag";
 	
 	private int tMatrixLocation;
 	

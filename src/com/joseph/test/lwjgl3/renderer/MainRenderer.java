@@ -16,10 +16,10 @@ import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.TexturedModel;
 import com.joseph.test.lwjgl3.renderer.nm.NormalMapRenderer;
 import com.joseph.test.lwjgl3.shaders.StaticShader;
-import com.joseph.test.lwjgl3.shaders.TerrainShader;
 import com.joseph.test.lwjgl3.shadows.ShadowMapRenderer;
 import com.joseph.test.lwjgl3.skybox.SkyboxRenderer;
 import com.joseph.test.lwjgl3.terrain.Terrain;
+import com.joseph.test.lwjgl3.terrain.TerrainShader;
 
 /**
  * IDK if i have done whole class docs like this before but imma do it so basically this is really bad design IMO

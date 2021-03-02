@@ -13,8 +13,8 @@ import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
-import com.joseph.test.lwjgl3.shaders.TerrainShader;
 import com.joseph.test.lwjgl3.terrain.Terrain;
+import com.joseph.test.lwjgl3.terrain.TerrainShader;
 import com.joseph.test.lwjgl3.textures.TerrainTexturePack;
 import com.joseph.test.lwjgl3.textures.Texture;
 
