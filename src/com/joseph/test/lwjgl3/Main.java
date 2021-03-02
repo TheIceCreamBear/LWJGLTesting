@@ -276,8 +276,11 @@ public class Main {
 		FrustrumViewerFrameBuffer fvfb = new FrustrumViewerFrameBuffer();
 		FrustrumViewer fv = new FrustrumViewer();
 		GuiTexture frustrumResult = new GuiTexture(fvfb.getTexture(), new Vector2f(-0.5f, -0.5f), new Vector2f(0.5f, 0.5f));
-		guis.add(frustrumResult);
-		boolean canCamMove = true;
+		boolean canCamMove = false;
+		boolean renderFV = false;
+		if (renderFV) {			
+			guis.add(frustrumResult);
+		}
 		Camera fvCam = new Camera(new Vector3f(camera.getPosition()), camera.getPitch(), camera.getYaw(), 180.0f) {
 			final float FV_CAM_MOVE_SPEED = 100.0f;
 			final float FV_CAM_TURN_SPEED = 160.0f;
@@ -407,40 +410,10 @@ public class Main {
 			// render water after scene but before gui
 			wRenderer.render(water, camera, lights.get(0));
 			
-			// temp render the scene with water to the frustrum view buffer then render the frustrum viewer then render the color
-			// tex to the main frame buffer via a gui (this happens as part of the gui renderer)
-			{
-				// bind buffer
-				fvfb.bindBuffer();
-				fv.update();
-				// render scene and water
-				renderer.renderScene(entities, nmEntities, terrains, lights, fvCam, new Vector4f(0, 0, 0, 0));
-				// disable depth (want this on top)
-//				GL11.glDisable(GL11.GL_DEPTH_TEST);
-				// prepare
-				fv.start();
-				// create view mat
-				Matrix4f view = MathHelper.createViewMatrix(fvCam);
-				Matrix4f projView = renderer.getProjMatrix().mul(view, new Matrix4f());
-				fv.loadProjectionView(projView);
-				// prepare render data
-				GL30.glBindVertexArray(fv.getVaoID());
-				GL20.glEnableVertexAttribArray(0);
-				MainRenderer.disableCulling();
-				GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
-				// draw call
-				GL11.glDrawElements(GL11.GL_TRIANGLES, fv.getVerts(), GL11.GL_UNSIGNED_INT, 0);
-				// reset state
-				MainRenderer.enableCulling();
-				GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_FILL);
-				fv.stop();
-				GL30.glBindVertexArray(0);
-				GL20.glDisableVertexAttribArray(0);
-//				GL11.glEnable(GL11.GL_DEPTH_TEST);
-				fvfb.unbindCurrentFrameBuffer();
+			if (renderFV) {
+				renderFrustrumViewer(fv, fvfb, renderer, fvCam, entities, nmEntities, terrains, lights);
 			}
 			
-
 			// render particles after all 3d and before 2d
 			Particles.renderParticles(camera);
 			
@@ -499,5 +472,36 @@ public class Main {
 		// however, the last thing we will do is to set the error callback to null
 		// if there are any native resources in use, free them, because we dont need them
 		GLFW.glfwSetErrorCallback(null).free();
+	}
+	
+	public static void renderFrustrumViewer(FrustrumViewer fv, FrustrumViewerFrameBuffer fvfb, MainRenderer mr, Camera fvCam, List<Entity> es, List<Entity> nmes, List<Terrain> ts, List<Light> ls) {
+		// bind buffer
+		fvfb.bindBuffer();
+		fv.update();
+		// render scene and water
+		mr.renderScene(es, nmes, ts, ls, fvCam, new Vector4f(0, 0, 0, 0));
+		// disable depth (want this on top)
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		// prepare
+		fv.start();
+		// create view mat
+		Matrix4f view = MathHelper.createViewMatrix(fvCam);
+		Matrix4f projView = mr.getProjMatrix().mul(view, new Matrix4f());
+		fv.loadProjectionView(projView);
+		// prepare render data
+		GL30.glBindVertexArray(fv.getVaoID());
+		GL20.glEnableVertexAttribArray(0);
+		MainRenderer.disableCulling();
+		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_LINE);
+		// draw call
+		GL11.glDrawElements(GL11.GL_TRIANGLES, fv.getVerts(), GL11.GL_UNSIGNED_INT, 0);
+		// reset state
+		MainRenderer.enableCulling();
+		GL20.glPolygonMode(GL20.GL_FRONT_AND_BACK, GL20.GL_FILL);
+		fv.stop();
+		GL30.glBindVertexArray(0);
+		GL20.glDisableVertexAttribArray(0);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		fvfb.unbindCurrentFrameBuffer();
 	}
 }
