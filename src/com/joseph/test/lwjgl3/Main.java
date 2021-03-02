@@ -239,7 +239,7 @@ public class Main {
 		
 		List<GuiTexture> guis = new ArrayList<GuiTexture>();
 		GuiTexture shadowMap = new GuiTexture(renderer.getShadowMap(), new Vector2f(0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
-		guis.add(shadowMap);
+//		guis.add(shadowMap);
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		
 		// really dont like what this is called

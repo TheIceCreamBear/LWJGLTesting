@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
@@ -12,6 +13,7 @@ import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
+import com.joseph.test.lwjgl3.renderer.MainRenderer;
 
 public class ShadowMapEntityRenderer {
 	
@@ -39,12 +41,21 @@ public class ShadowMapEntityRenderer {
 		for (TexturedModel model : entities.keySet()) {
 			RawModel rawModel = model.getModel();
 			bindModel(rawModel);
+			GL13.glActiveTexture(GL13.GL_TEXTURE0);
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTex().glTextureID());
+			if (model.getTex().hasTransparency()) {
+				MainRenderer.disableCulling();
+			}
 			for (Entity entity : entities.get(model)) {
 				prepareInstance(entity);
 				GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 			}
+			if (model.getTex().hasTransparency()) {
+				MainRenderer.enableCulling();
+			}
 		}
 		GL20.glDisableVertexAttribArray(0);
+		GL20.glDisableVertexAttribArray(1);
 		GL30.glBindVertexArray(0);
 	}
 	
@@ -58,6 +69,7 @@ public class ShadowMapEntityRenderer {
 	private void bindModel(RawModel rawModel) {
 		GL30.glBindVertexArray(rawModel.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
+		GL20.glEnableVertexAttribArray(1);
 	}
 	
 	/**

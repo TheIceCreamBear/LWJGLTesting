@@ -7,6 +7,7 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import com.joseph.test.lwjgl3.GLFWHandler;
 import com.joseph.test.lwjgl3.entity.Camera;
@@ -138,7 +139,7 @@ public class MainRenderer {
 		tShader.loadLights(lights);
 		tShader.loadViewMatrix(camera);
 		// render the terrains
-		tRender.render(terrains);
+		tRender.render(terrains, shadows.getToShadowMapSpaceMatrix());
 		// stop the terrain shader
 		tShader.stop();
 		
@@ -177,6 +178,9 @@ public class MainRenderer {
 		// this will clear the current frame buffer of its contents and set the pixels to the 
 		// pixel color specified in the clearColor funciton call above
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		
+		GL13.glActiveTexture(GL13.GL_TEXTURE5);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMap());
 	}
 	
 	/**
