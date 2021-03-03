@@ -30,6 +30,8 @@ public class EntityRenderer {
 		shader.start();
 		// save le proj mat
 		shader.loadProjection(projMatrix);
+		// setup the shadowMap texutre uniform
+		shader.setupShadowMap();
 		// stop it because we arent rendering anything rn like hello
 		shader.stop();
 	}
@@ -42,7 +44,8 @@ public class EntityRenderer {
 	 * (this should be done a different way)
 	 * @param entities
 	 */
-	public void render(HashMap<TexturedModel, List<Entity>> entities) {
+	public void render(HashMap<TexturedModel, List<Entity>> entities, Matrix4f toShadowSpace) {
+		shader.loadShadowMapSpace(toShadowSpace);
 		// get each textured model
 		for (TexturedModel texMod : entities.keySet()) {
 			// prep it

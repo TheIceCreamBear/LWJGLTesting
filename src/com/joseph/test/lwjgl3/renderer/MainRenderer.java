@@ -111,6 +111,7 @@ public class MainRenderer {
 	 * @param camera - the camera
 	 */
 	public void render(List<Light> lights, Camera camera, Vector4f clipPlane) {
+		Matrix4f shadowMapSpace = shadows.getToShadowMapSpaceMatrix();
 		// this will clear the current frame buffer of its contents and set the pixels to the 
 		// pixel color specified in the clearColor funciton call above
 		this.prepare();
@@ -124,11 +125,11 @@ public class MainRenderer {
 		sShader.loadLights(lights);
 		sShader.loadViewMatrix(camera);
 		// render everything
-		eRender.render(entities);
+		eRender.render(entities, shadowMapSpace);
 		// stop shader
 		sShader.stop();
 		// render the entities with normal maps
-		nmRender.render(nmEntities, clipPlane, lights, camera);
+		nmRender.render(nmEntities, clipPlane, lights, camera, shadowMapSpace);
 		// start the terrain shader
 		tShader.start();
 		// load le clip plane
@@ -139,7 +140,7 @@ public class MainRenderer {
 		tShader.loadLights(lights);
 		tShader.loadViewMatrix(camera);
 		// render the terrains
-		tRender.render(terrains, shadows.getToShadowMapSpaceMatrix());
+		tRender.render(terrains, shadowMapSpace);
 		// stop the terrain shader
 		tShader.stop();
 		

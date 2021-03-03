@@ -4,8 +4,8 @@ in vec2 texCoord;
 in vec3 surfaceNormal;
 in vec3 toLight[4];
 in vec3 toCam;
-in float visibility;
 in vec4 shadowCoords;
+in float visibility;
 
 out vec4 out_Color;
 
@@ -28,6 +28,7 @@ const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
 // I realy reccomment that you load this up as a uniform variable so that if you ever change
 // it in the java code it will change in the shaders as well, but im being lazy here - TUT dude
 const float mapSize = 4096.0;
+const float shadowBias = 0.002;
 
 const float levels = 4;
 const bool celShading = false;
@@ -39,7 +40,7 @@ void main(void) {
     for (int x = -pcfCount; x <= pcfCount; x++) {
         for (int y = -pcfCount; y <= pcfCount; y++) {
             float objectNearestLight = texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
-		    if (shadowCoords.z > objectNearestLight) {
+		    if (shadowCoords.z > objectNearestLight + shadowBias) {
 		        total += 1.0;
 		    }
         }

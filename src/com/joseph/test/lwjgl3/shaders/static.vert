@@ -8,6 +8,7 @@ out vec2 texCoord;
 out vec3 surfaceNormal;
 out vec3 toLight[4];
 out vec3 toCam;
+out vec4 shadowCoords;
 out float visibility;
 
 uniform mat4 tMatrix;
@@ -15,6 +16,8 @@ uniform mat4 projMatrix;
 uniform mat4 viewMatrix;
 
 uniform vec3 lightPos[4];
+
+uniform mat4 shadowMapSpace;
 
 uniform float useFakeLight;
 
@@ -27,9 +30,14 @@ uniform vec4 clipPlane;
 const float density = 0.0035;
 const float gradient = 5.0;
 
+// must be same as shadowDistance in shadow box, but TUT dude is being lazy (as usual)
+const float shadowDistance = 150.0;
+const float transitionDistance = 10.0;
+
 void main(void) {
     vec4 worldPos = tMatrix * vec4(position, 1.0);
     vec4 positionRelToCam = viewMatrix * worldPos;
+    shadowCoords = shadowMapSpace * worldPos;
     
     gl_ClipDistance[0] = dot(worldPos, clipPlane);
 
@@ -50,4 +58,8 @@ void main(void) {
     float distance = length(positionRelToCam.xyz);
     visibility = exp(-pow((distance * density), gradient));
     visibility = clamp(visibility, 0.0, 1.0);
+    
+    distance = distance - (shadowDistance - transitionDistance);
+    distance = distance / transitionDistance;
+    shadowCoords.w = clamp(1.0 - distance, 0.0, 1.0);
 }

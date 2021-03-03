@@ -8,8 +8,8 @@ out vec2 texCoord;
 out vec3 surfaceNormal;
 out vec3 toLight[4];
 out vec3 toCam;
-out float visibility;
 out vec4 shadowCoords;
+out float visibility;
 
 uniform mat4 tMatrix;
 uniform mat4 projMatrix;

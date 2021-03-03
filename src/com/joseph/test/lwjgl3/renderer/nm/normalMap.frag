@@ -3,12 +3,14 @@
 in vec2 texCoord;
 in vec3 toLight[4];
 in vec3 toCam;
+in vec4 shadowCoords;
 in float visibility;
 
 out vec4 out_Color;
 
 uniform sampler2D modelTexture;
 uniform sampler2D normalMap;
+uniform sampler2D shadowMap;
 uniform vec3 lightColor[4];
 uniform vec3 attenuation[4];
 uniform vec3 skyColor;
@@ -16,7 +18,27 @@ uniform float shineDamper;
 uniform float reflectivity;
 uniform float ambientLight = 0.2;
 
+const int pcfCount = 2;
+const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
+// I realy reccomment that you load this up as a uniform variable so that if you ever change
+// it in the java code it will change in the shaders as well, but im being lazy here - TUT dude
+const float mapSize = 4096.0;
+const float shadowBias = 0.002;
+
 void main(void) {
+    float texelSize = 1.0 / mapSize;
+    float total = 0.0;
+    
+    for (int x = -pcfCount; x <= pcfCount; x++) {
+        for (int y = -pcfCount; y <= pcfCount; y++) {
+            float objectNearestLight = texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
+            if (shadowCoords.z > objectNearestLight + shadowBias) {
+                total += 1.0;
+            }
+        }
+    }
+    float lightFactor = 1.0 - ((total / totalTexels) * shadowCoords.w);
+    
     vec4 normalMapValue = 2.0 * texture(normalMap, texCoord) - 1;
 
 	vec3 unitNormal = normalize(normalMapValue.rgb);
@@ -45,13 +67,13 @@ void main(void) {
 		totalSpecular += (dampedFactor * reflectivity * lightColor[i]) / attFactor;
 	}
 	
-	totalDiffuse = max(totalDiffuse, ambientLight);
+	totalDiffuse = max(totalDiffuse * lightFactor, ambientLight);
 	
 	vec4 texColor = texture(modelTexture, texCoord);
 	if (texColor.a < 0.5) {
 		discard;
 	}
 
-	out_Color = vec4(totalDiffuse, 1.0) * texColor + vec4(totalSpecular, 1.0);
+	out_Color = vec4(totalDiffuse, 1.0) * texColor + vec4(totalSpecular * lightFactor, 1.0);
 	out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
 }

@@ -32,6 +32,8 @@ public class NormalMapShader extends ShaderProgram {
 	private int clipPlaneLocaiton;
 	private int textureLocation;
 	private int normalMapLocation;
+	private int shadowMapSpaceLocation;
+	private int shadowMapLocation;
 	// TODO is light source hack on this one?
 	
 	public NormalMapShader() {
@@ -60,6 +62,8 @@ public class NormalMapShader extends ShaderProgram {
 		this.clipPlaneLocaiton = super.getUniformLocation("plane");
 		this.textureLocation = super.getUniformLocation("modelTexture");
 		this.normalMapLocation = super.getUniformLocation("normalMap");
+		this.shadowMapSpaceLocation = super.getUniformLocation("shadowMapSpace");
+		this.shadowMapLocation = super.getUniformLocation("shadowMap");
 		
 		this.lightPosEyeSpaceLocation = new int[MAX_LIGHTS];
 		this.lightColorLocation = new int[MAX_LIGHTS];
@@ -74,6 +78,7 @@ public class NormalMapShader extends ShaderProgram {
 	protected void connectTextureUnits() {
 		super.loadInt(textureLocation, 0);
 		super.loadInt(normalMapLocation, 1);
+		super.loadInt(shadowMapLocation, 5);
 	}
 	
 	protected void loadClipPlane(Vector4f plane) {
@@ -134,5 +139,9 @@ public class NormalMapShader extends ShaderProgram {
 		Vector3f position = light.getPosition();
 		Vector4f eyeSpacePos = new Vector4f(position.x, position.y, position.z, 1f);
 		return eyeSpacePos.mulProject(viewMatrix, new Vector3f());
-	}	
+	}
+	
+	public void loadShadowMapSpace(Matrix4f shadowMapConversion) {
+		super.loadMatrix4(shadowMapSpaceLocation, shadowMapConversion);
+	}
 }

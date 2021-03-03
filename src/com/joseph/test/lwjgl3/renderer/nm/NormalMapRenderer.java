@@ -42,8 +42,9 @@ public class NormalMapRenderer {
 	 * @param lights
 	 * @param camera
 	 */
-	public void render(HashMap<TexturedModel, List<Entity>> entities, Vector4f clipPlane, List<Light> lights, Camera camera) {
+	public void render(HashMap<TexturedModel, List<Entity>> entities, Vector4f clipPlane, List<Light> lights, Camera camera, Matrix4f toShadowSpace) {
 		this.shader.start();
+		shader.loadShadowMapSpace(toShadowSpace);
 		this.prepare(clipPlane, lights, camera);
 		// get each textured model
 		for (TexturedModel model : entities.keySet()) {
