@@ -21,17 +21,31 @@ uniform vec3 attenuation[4];
 uniform vec3 skyColor;
 uniform float shineDamper;
 uniform float reflectivity;
-uniform float ambientLight = 0.2;
+uniform float ambientLight = 0.4;
+
+const int pcfCount = 2;
+const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
+// I realy reccomment that you load this up as a uniform variable so that if you ever change
+// it in the java code it will change in the shaders as well, but im being lazy here - TUT dude
+const float mapSize = 4096.0;
 
 const float levels = 4;
 const bool celShading = false;
 
 void main(void) {
-    float objectNearestLight = texture(shadowMap, shadowCoords.xy).r;
-    float lightFactor = 1.0;
-    if (shadowCoords.z > objectNearestLight) {
-        lightFactor = 1.0 - (shadowCoords.w * 0.4);
+    float texelSize = 1.0 / mapSize;
+    float total = 0.0;
+    
+    for (int x = -pcfCount; x <= pcfCount; x++) {
+        for (int y = -pcfCount; y <= pcfCount; y++) {
+            float objectNearestLight = texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
+		    if (shadowCoords.z > objectNearestLight) {
+		        total += 1.0;
+		    }
+        }
     }
+    
+    float lightFactor = 1.0 - ((total / totalTexels) * shadowCoords.w);
     
     vec4 blendColor = texture(blendMap, texCoord);
     
@@ -57,7 +71,7 @@ void main(void) {
 	    vec3 lightDir = -light;
 	    
 	    float dotProd = dot(normal, light);
-	    float brightness = max(dotProd, ambientLight);
+	    float brightness = max(dotProd, ambientLight); // this is a bug, ambient light should be 0.0
 	    
         if (celShading) {
            float level = floor(brightness * levels);
@@ -78,7 +92,7 @@ void main(void) {
         totalSpecular += (dampedFactor * reflectivity * lightColor[i]) / attFactor;
     }
     
-    totalDiffuse = max(totalDiffuse, ambientLight) * lightFactor;
+    totalDiffuse = max(totalDiffuse * lightFactor, ambientLight);
     
     out_Color = vec4(totalDiffuse, 1.0) * totalColor + vec4(totalSpecular, 1.0);
     out_Color = mix(vec4(skyColor,1.0), out_Color, visibility);
