@@ -71,7 +71,7 @@ void main(void) {
 	    vec3 lightDir = -light;
 	    
 	    float dotProd = dot(normal, light);
-	    float brightness = max(dotProd, ambientLight); // this is a bug, ambient light should be 0.0
+	    float brightness = max(dotProd, 0.0);
 	    
         if (celShading) {
            float level = floor(brightness * levels);
