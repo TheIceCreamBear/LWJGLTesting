@@ -23,10 +23,10 @@ import com.joseph.test.lwjgl3.renderer.MainRenderer;
  *
  */
 public class ShadowBox {
-	private static final float OFFSET = 15.0f;
+	private static final float OFFSET = 35.0f;
 	private static final Vector4f UP = new Vector4f(0, 1, 0, 0);
 	private static final Vector4f FORWARD = new Vector4f(0, 0, -1, 0);
-	private static final float SHADOW_DISTANCE = 125.0f;
+	private static final float SHADOW_DISTANCE = 150.0f;
 	
 	private float minX, maxX;
 	private float minY, maxY;

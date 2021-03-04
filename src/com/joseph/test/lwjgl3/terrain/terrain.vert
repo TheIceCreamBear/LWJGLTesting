@@ -26,7 +26,7 @@ const float density = 0.0035;
 const float gradient = 5.0;
 
 // must be same as shadowDistance in shadow box, but TUT dude is being lazy (as usual)
-const float shadowDistance = 125.0;
+const float shadowDistance = 150.0;
 const float transitionDistance = 10.0;
 
 void main(void) {
