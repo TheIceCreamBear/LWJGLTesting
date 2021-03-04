@@ -154,7 +154,10 @@ public class MainRenderer {
 		terrains.clear();
 	}
 	
-	public void renderShadowMap(List<Entity> entities, List<Entity> nmEntities, Light sun) {
+	public void renderShadowMap(List<Entity> entities, List<Entity> nmEntities, List<Terrain> terrains, Light sun) {
+		for (Terrain t : terrains) {
+			this.addTerrain(t);
+		}
 		for (Entity e : entities) {
 			this.addEntity(e);
 		}
@@ -162,7 +165,8 @@ public class MainRenderer {
 			this.addNMEntity(e);
 		}
 		
-		shadows.render(this.entities, this.nmEntities, sun);
+		shadows.render(this.entities, this.nmEntities, this.terrains, sun);
+		this.terrains.clear();
 		this.entities.clear();
 		this.nmEntities.clear();
 	}
@@ -181,7 +185,9 @@ public class MainRenderer {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		
 		GL13.glActiveTexture(GL13.GL_TEXTURE5);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMap());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.getEntityShadowMap());
+		GL13.glActiveTexture(GL13.GL_TEXTURE6);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.getTerrainShadowMap());
 	}
 	
 	/**
@@ -280,7 +286,11 @@ public class MainRenderer {
 		return this.projMatrix;
 	}
 	
-	public int getShadowMap() {
-		return this.shadows.getShadowMap();
+	public int getEntityShadowMap() {
+		return this.shadows.getEntityShadowMap();
+	}
+	
+	public int getTerrainShadowMap() {
+		return this.shadows.getTerrainShadowMap();
 	}
 }

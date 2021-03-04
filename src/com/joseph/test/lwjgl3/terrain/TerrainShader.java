@@ -40,7 +40,8 @@ public class TerrainShader extends ShaderProgram {
 	private int bTexLocation;
 	private int clipPlaneLocaiton;
 	private int shadowMapSpaceLocation;
-	private int shadowMapLocation;
+	private int entityShadowMapLocation;
+	private int terrainShadowMapLocation;
 	
 	public TerrainShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -69,7 +70,8 @@ public class TerrainShader extends ShaderProgram {
 		this.bTexLocation = super.getUniformLocation("bTex");
 		this.clipPlaneLocaiton = super.getUniformLocation("clipPlane");
 		this.shadowMapSpaceLocation = super.getUniformLocation("shadowMapSpace");
-		this.shadowMapLocation = super.getUniformLocation("shadowMap");
+		this.entityShadowMapLocation = super.getUniformLocation("entityShadowMap");
+		this.terrainShadowMapLocation = super.getUniformLocation("terrainShadowMap");
 
 		this.lightPosLocation = new int[MAX_LIGHTS];
 		this.lightColorLocation = new int[MAX_LIGHTS];
@@ -87,7 +89,8 @@ public class TerrainShader extends ShaderProgram {
 		super.loadInt(rTexLocation, 2);
 		super.loadInt(gTexLocation, 3);
 		super.loadInt(bTexLocation, 4);
-		super.loadInt(shadowMapLocation, 5);
+		super.loadInt(entityShadowMapLocation, 5);
+		super.loadInt(terrainShadowMapLocation, 6);
 	}
 	
 	public void loadSkyColor(float r, float g, float b) {

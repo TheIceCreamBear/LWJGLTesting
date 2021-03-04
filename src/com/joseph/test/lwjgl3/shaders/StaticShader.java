@@ -40,7 +40,8 @@ public class StaticShader extends ShaderProgram {
 	private int isLightSourceLocation;
 	private int clipPlaneLocaiton;
 	private int shadowMapSpaceLocation;
-	private int shadowMapLocation;
+	private int entityShadowMapLocation;
+	private int terrainShadowMapLocation;
 	
 	public StaticShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -68,7 +69,8 @@ public class StaticShader extends ShaderProgram {
 		this.isLightSourceLocation = super.getUniformLocation("isLightSource");
 		this.clipPlaneLocaiton = super.getUniformLocation("clipPlane");
 		this.shadowMapSpaceLocation = super.getUniformLocation("shadowMapSpace");
-		this.shadowMapLocation = super.getUniformLocation("shadowMap");
+		this.entityShadowMapLocation = super.getUniformLocation("entityShadowMap");
+		this.terrainShadowMapLocation = super.getUniformLocation("terrainShadowMap");
 
 		this.lightPosLocation = new int[MAX_LIGHTS];
 		this.lightColorLocation = new int[MAX_LIGHTS];
@@ -147,6 +149,7 @@ public class StaticShader extends ShaderProgram {
 	}
 	
 	public void setupShadowMap() {
-		super.loadInt(shadowMapLocation, 5);
+		super.loadInt(entityShadowMapLocation, 5);
+		super.loadInt(terrainShadowMapLocation, 6);
 	}
 }

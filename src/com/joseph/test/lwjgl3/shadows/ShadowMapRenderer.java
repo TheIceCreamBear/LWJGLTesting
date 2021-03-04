@@ -12,6 +12,7 @@ import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.entity.Light;
 import com.joseph.test.lwjgl3.models.TexturedModel;
+import com.joseph.test.lwjgl3.terrain.Terrain;
 
 /**
  * This class is in charge of using all of the classes in the shadows package to
@@ -35,6 +36,7 @@ public class ShadowMapRenderer {
 	private Matrix4f offset = createOffset();
 	
 	private ShadowMapEntityRenderer entityRenderer;
+	private ShadowMapTerrainRenderer terrainRenderer;
 	
 	/**
 	 * Creates instances of the important objects needed for rendering the scene
@@ -51,6 +53,7 @@ public class ShadowMapRenderer {
 		shadowBox = new ShadowBox(lightViewMatrix, camera);
 		shadowFbo = new ShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
 		entityRenderer = new ShadowMapEntityRenderer(shader, projectionViewMatrix);
+		terrainRenderer = new ShadowMapTerrainRenderer(shader, projectionViewMatrix);
 	}
 	
 	/**
@@ -66,13 +69,15 @@ public class ShadowMapRenderer {
 	 *            entities in that list use.
 	 * @param sun - the light acting as the sun in the scene.
 	 */
-	public void render(Map<TexturedModel, List<Entity>> entities, Map<TexturedModel, List<Entity>> nmEntities, Light sun) {
+	public void render(Map<TexturedModel, List<Entity>> entities, Map<TexturedModel, List<Entity>> nmEntities, List<Terrain> terrains, Light sun) {
 		shadowBox.update();
 		Vector3f sunPosition = sun.getPosition();
 		Vector3f lightDirection = new Vector3f(-sunPosition.x, -sunPosition.y, -sunPosition.z);
 		prepare(lightDirection, shadowBox);
 		entityRenderer.render(entities);
 		entityRenderer.render(nmEntities);
+		prepareTerrain();
+		terrainRenderer.render(terrains);
 		finish();
 	}
 	
@@ -101,8 +106,12 @@ public class ShadowMapRenderer {
 	 *         same, even when the contents of the shadow map texture change
 	 *         each frame.
 	 */
-	public int getShadowMap() {
-		return shadowFbo.getShadowMap();
+	public int getEntityShadowMap() {
+		return shadowFbo.getEntityShadowMap();
+	}
+
+	public int getTerrainShadowMap() {
+		return shadowFbo.getTerrainShadowMap();
 	}
 	
 	/**
@@ -135,10 +144,16 @@ public class ShadowMapRenderer {
 		updateOrthoProjectionMatrix(box.getWidth(), box.getHeight(), box.getLength());
 		updateLightViewMatrix(lightDirection, box.getCenter());
 		projectionMatrix.mul(lightViewMatrix, projectionViewMatrix);
-		shadowFbo.bindFrameBuffer();
+		shadowFbo.bindEntityFrameBuffer();
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 		shader.start();
+	}
+	
+	private void prepareTerrain() {
+		shadowFbo.bindTerrainFrameBuffer();
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 	}
 	
 	/**

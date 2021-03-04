@@ -22,8 +22,10 @@ public class ShadowFrameBuffer {
 	
 	private final int WIDTH;
 	private final int HEIGHT;
-	private int fbo;
-	private int shadowMap;
+	private int entityFbo;
+	private int terrainFbo;
+	private int entityShadowMap;
+	private int terrainShadowMap;
 	
 	/**
 	 * Initialises the frame buffer and shadow map of a certain size.
@@ -41,15 +43,19 @@ public class ShadowFrameBuffer {
 	 * Deletes the frame buffer and shadow map texture when the game closes.
 	 */
 	protected void cleanUp() {
-		GL30.glDeleteFramebuffers(fbo);
-		GL11.glDeleteTextures(shadowMap);
+		GL30.glDeleteFramebuffers(entityFbo);
+		GL11.glDeleteTextures(entityShadowMap);
 	}
 	
 	/**
 	 * Binds the frame buffer, setting it as the current render target.
 	 */
-	protected void bindFrameBuffer() {
-		bindFrameBuffer(fbo, WIDTH, HEIGHT);
+	protected void bindEntityFrameBuffer() {
+		bindFrameBuffer(entityFbo, WIDTH, HEIGHT);
+	}
+	
+	protected void bindTerrainFrameBuffer() {
+		bindFrameBuffer(terrainFbo, WIDTH, HEIGHT);
 	}
 	
 	/**
@@ -64,16 +70,22 @@ public class ShadowFrameBuffer {
 	/**
 	 * @return The ID of the shadow map texture.
 	 */
-	protected int getShadowMap() {
-		return shadowMap;
+	protected int getEntityShadowMap() {
+		return entityShadowMap;
+	}
+
+	protected int getTerrainShadowMap() {
+		return terrainShadowMap;
 	}
 	
 	/**
 	 * Creates the frame buffer and adds its depth attachment texture.
 	 */
 	private void initialiseFrameBuffer() {
-		fbo = createFrameBuffer();
-		shadowMap = createDepthBufferAttachment(WIDTH, HEIGHT);
+		entityFbo = createFrameBuffer();
+		entityShadowMap = createDepthBufferAttachment(WIDTH, HEIGHT);
+		terrainFbo = createFrameBuffer();
+		terrainShadowMap = createDepthBufferAttachment(WIDTH, HEIGHT);
 		unbindFrameBuffer();
 	}
 	

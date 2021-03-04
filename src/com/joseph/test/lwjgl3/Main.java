@@ -206,7 +206,7 @@ public class Main {
 		RawModel playerModel = loader.loadToVAO(playerData);
 		Texture playerTex = TextureLoader.loadTexture("res/provided/playerTexture.png");
 		TexturedModel player = new TexturedModel(playerModel, playerTex);
-		Player playa = new Player(player, new Vector3f(160.0f, waterT.getHeightOfTerrain(160.0f, -260.0f), -260.0f), 0.0f, 90.0f, 0.0f, 0.5f);
+		Player playa = new Player(player, new Vector3f(150.0f, waterT.getHeightOfTerrain(150.0f, -298.0f), -298.0f), 0.0f, 90.0f, 0.0f, 0.5f);
 		Camera camera = new Camera(playa);
 		// new: add player to list of entites because it is one and it will always be rendered
 		entities.add(playa);
@@ -238,8 +238,10 @@ public class Main {
 		MainRenderer renderer = new MainRenderer(loader, camera);
 		
 		List<GuiTexture> guis = new ArrayList<GuiTexture>();
-		GuiTexture shadowMap = new GuiTexture(renderer.getShadowMap(), new Vector2f(0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
-//		guis.add(shadowMap);
+		GuiTexture entityShadowMap = new GuiTexture(renderer.getEntityShadowMap(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		GuiTexture terrainShadowMap = new GuiTexture(renderer.getTerrainShadowMap(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+//		guis.add(entityShadowMap);
+//		guis.add(terrainShadowMap);
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		
 		// really dont like what this is called
@@ -376,7 +378,7 @@ public class Main {
 			
 			
 			// = = = = = = = = = = = = = = = = = = = = RENDER = = = = = = = = = = = = = = = = = = = = =
-			renderer.renderShadowMap(entities, nmEntities, lights.get(0));
+			renderer.renderShadowMap(entities, nmEntities, terrains, lights.get(0));
 			// its not working
 			
 			// tells open gl that we want to use the clip plane distance 0, just to make sure that it is enabled

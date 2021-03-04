@@ -14,7 +14,8 @@ uniform sampler2D baseTex;
 uniform sampler2D rTex;
 uniform sampler2D gTex;
 uniform sampler2D bTex;
-uniform sampler2D shadowMap;
+uniform sampler2D entityShadowMap;
+uniform sampler2D terrainShadowMap;
 
 uniform vec3 lightColor[4];
 uniform vec3 attenuation[4];
@@ -35,18 +36,23 @@ const bool celShading = false;
 
 void main(void) {
     float texelSize = 1.0 / mapSize;
-    float total = 0.0;
+    float totalE = 0.0;
+    float totalT = 0.0;
     
     for (int x = -pcfCount; x <= pcfCount; x++) {
         for (int y = -pcfCount; y <= pcfCount; y++) {
-            float objectNearestLight = texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
-		    if (shadowCoords.z > objectNearestLight + shadowBias) {
-		        total += 1.0;
-		    }
+            float objectNearestLight = texture(entityShadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
+            if (shadowCoords.z > objectNearestLight) {
+                totalE += 1.0;
+            }
+            objectNearestLight = texture(terrainShadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
+            if (shadowCoords.z > objectNearestLight + shadowBias) {
+                totalT += 1.0;
+            }
         }
     }
-    
-    float lightFactor = 1.0 - ((total / totalTexels) * shadowCoords.w);
+    float total = clamp((totalE + totalT) / (totalTexels), 0.0, 1.0);
+    float lightFactor = 1.0 - (total * shadowCoords.w);
     
     vec4 blendColor = texture(blendMap, texCoord);
     
