@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
@@ -17,6 +19,7 @@ import org.lwjgl.opengl.GL30;
 import com.joseph.test.lwjgl3.particle.ParticleTexture;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
+import sun.java2d.opengl.OGLContext;
 
 public class TextureLoader {
 	private static List<Integer> textures = new ArrayList<Integer>();
@@ -31,12 +34,12 @@ public class TextureLoader {
 	 * @param file
 	 * @return
 	 */
-	public static Texture loadTexture(String file, float bias) {
+	public static Texture loadTexture(String file, float bias, boolean ansiotropic) {
 		// store the texture object that is going to be created
 		Texture tex = null;
 		try {
 			// load the texture
-			int id = loadTextureInternal(file, bias);
+			int id = loadTextureInternal(file, bias, ansiotropic);
 			
 			// actually create the texture object
 			tex = new Texture(id);
@@ -56,7 +59,7 @@ public class TextureLoader {
 	 * @return
 	 */
 	public static Texture loadTexture(String file) {
-		return loadTexture(file, -0.4f);
+		return loadTexture(file, 0.0f, true);
 	}
 	
 
@@ -71,7 +74,7 @@ public class TextureLoader {
 	public static int loadTextTexture(String file) {
 		try {
 			// load the texture
-			int id = loadTextureInternal(file, 0.0f);
+			int id = loadTextureInternal(file, 0.0f, false);
 			
 			// return the id
 			return id;
@@ -97,9 +100,9 @@ public class TextureLoader {
 	public static Texture loadTextureWithNormal(String texture, String normal) {
 		try {
 			// load the regular texture
-			int tex = loadTextureInternal(texture, -0.4f);
+			int tex = loadTextureInternal(texture, 0.0f, true);
 			// load the normal map
-			int norm = loadTextureInternal(normal, -0.4f);
+			int norm = loadTextureInternal(normal, 0.0f, true);
 			// create a new texture object
 			return new Texture(tex, norm);
 		} catch (IOException e) {
@@ -115,7 +118,7 @@ public class TextureLoader {
 		ParticleTexture tex = null;
 		try {
 			// load the texture
-			int id = loadTextureInternal(texture, -0.4f);
+			int id = loadTextureInternal(texture, 0.0f, true);
 			
 			// actually create the texture object
 			tex = new ParticleTexture(id, numRows);
@@ -181,7 +184,7 @@ public class TextureLoader {
 	 * @return a new opengl texture id
 	 * @throws IOException
 	 */
-	private static int loadTextureInternal(String file, float bias) throws IOException {
+	private static int loadTextureInternal(String file, float bias, boolean ansiotropic) throws IOException {
 		TextureData texData = decodeTexture(file);
 		
 		// make a GL texture and bind it
@@ -210,6 +213,22 @@ public class TextureLoader {
 		// effects the bias of the above mip mapping and how far away it starts to do it and what not, negative means 
 		// more detail, positive means less
 		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, bias);
+		
+		// check if ansiotropic filtering extension is present and requested by caller
+		if (ansiotropic && GL.getCapabilities().GL_EXT_texture_filter_anisotropic) {
+			// it should almost be assumed that it is enabled, given that it has been available since 1999,
+			// but due to weird intellectual property rights asociated with it, so it isnt part of core OGL
+			// the bottom of this link is a good explanation of this: https://paroj.github.io/gltut/Texturing/Tut15%20Anisotropy.html
+			
+			// firstly make sure that there is no LOD bias
+			if (bias != 0.0f) {				
+				GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0.0f);
+			}
+			
+			// set the amount we want and set it on the texture
+			float amount = Math.min(4.0f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+		}
 
 		// add it to the list
 		textures.add(id);
