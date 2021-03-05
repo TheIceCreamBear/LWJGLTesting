@@ -22,6 +22,9 @@ import org.lwjgl.opengl.GL20;
  *
  */
 public abstract class ShaderProgram {
+	// this is here cause im lazy, and typing this out every time i need to make a new shader is gonna be poopy
+	private static final String SHADER_PREFIX = "/com/joseph/test/lwjgl3/";
+	
 	/**
 	 * "IGNORE MY EXISTANCE", said the variable. 
 	 * I DONT LIKE THIS PARADIGM!!!!!!!!!!!!!!!!!!!!!!!!!!!!
