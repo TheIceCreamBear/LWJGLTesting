@@ -13,6 +13,7 @@ import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
@@ -97,6 +98,11 @@ public class Main {
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE);
 		
+		// enable multisample anti aliasing (MSAA) via GLFW
+		// might be cool to have the user be all like "ooo lemme turn that off or on cause reasons"
+		// use a sample of 8 cause thats what the tut does
+		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 8);
+		
 		// so this generates the window and displays it, the reason we store this in a long rather 
 		// some sort of special class is because the GLFW bindings are direct C level bindings
 		// and what is returned from the C code is a pointer to a struct. because pointers are at max
@@ -154,6 +160,9 @@ public class Main {
 		// to the other triangles and like itll make it so that you dont see multiple faces on top you only
 		// see what you can see so ya
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		
+		// enables multisampling inside opengl, the earlier line only tells GLFW that it should be used
+		GL11.glEnable(GL13.GL_MULTISAMPLE);
 		
 		// honestly this should probably be static too but still like, this is the way the tutorial did it so like
 		// thats how imma do it
