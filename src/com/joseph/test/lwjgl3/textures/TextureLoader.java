@@ -19,7 +19,6 @@ import org.lwjgl.opengl.GL30;
 import com.joseph.test.lwjgl3.particle.ParticleTexture;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
-import sun.java2d.opengl.OGLContext;
 
 public class TextureLoader {
 	private static List<Integer> textures = new ArrayList<Integer>();
