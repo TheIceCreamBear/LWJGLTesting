@@ -38,6 +38,8 @@ import com.joseph.test.lwjgl3.particle.Particles;
 import com.joseph.test.lwjgl3.particle.example.ComplexParticleExample;
 import com.joseph.test.lwjgl3.particle.example.SimpleParticleExample;
 import com.joseph.test.lwjgl3.renderer.MainRenderer;
+import com.joseph.test.lwjgl3.renderer.postprocess.Fbo;
+import com.joseph.test.lwjgl3.renderer.postprocess.PostProcessing;
 import com.joseph.test.lwjgl3.renderer.text.Text;
 import com.joseph.test.lwjgl3.renderer.text.mesh.FontType;
 import com.joseph.test.lwjgl3.renderer.text.mesh.GUIText;
@@ -339,6 +341,9 @@ public class Main {
 			}
 		};
 		
+		Fbo fbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, Fbo.DEPTH_RENDER_BUFFER);
+		PostProcessing.init();
+		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
 		// UPDATES NOT DELTA TIME UPDATES THANKS
@@ -416,17 +421,25 @@ public class Main {
 			
 			// render the entire scene with one call, makes everything simpler to an extent
 			fbos.unbindCurrentFrameBuffer();
-			renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, 0, 0, 0));
 			
-			// render water after scene but before gui
-			wRenderer.render(water, camera, lights.get(0));
+			// bind the post processing fbo
+			fbo.bindFrameBuffer();
+			renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, 0, 0, 0));
 			
 			if (renderFV) {
 				renderFrustrumViewer(fv, fvfb, renderer, fvCam, entities, nmEntities, terrains, lights);
 			}
 			
+			// render water after scene but before gui
+			wRenderer.render(water, camera, lights.get(0));
+			
 			// render particles after all 3d and before 2d
 			Particles.renderParticles(camera);
+			
+			// unbind post processing fbo
+			fbo.unbindFrameBuffer();
+			
+			PostProcessing.doPostProcessing(fbo.getColorTexture());
 			
 			// render the Gui items
 			guiRenderer.render(guis);
@@ -470,6 +483,8 @@ public class Main {
 		renderer.cleanUp();
 		fv.cleanUp();
 		fvfb.cleanUp();
+		fbo.cleanUp();
+		PostProcessing.cleanUp();
 		TextureLoader.cleanUp();
 		Text.cleanUp();
 		Particles.cleanUp();
