@@ -6,8 +6,8 @@ import com.joseph.test.lwjgl3.shaders.ShaderProgram;
 
 public class ShadowShader extends ShaderProgram {
 
-	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/shadows/shadow.vert";
-	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/shadows/shadow.frag";
+	private static final String VERTEX_FILE = "/com/joseph/test/lwjgl3/shadows/shadow.vert";
+	private static final String FRAGMENT_FILE = "/com/joseph/test/lwjgl3/shadows/shadow.frag";
 	
 	private int mvpMatrixLocation;
 	

@@ -8,8 +8,8 @@ import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.shaders.ShaderProgram;
 
 public class SkyboxShader extends ShaderProgram {
-	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/skybox/skybox.vert";
-	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/skybox/skybox.frag";
+	private static final String VERTEX_FILE = "/com/joseph/test/lwjgl3/skybox/skybox.vert";
+	private static final String FRAGMENT_FILE = "/com/joseph/test/lwjgl3/skybox/skybox.frag";
 	
 	private static final float ROTATE_SPEED = 1.0f;
 

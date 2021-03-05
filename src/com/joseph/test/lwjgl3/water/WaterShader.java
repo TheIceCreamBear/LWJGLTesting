@@ -9,8 +9,8 @@ import com.joseph.test.lwjgl3.shaders.ShaderProgram;
 
 public class WaterShader extends ShaderProgram {
 
-	private final static String VERTEX_FILE = "src/com/joseph/test/lwjgl3/water/water.vert";
-	private final static String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/water/water.frag";
+	private final static String VERTEX_FILE = "/com/joseph/test/lwjgl3/water/water.vert";
+	private final static String FRAGMENT_FILE = "/com/joseph/test/lwjgl3/water/water.frag";
 
 	private int tMatrixLocation;
 	private int projMatrixLocation;

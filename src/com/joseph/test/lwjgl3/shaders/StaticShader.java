@@ -21,8 +21,8 @@ import com.joseph.test.lwjgl3.math.MathHelper;
 public class StaticShader extends ShaderProgram {
 	private static final int MAX_LIGHTS = 4;
 	
-	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/shaders/static.vert";
-	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/shaders/static.frag";
+	private static final String VERTEX_FILE = "/com/joseph/test/lwjgl3/shaders/static.vert";
+	private static final String FRAGMENT_FILE = "/com/joseph/test/lwjgl3/shaders/static.frag";
 	
 	private int tMatrixLocation;
 	private int projMatrixLocation;

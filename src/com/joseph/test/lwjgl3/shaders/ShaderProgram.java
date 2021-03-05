@@ -1,8 +1,8 @@
 package com.joseph.test.lwjgl3.shaders;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
@@ -205,7 +205,7 @@ public abstract class ShaderProgram {
 		// builder of strings, what is your wisdom
 		StringBuilder shader = new StringBuilder();
 		// try with resources, that is what the wisdom is, google this if you dont know what it is
-		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(ShaderProgram.class.getResourceAsStream(file)))) {
 			// basically read each line and then add it to the builder with \n at the end
 			String line = reader.readLine();
 			while (line != null) {

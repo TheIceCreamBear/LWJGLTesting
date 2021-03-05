@@ -42,7 +42,7 @@ public class FrustrumViewer extends ShaderProgram {
 	private int projectionViewLocation;
 
 	public FrustrumViewer() {
-		super("src/com/joseph/test/lwjgl3/test/test.vert", "src/com/joseph/test/lwjgl3/test/test.frag");
+		super("/com/joseph/test/lwjgl3/test/test.vert", "/com/joseph/test/lwjgl3/test/test.frag");
 		// create vao and vbo and bind vbo (vao is bound from create vao)
 		this.vaoID = ModelLoader.instance.createVAO();
 		this.vboID = GL15.glGenBuffers();

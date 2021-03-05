@@ -6,8 +6,8 @@ import org.joml.Vector2f;
 import com.joseph.test.lwjgl3.shaders.ShaderProgram;
 
 public class ParticleShader extends ShaderProgram {
-	private static final String VERTEX_SHADER = "src/com/joseph/test/lwjgl3/particle/particle.vert";
-	private static final String FRAGMENT_SHADER = "src/com/joseph/test/lwjgl3/particle/particle.frag";
+	private static final String VERTEX_SHADER = "/com/joseph/test/lwjgl3/particle/particle.vert";
+	private static final String FRAGMENT_SHADER = "/com/joseph/test/lwjgl3/particle/particle.frag";
 	
 	private int projMatrixLocation;
 	private int numRowsLocation;

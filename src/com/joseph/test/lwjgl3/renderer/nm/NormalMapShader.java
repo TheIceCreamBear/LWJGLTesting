@@ -14,8 +14,8 @@ public class NormalMapShader extends ShaderProgram {
 	
 	private static final int MAX_LIGHTS = 4;
 	
-	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/renderer/nm/normalMap.vert";
-	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/renderer/nm/normalMap.frag";
+	private static final String VERTEX_FILE = "/com/joseph/test/lwjgl3/renderer/nm/normalMap.vert";
+	private static final String FRAGMENT_FILE = "/com/joseph/test/lwjgl3/renderer/nm/normalMap.frag";
 	
 	private int tMatrixLocation;
 	private int projMatrixLocation;

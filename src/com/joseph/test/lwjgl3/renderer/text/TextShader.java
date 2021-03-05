@@ -11,8 +11,8 @@ import com.joseph.test.lwjgl3.shaders.ShaderProgram;
  *
  */
 public class TextShader extends ShaderProgram {
-	private static final String VERTEX_FILE = "src/com/joseph/test/lwjgl3/renderer/text/text.vert";
-	private static final String FRAGMENT_FILE = "src/com/joseph/test/lwjgl3/renderer/text/text.frag";
+	private static final String VERTEX_FILE = "/com/joseph/test/lwjgl3/renderer/text/text.vert";
+	private static final String FRAGMENT_FILE = "/com/joseph/test/lwjgl3/renderer/text/text.frag";
 	
 	private int translationLocation;
 	private int colorLocation;
