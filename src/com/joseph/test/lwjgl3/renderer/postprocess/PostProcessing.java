@@ -18,20 +18,26 @@ public class PostProcessing {
 	private static ContrastPostProcess contrast;
 	private static HorizontalBlurPostProcess hBlur;
 	private static VerticalBlurPostProcess vBlur;
+	private static HorizontalBlurPostProcess hBlur2;
+	private static VerticalBlurPostProcess vBlur2;
 	
 	public static void init() {
 		quad = ModelLoader.instance.loadToVAO(POSITIONS, 2);
 		contrast = new ContrastPostProcess();
 		// represents how much to down sample the output by, makes it more blury but will introduce flikering
 		// solution to flickering would be to down sample by less and have more blur passes
-		int downSample = 4;
+		int downSample = 8;
 		hBlur = new HorizontalBlurPostProcess(GLFWHandler.SCREEN_WIDTH / downSample, GLFWHandler.SCREEN_HEIGHT / downSample);
 		vBlur = new VerticalBlurPostProcess(GLFWHandler.SCREEN_WIDTH / downSample, GLFWHandler.SCREEN_HEIGHT / downSample);
+		hBlur2 = new HorizontalBlurPostProcess(GLFWHandler.SCREEN_WIDTH / 2, GLFWHandler.SCREEN_HEIGHT / 2);
+		vBlur2 = new VerticalBlurPostProcess(GLFWHandler.SCREEN_WIDTH / 2, GLFWHandler.SCREEN_HEIGHT / 2);
 	}
 	
 	public static void doPostProcessing(int tex) {
 		start();
-		hBlur.render(tex);
+		hBlur2.render(tex);
+		vBlur2.render(hBlur2.getOutputTexture());
+		hBlur.render(vBlur2.getOutputTexture());
 		vBlur.render(hBlur.getOutputTexture());
 		contrast.render(vBlur.getOutputTexture());
 		end();
