@@ -1,9 +1,9 @@
-package com.joseph.test.lwjgl3.renderer.postprocess;
+package com.joseph.test.lwjgl3.renderer.postprocess.contrast;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
-import com.joseph.test.lwjgl3.renderer.postprocess.contrast.ContrastShader;
+import com.joseph.test.lwjgl3.renderer.postprocess.ImageRenderer;
 
 public class ContrastPostProcess {
 	private ImageRenderer renderer;
