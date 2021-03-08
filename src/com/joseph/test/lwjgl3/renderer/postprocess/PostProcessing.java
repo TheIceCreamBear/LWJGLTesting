@@ -12,7 +12,6 @@ import com.joseph.test.lwjgl3.renderer.postprocess.gaussianblur.HorizontalBlurPo
 import com.joseph.test.lwjgl3.renderer.postprocess.gaussianblur.VerticalBlurPostProcess;
 
 public class PostProcessing {
-	
 	private static final float[] POSITIONS = { -1, 1, -1, -1, 1, 1, 1, -1 };
 	private static RawModel quad;
 	private static ContrastPostProcess contrast;
@@ -35,11 +34,11 @@ public class PostProcessing {
 	
 	public static void doPostProcessing(int tex) {
 		start();
-		hBlur2.render(tex);
-		vBlur2.render(hBlur2.getOutputTexture());
-		hBlur.render(vBlur2.getOutputTexture());
-		vBlur.render(hBlur.getOutputTexture());
-		contrast.render(vBlur.getOutputTexture());
+//		hBlur2.render(tex);
+//		vBlur2.render(hBlur2.getOutputTexture());
+//		hBlur.render(vBlur2.getOutputTexture());
+//		vBlur.render(hBlur.getOutputTexture());
+		contrast.render(tex);
 		end();
 	}
 	

@@ -103,7 +103,9 @@ public class Main {
 		// enable multisample anti aliasing (MSAA) via GLFW
 		// might be cool to have the user be all like "ooo lemme turn that off or on cause reasons"
 		// use a sample of 8 cause thats what the tut does
-		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 8);
+		// NOTE: this is going to require a "restart" to change, because this can only be set before the window is created
+		// this is now disabled beause like its gonna be implemented a different way
+//		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 8);
 		
 		// so this generates the window and displays it, the reason we store this in a long rather 
 		// some sort of special class is because the GLFW bindings are direct C level bindings
@@ -341,7 +343,8 @@ public class Main {
 			}
 		};
 		
-		Fbo fbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, Fbo.DEPTH_RENDER_BUFFER);
+		Fbo multisampleFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT);
+		Fbo outputFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, Fbo.DEPTH_TEXTURE);
 		PostProcessing.init();
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
@@ -423,7 +426,7 @@ public class Main {
 			fbos.unbindCurrentFrameBuffer();
 			
 			// bind the post processing fbo
-			fbo.bindFrameBuffer();
+			multisampleFbo.bindFrameBuffer();
 			renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, 0, 0, 0));
 			
 			if (renderFV) {
@@ -437,9 +440,9 @@ public class Main {
 			Particles.renderParticles(camera);
 			
 			// unbind post processing fbo
-			fbo.unbindFrameBuffer();
-			
-			PostProcessing.doPostProcessing(fbo.getColorTexture());
+			multisampleFbo.unbindFrameBuffer();
+			multisampleFbo.resolveToFbo(outputFbo);
+			PostProcessing.doPostProcessing(outputFbo.getColorTexture());
 			
 			// render the Gui items
 			guiRenderer.render(guis);
@@ -483,7 +486,8 @@ public class Main {
 		renderer.cleanUp();
 		fv.cleanUp();
 		fvfb.cleanUp();
-		fbo.cleanUp();
+		multisampleFbo.cleanUp();
+		outputFbo.cleanUp();
 		PostProcessing.cleanUp();
 		TextureLoader.cleanUp();
 		Text.cleanUp();
