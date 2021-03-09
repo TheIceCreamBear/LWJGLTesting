@@ -12,12 +12,14 @@ uniform sampler2D modelTexture;
 uniform sampler2D normalMap;
 uniform sampler2D entityShadowMap;
 uniform sampler2D terrainShadowMap;
-uniform vec3 lightColor[4];
-uniform vec3 attenuation[4];
-uniform vec3 skyColor;
+uniform sampler2D specularMap;
+uniform float usesSpecularMap;
 uniform float shineDamper;
 uniform float reflectivity;
 uniform float ambientLight = 0.2;
+uniform vec3 lightColor[4];
+uniform vec3 attenuation[4];
+uniform vec3 skyColor;
 
 const int pcfCount = 2;
 const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
@@ -80,6 +82,14 @@ void main(void) {
 	if (texColor.a < 0.5) {
 		discard;
 	}
+	
+    if (usesSpecularMap > 0.5) {
+        vec4 mapInfo = texture(specularMap, texCoord);
+        totalSpecular *= mapInfo.r;
+        if (mapInfo.g > 0.5) {
+            totalDiffuse = new vec3(1.0);
+        }
+    }
 
 	out_Color = vec4(totalDiffuse, 1.0) * texColor + vec4(totalSpecular * lightFactor, 1.0);
 	out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);

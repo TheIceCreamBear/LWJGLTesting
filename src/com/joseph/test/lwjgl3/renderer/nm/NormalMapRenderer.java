@@ -116,6 +116,13 @@ public class NormalMapRenderer {
 		// so this part is the setting of texture for the normal map into bank 1
 		GL13.glActiveTexture(GL13.GL_TEXTURE1);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.normalMapID());
+		// load if we use a specular map
+		shader.loadUseSpecularMap(tex.hasSpecularMap());
+		// if we use a map, bind it
+		if (tex.hasSpecularMap()) {
+			GL13.glActiveTexture(GL13.GL_TEXTURE2);
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.specularMapID());
+		}
 	}
 
 	/**

@@ -31,7 +31,7 @@ public class EntityRenderer {
 		// save le proj mat
 		shader.loadProjection(projMatrix);
 		// setup the shadowMap texutre uniform
-		shader.setupShadowMap();
+		shader.connectTextureUnits();
 		// stop it because we arent rendering anything rn like hello
 		shader.stop();
 	}
@@ -104,6 +104,13 @@ public class EntityRenderer {
 		// bind the texture of the model as the active current texture to use because like hello how
 		// else are we gonna know which texture to use
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.glTextureID());
+		// load if we use a specular map
+		shader.loadUseSpecularMap(tex.hasSpecularMap());
+		// if we use a map, bind it
+		if (tex.hasSpecularMap()) {
+			GL13.glActiveTexture(GL13.GL_TEXTURE1);
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.specularMapID());
+		}
 	}
 	
 	/**

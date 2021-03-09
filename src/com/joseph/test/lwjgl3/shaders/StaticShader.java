@@ -42,6 +42,9 @@ public class StaticShader extends ShaderProgram {
 	private int shadowMapSpaceLocation;
 	private int entityShadowMapLocation;
 	private int terrainShadowMapLocation;
+	private int specularMapLocation;
+	private int usesSpecularMapLocaiton;
+	private int texSamplerLocation;
 	
 	public StaticShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -71,6 +74,9 @@ public class StaticShader extends ShaderProgram {
 		this.shadowMapSpaceLocation = super.getUniformLocation("shadowMapSpace");
 		this.entityShadowMapLocation = super.getUniformLocation("entityShadowMap");
 		this.terrainShadowMapLocation = super.getUniformLocation("terrainShadowMap");
+		this.specularMapLocation = super.getUniformLocation("specularMap");
+		this.usesSpecularMapLocaiton = super.getUniformLocation("usesSpecularMap");
+		this.texSamplerLocation = super.getUniformLocation("texSampler");
 
 		this.lightPosLocation = new int[MAX_LIGHTS];
 		this.lightColorLocation = new int[MAX_LIGHTS];
@@ -148,7 +154,13 @@ public class StaticShader extends ShaderProgram {
 		super.loadMatrix4(shadowMapSpaceLocation, shadowMapConversion);
 	}
 	
-	public void setupShadowMap() {
+	public void loadUseSpecularMap(boolean useMap) {
+		super.loadBoolean(usesSpecularMapLocaiton, useMap);
+	}
+	
+	public void connectTextureUnits() {
+		super.loadInt(texSamplerLocation, 0);
+		super.loadInt(specularMapLocation, 1);
 		super.loadInt(entityShadowMapLocation, 5);
 		super.loadInt(terrainShadowMapLocation, 6);
 	}

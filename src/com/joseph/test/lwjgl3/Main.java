@@ -194,9 +194,28 @@ public class Main {
 		boulderTex.setReflectivity(1.0f);
 		TexturedModel boulder = new TexturedModel(boulderModel, boulderTex);
 		
+		RawModel cherryModel = loader.loadToVAO(OBJLoader.loadObjModel("res/provided/cherry.obj"));
+		Texture cherryTex = TextureLoader.loadTextureWithSpecularMap("res/provided/cherry.png", "res/provided/cherryS.png");
+		cherryTex.setHasTransparency(true);
+		cherryTex.setShineDamper(10.0f);
+		cherryTex.setReflectivity(0.5f);
+		TexturedModel cherryTree = new TexturedModel(cherryModel, cherryTex);
+		
+		RawModel barrelModel = NormalMapOBJLoader.loadObjModel("res/provided/barrel.obj");
+		Texture barrelTex = TextureLoader.loadTextureWithNormalAndSpecular("res/provided/barrel.png", "res/provided/barrelNormal.png", "res/provided/barrelS.png");
+		barrelTex.setReflectivity(1.0f);
+		barrelTex.setShineDamper(10.0f);
+		TexturedModel barrel = new TexturedModel(barrelModel, barrelTex);
+
+		// should be all glowy
+		RawModel lanternModel = loader.loadToVAO(OBJLoader.loadObjModel("res/provided/lantern.obj"));
+		Texture lanternTex = TextureLoader.loadTextureWithSpecularMap("res/provided/lantern.png", "res/provided/lanternS.png");
+		TexturedModel lantern = new TexturedModel(lanternModel, lanternTex);
+		// TODO The green channel is how you make stuff glowy, meaing the "light hack" isnt really needed
+		
 		// setup some lights
 		List<Light> lights = new ArrayList<Light>();
-		lights.add(new Light(new Vector3f(10000.0f, 10000.0f, -10000.0f), new Vector3f(1.3f, 1.3f, 1.3f))); // water sun
+		lights.add(new Light(new Vector3f(10000.0f, 10000.0f, -10000.0f), new Vector3f(1.3f, 1.3f, 1.3f).mul(0.2f))); // water sun
 		
 		// add entities at the light positions to make it easier to know where the light is
 		entities.add(new Entity(icoSphere, 0, lights.get(0).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
@@ -231,9 +250,18 @@ public class Main {
 				float x = r.nextFloat() * Terrain.SIZE;
 				float z = r.nextFloat() * -Terrain.SIZE;
 				float y = waterT.getHeightOfTerrain(x, z);
-				// if outside the water area, add fern
+				// if outside the water area, add boulder
 				if (y > 0) {
 					nmEntities.add(new Entity(boulder, new Vector3f(x, y, z), r.nextFloat() * 360.0f, r.nextFloat() * 360.0f, r.nextFloat() * 360.0f, r.nextFloat() * 0.5f + 0.3f));
+				}
+			}
+			if (i % 3 == 1) {
+				float x = r.nextFloat() * Terrain.SIZE;
+				float z = r.nextFloat() * -Terrain.SIZE;
+				float y = waterT.getHeightOfTerrain(x, z);
+				// if outside the water area, add boulder
+				if (y > 0) {
+					entities.add(new Entity(cherryTree, new Vector3f(x, y, z), 0.0f, r.nextFloat() * 360.0f, 0.0f, 3.0f));
 				}
 			}
 			if (i % 2 == 0) {
@@ -246,6 +274,15 @@ public class Main {
 				}
 			}
 		}
+		float x = 200.0f;
+		float z = -200.0f;
+		float y = waterT.getHeightOfTerrain(x, z);
+		nmEntities.add(new Entity(barrel, new Vector3f(x, y + 10.0f, z), 0.0f, 0.0f, 0.0f, 5.0f));
+		
+		x = 150.0f;
+		z = -100.0f;
+		y = waterT.getHeightOfTerrain(x, z);
+		entities.add(new Entity(lantern, new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		
 		// moved
 		MainRenderer renderer = new MainRenderer(loader, camera);
@@ -441,8 +478,10 @@ public class Main {
 			
 			// unbind post processing fbo
 			multisampleFbo.unbindFrameBuffer();
-			multisampleFbo.resolveToFbo(outputFbo);
-			PostProcessing.doPostProcessing(outputFbo.getColorTexture());
+			// resolve straight to the screen
+			multisampleFbo.resolveToScreen();
+//			multisampleFbo.resolveToFbo(outputFbo);
+//			PostProcessing.doPostProcessing(outputFbo.getColorTexture());
 			
 			// render the Gui items
 			guiRenderer.render(guis);

@@ -35,6 +35,8 @@ public class NormalMapShader extends ShaderProgram {
 	private int shadowMapSpaceLocation;
 	private int entityShadowMapLocation;
 	private int terrainShadowMapLocation;
+	private int specularMapLocation;
+	private int usesSpecularMapLocaiton;
 	// TODO is light source hack on this one?
 	
 	public NormalMapShader() {
@@ -66,6 +68,8 @@ public class NormalMapShader extends ShaderProgram {
 		this.shadowMapSpaceLocation = super.getUniformLocation("shadowMapSpace");
 		this.entityShadowMapLocation = super.getUniformLocation("entityShadowMap");
 		this.terrainShadowMapLocation = super.getUniformLocation("terrainShadowMap");
+		this.specularMapLocation = super.getUniformLocation("specularMap");
+		this.usesSpecularMapLocaiton = super.getUniformLocation("usesSpecularMap");
 		
 		this.lightPosEyeSpaceLocation = new int[MAX_LIGHTS];
 		this.lightColorLocation = new int[MAX_LIGHTS];
@@ -80,6 +84,7 @@ public class NormalMapShader extends ShaderProgram {
 	protected void connectTextureUnits() {
 		super.loadInt(textureLocation, 0);
 		super.loadInt(normalMapLocation, 1);
+		super.loadInt(specularMapLocation, 2);
 		super.loadInt(entityShadowMapLocation, 5);
 		super.loadInt(terrainShadowMapLocation, 6);
 	}
@@ -146,5 +151,9 @@ public class NormalMapShader extends ShaderProgram {
 	
 	public void loadShadowMapSpace(Matrix4f shadowMapConversion) {
 		super.loadMatrix4(shadowMapSpaceLocation, shadowMapConversion);
+	}
+	
+	public void loadUseSpecularMap(boolean useMap) {
+		super.loadBoolean(usesSpecularMapLocaiton, useMap);
 	}
 }
