@@ -8,12 +8,14 @@ package com.joseph.test.lwjgl3.textures;
 public class Texture {
 	private int glTextureID;
 	private int normalMapID;
+	private int specularMapID;
 	
 	private float shineDamper = 1.0f;
 	private float reflectivity = 0.0f;
 
 	private boolean hasTransparency = false;
 	private boolean useFakedLighting = false;
+	private boolean hasSpecularMap = false;
 	
 	private int numRows = 1;
 	
@@ -25,7 +27,7 @@ public class Texture {
 		this.glTextureID = glTextureID;
 		this.normalMapID = normalMapID;
 	}
-	
+
 	public int glTextureID() {
 		return this.glTextureID;
 	}
@@ -54,6 +56,10 @@ public class Texture {
 		return this.numRows;
 	}
 	
+	public boolean hasSpecularMap() {
+		return this.hasSpecularMap;
+	}
+	
 	public void setReflectivity(float reflectivity) {
 		this.reflectivity = reflectivity;
 	}
@@ -72,5 +78,10 @@ public class Texture {
 	
 	public void setNumRows(int numRows) {
 		this.numRows = numRows;
+	}
+	
+	public void setSpecularMap(int mapID) {
+		this.specularMapID = mapID;
+		this.hasSpecularMap = true;
 	}
 }

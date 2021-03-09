@@ -31,7 +31,9 @@ public class TextureLoader {
 	 * the reading in of it into memory and allows for both RGB and RBGA PNGS
 	 * and it might return null if it encounters an error because thats what it does
 	 * @param file
-	 * @return
+	 * @param bias
+	 * @param ansiotropic
+	 * @return a new texture, null if an error occured
 	 */
 	public static Texture loadTexture(String file, float bias, boolean ansiotropic) {
 		// store the texture object that is going to be created
@@ -55,12 +57,43 @@ public class TextureLoader {
 	 * Overload for {@link TextureLoader#loadTexture(String, float)} to use the default bias value
 	 * of -0.4f. Short hands make life easier
 	 * @param file
-	 * @return
+	 * @return a new texture, null if an error occured
 	 */
 	public static Texture loadTexture(String file) {
 		return loadTexture(file, 0.0f, true);
 	}
 	
+	/**
+	 * Creates a texture from the given PNGs, this texture stores the regular texture and the
+	 * supplied specular map. It is assumed that no arguement is null. Internally uses 
+	 * {@link TextureLoader#loadTexture(String)} to load the regular texture, then internally 
+	 * loads the specular map texture. The specularMap is not loaded if an error occurred while 
+	 * reading in the regular texture.
+	 * @param texture - the png file of the texture
+	 * @param specularMap - the png file of the specular map
+	 * @return a new texture
+	 * @see TextureLoader#loadTexture(String)
+	 */
+	public static Texture loadTextureWithSpecularMap(String texture, String specularMap) {
+		// load the texture
+		Texture tex = loadTexture(texture);
+
+		// only load the spec map if the texture isnt null, otherwise its a waste of time
+		if (tex != null) {
+			try {
+				// load the specular map
+				int mapID = loadTextureInternal(specularMap, 0.0f, true);
+				
+				// set the id
+				tex.setSpecularMap(mapID);
+			} catch (IOException e) {
+				e.printStackTrace();
+				// do nothing for now
+			}
+		}
+		
+		return tex;
+	}
 
 	/**
 	 * Creates a texture for text from the given PNG only PNG file and like does all
@@ -92,7 +125,7 @@ public class TextureLoader {
 	 * will be available throught {@link Texture#normalMapID()}.
 	 * @param texture - the png file of the texture
 	 * @param normal - the png file of the normal map
-	 * @return a new texture
+	 * @return a new texture, null if an error occured
 	 * @see TextureLoader#loadTexture(String)
 	 * @see Texture#normalMapID()
 	 */
@@ -105,11 +138,44 @@ public class TextureLoader {
 			// create a new texture object
 			return new Texture(tex, norm);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			// return a null texture here
 			return null;
 		}
+	}
+	
+	/**
+	 * Creates a texture from the given PNGs, this texture stores the regular texture, the normal map,
+	 * and the supplied specular map. It is assumed that no arguement is null. Internally uses 
+	 * {@link TextureLoader#loadTextureWithNormal(String, String)} to load the regular texture and 
+	 * the normal map, then internally loads the specular map texture. The specularMap is not loaded
+	 * if an error occurred while reading in the regular texture or normal map.
+	 * @param texture - the png file of the texture
+	 * @param normal - the png file of the normal map
+	 * @param specularMap - the png file of the specular map
+	 * @return a new texture
+	 * @see TextureLoader#loadTextureWithNormal(String, String)
+	 */
+	public static Texture loadTextureWithNormalAndSpecular(String texture, String normal, String specularMap) {
+		// load the texture
+		Texture tex = loadTextureWithNormal(texture, normal);
+		
+		// only load the spec map if the texture isnt null, otherwise its a waste of time
+		if (tex != null) {
+			try {
+				// load the specular map
+				int mapID = loadTextureInternal(specularMap, 0.0f, true);
+				
+				// set the id
+				tex.setSpecularMap(mapID);
+			} catch (IOException e) {
+				e.printStackTrace();
+				// do nothing for now
+			}
+		}
+		
+		// return same object created by the loadTextureWithNormal method
+		return tex;
 	}
 	
 	public static ParticleTexture loadParticleTex(String texture, int numRows) {
