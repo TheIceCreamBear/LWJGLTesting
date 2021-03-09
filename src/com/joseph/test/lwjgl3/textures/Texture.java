@@ -36,6 +36,10 @@ public class Texture {
 		return this.normalMapID;
 	}
 	
+	public int specularMapID() {
+		return this.specularMapID;
+	}
+	
 	public float getReflectivity() {
 		return this.reflectivity;
 	}
