@@ -215,7 +215,7 @@ public class Main {
 		
 		// setup some lights
 		List<Light> lights = new ArrayList<Light>();
-		lights.add(new Light(new Vector3f(10000.0f, 10000.0f, -10000.0f), new Vector3f(1.3f, 1.3f, 1.3f).mul(0.2f))); // water sun
+		lights.add(new Light(new Vector3f(10000.0f, 10000.0f, -10000.0f), new Vector3f(1.3f, 1.3f, 1.3f))); // water sun
 		
 		// add entities at the light positions to make it easier to know where the light is
 		entities.add(new Entity(icoSphere, 0, lights.get(0).getPosition(), 0.0f, 0.0f, 0.0f, 4.0f, true));
@@ -479,9 +479,9 @@ public class Main {
 			// unbind post processing fbo
 			multisampleFbo.unbindFrameBuffer();
 			// resolve straight to the screen
-			multisampleFbo.resolveToScreen();
-//			multisampleFbo.resolveToFbo(outputFbo);
-//			PostProcessing.doPostProcessing(outputFbo.getColorTexture());
+//			multisampleFbo.resolveToScreen();
+			multisampleFbo.resolveToFbo(outputFbo);
+			PostProcessing.doPostProcessing(outputFbo.getColorTexture());
 			
 			// render the Gui items
 			guiRenderer.render(guis);
