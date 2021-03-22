@@ -102,7 +102,7 @@ void main(void) {
         vec4 mapInfo = texture(specularMap, texCoord);
         totalSpecular *= mapInfo.r;
         if (mapInfo.g > 0.5) {
-            totalDiffuse = new vec3(1.0);
+            totalDiffuse = vec3(1.0);
         }
     }
     
