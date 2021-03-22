@@ -52,6 +52,9 @@ public class StaticShader extends ShaderProgram {
 
 	@Override
 	protected void bindAttributes() {
+		// example of connecting the data to the out destination without the need for layout
+//		super.bindFragOutput(0, "out_Color");
+//		super.bindFragOutput(1, "out_BrightColor");
 		super.bindAttribute(0, "position");
 		super.bindAttribute(1, "textureCoords");
 		super.bindAttribute(2, "normal");

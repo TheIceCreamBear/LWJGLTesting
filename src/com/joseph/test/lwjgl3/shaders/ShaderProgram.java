@@ -12,6 +12,7 @@ import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 
 /**
  * Abstract shader program, it does the shading, and makes things have color yay,
@@ -124,6 +125,14 @@ public abstract class ShaderProgram {
 	protected void bindAttribute(int attribute, String variableName) {
 		// do the bind thingy
 		GL20.glBindAttribLocation(programID, attribute, variableName);
+	}
+	
+	// NOTE: for frag shaders that have more than 1 output, you can either set their location
+	// with layout (location = COLOR_BUFFER_NUMBER) or glBindFradDataLocation, similar to the 
+	// glBindAttribLocation above
+	
+	protected void bindFragOutput(int attacment, String variableName) {
+		GL30.glBindFragDataLocation(programID, attacment, variableName);
 	}
 	
 	/**

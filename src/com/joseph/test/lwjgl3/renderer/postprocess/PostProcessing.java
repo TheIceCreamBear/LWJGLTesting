@@ -38,12 +38,12 @@ public class PostProcessing {
 		combinef = new CombineFilter();
 	}
 	
-	public static void doPostProcessing(int tex) {
+	public static void doPostProcessing(int colorTex, int brightTex) {
 		start();
-		brightf.render(tex);
-		hBlur.render(brightf.getOutputTexture());
+//		brightf.render(colorTex);
+		hBlur.render(brightTex);
 		vBlur.render(hBlur.getOutputTexture());
-		combinef.render(tex, vBlur.getOutputTexture());
+		combinef.render(colorTex, vBlur.getOutputTexture());
 		end();
 	}
 	

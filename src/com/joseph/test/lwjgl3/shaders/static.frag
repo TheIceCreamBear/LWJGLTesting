@@ -7,7 +7,8 @@ in vec3 toCam;
 in vec4 shadowCoords;
 in float visibility;
 
-out vec4 out_Color;
+layout (location = 0) out vec4 out_Color;
+layout (location = 1) out vec4 out_BrightColor;
 
 uniform sampler2D texSampler;
 uniform sampler2D entityShadowMap;
@@ -98,10 +99,12 @@ void main(void) {
         discard;
     }
     
+    out_BrightColor = vec4(0.0);
     if (usesSpecularMap > 0.5) {
         vec4 mapInfo = texture(specularMap, texCoord);
         totalSpecular *= mapInfo.r;
         if (mapInfo.g > 0.5) {
+            out_BrightColor = texColor + vec4(totalSpecular * lightFactor, 1.0);
             totalDiffuse = vec3(1.0);
         }
     }

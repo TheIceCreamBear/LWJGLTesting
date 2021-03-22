@@ -382,6 +382,7 @@ public class Main {
 		
 		Fbo multisampleFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT);
 		Fbo outputFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, Fbo.DEPTH_TEXTURE);
+		Fbo outputFbo2 = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, Fbo.DEPTH_TEXTURE);
 		PostProcessing.init();
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
@@ -480,8 +481,9 @@ public class Main {
 			multisampleFbo.unbindFrameBuffer();
 			// resolve straight to the screen
 //			multisampleFbo.resolveToScreen();
-			multisampleFbo.resolveToFbo(outputFbo);
-			PostProcessing.doPostProcessing(outputFbo.getColorTexture());
+			multisampleFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT0, outputFbo);
+			multisampleFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT1, outputFbo2);
+			PostProcessing.doPostProcessing(outputFbo.getColorTexture(), outputFbo2.getColorTexture());
 			
 			// render the Gui items
 			guiRenderer.render(guis);
@@ -527,6 +529,7 @@ public class Main {
 		fvfb.cleanUp();
 		multisampleFbo.cleanUp();
 		outputFbo.cleanUp();
+		outputFbo2.cleanUp();
 		PostProcessing.cleanUp();
 		TextureLoader.cleanUp();
 		Text.cleanUp();

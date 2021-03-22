@@ -1,10 +1,13 @@
 package com.joseph.test.lwjgl3.renderer.postprocess;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.joseph.test.lwjgl3.GLFWHandler;
@@ -23,13 +26,14 @@ public class Fbo {
 
 	private int frameBuffer;
 	
-	private boolean multisample = false;
+	private boolean multisampleAndTarget = false;
 
 	private int colorTexture;
 	private int depthTexture;
 
 	private int depthBuffer;
 	private int colorBuffer;
+	private int colorBuffer2;
 
 	/**
 	 * Creates an FBO of a specified width and height, with the desired type of
@@ -52,7 +56,8 @@ public class Fbo {
 	public Fbo(int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.multisample = true;
+		this.multisampleAndTarget = true;
+		// TODO make this class better and more dynamic, tut dude is lazy and i dont like this class's design
 		initialiseFrameBuffer(DEPTH_RENDER_BUFFER);
 	}
 
@@ -65,6 +70,7 @@ public class Fbo {
 		GL11.glDeleteTextures(depthTexture);
 		GL30.glDeleteRenderbuffers(depthBuffer);
 		GL30.glDeleteRenderbuffers(colorBuffer);
+		GL30.glDeleteRenderbuffers(colorBuffer2);
 	}
 
 	/**
@@ -108,9 +114,10 @@ public class Fbo {
 		return depthTexture;
 	}
 	
-	public void resolveToFbo(Fbo output) {
+	public void resolveToFbo(int readBuffer, Fbo output) {
 		GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, output.frameBuffer);
 		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, this.frameBuffer);
+		GL11.glReadBuffer(readBuffer);
 		GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, output.width, output.height, GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST);
 		this.unbindFrameBuffer();
 	}
@@ -134,8 +141,9 @@ public class Fbo {
 	 */
 	private void initialiseFrameBuffer(int type) {
 		createFrameBuffer();
-		if (multisample) {
-			createMultisampleColorAttachment();
+		if (multisampleAndTarget) {
+			colorBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT0);
+			colorBuffer2 = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT1);
 		} else {			
 			createTextureAttachment();
 		}
@@ -156,7 +164,17 @@ public class Fbo {
 	private void createFrameBuffer() {
 		frameBuffer = GL30.glGenFramebuffers();
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
-		GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+		this.determineDrawBuffers();
+	}
+	
+	private void determineDrawBuffers() {
+		IntBuffer drawBuffers = BufferUtils.createIntBuffer(2);
+		drawBuffers.put(GL30.GL_COLOR_ATTACHMENT0);
+		if (this.multisampleAndTarget) {
+			drawBuffers.put(GL30.GL_COLOR_ATTACHMENT1);
+		}
+		drawBuffers.flip();
+		GL20.glDrawBuffers(drawBuffers);
 	}
 
 	/**
@@ -187,11 +205,12 @@ public class Fbo {
 		GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, depthTexture, 0);
 	}
 	
-	private void createMultisampleColorAttachment() {
-		colorBuffer = GL30.glGenRenderbuffers();
+	private int createMultisampleColorAttachment(int attachment) {
+		int colorBuffer = GL30.glGenRenderbuffers();
 		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, colorBuffer);
 		GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, samples, GL11.GL_RGBA8, width, height);
-		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER, colorBuffer);
+		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, attachment, GL30.GL_RENDERBUFFER, colorBuffer);
+		return colorBuffer;
 	}
 
 	/**
@@ -201,7 +220,7 @@ public class Fbo {
 	private void createDepthBufferAttachment() {
 		depthBuffer = GL30.glGenRenderbuffers();
 		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, depthBuffer);
-		if (multisample) {
+		if (multisampleAndTarget) {
 			GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, samples, GL14.GL_DEPTH_COMPONENT24, width, height);
 		} else {
 			GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL14.GL_DEPTH_COMPONENT24, width, height);
