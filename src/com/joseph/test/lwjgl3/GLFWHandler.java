@@ -84,8 +84,8 @@ public class GLFWHandler {
 			return;
 		}
 		
-		dx = xPos - lastX;
-		dy = yPos - lastY;
+		dx += xPos - lastX;
+		dy += yPos - lastY;
 
 		lastX = xPos;
 		lastY = yPos;
