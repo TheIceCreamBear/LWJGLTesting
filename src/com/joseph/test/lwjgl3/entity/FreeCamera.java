@@ -6,11 +6,11 @@ import org.lwjgl.glfw.GLFW;
 import com.joseph.test.lwjgl3.GLFWHandler;
 import com.joseph.test.lwjgl3.Main;
 
-public class NonPlayerCamera extends Camera {
+public class FreeCamera extends Camera {
 	private static final float CAM_MOVE_SPEED = 100.0f;
 	private static final float CAM_TURN_SPEED = 160.0f;
 
-	public NonPlayerCamera(Vector3f pos, float pitch, float yaw, float roll) {
+	public FreeCamera(Vector3f pos, float pitch, float yaw, float roll) {
 		super(pos, pitch, yaw, roll);
 	}
 	
