@@ -26,7 +26,8 @@ public class Fbo {
 
 	private int frameBuffer;
 	
-	private boolean multisampleAndTarget = false;
+	private boolean multisample = false;
+	private boolean multitarget = false;
 
 	private int colorTexture;
 	private int depthTexture;
@@ -53,10 +54,10 @@ public class Fbo {
 		initialiseFrameBuffer(depthBufferType);
 	}
 	
-	public Fbo(int width, int height) {
+	public Fbo(int width, int height, boolean multiTarget) {
 		this.width = width;
 		this.height = height;
-		this.multisampleAndTarget = true;
+		this.multisample = true;
 		// TODO make this class better and more dynamic, tut dude is lazy and i dont like this class's design
 		initialiseFrameBuffer(DEPTH_RENDER_BUFFER);
 	}
@@ -141,9 +142,11 @@ public class Fbo {
 	 */
 	private void initialiseFrameBuffer(int type) {
 		createFrameBuffer();
-		if (multisampleAndTarget) {
+		if (multisample) {
 			colorBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT0);
-			colorBuffer2 = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT1);
+			if (multitarget) {
+				colorBuffer2 = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT1);				
+			}
 		} else {			
 			createTextureAttachment();
 		}
@@ -170,7 +173,7 @@ public class Fbo {
 	private void determineDrawBuffers() {
 		IntBuffer drawBuffers = BufferUtils.createIntBuffer(2);
 		drawBuffers.put(GL30.GL_COLOR_ATTACHMENT0);
-		if (this.multisampleAndTarget) {
+		if (this.multitarget) {
 			drawBuffers.put(GL30.GL_COLOR_ATTACHMENT1);
 		}
 		drawBuffers.flip();
@@ -220,7 +223,7 @@ public class Fbo {
 	private void createDepthBufferAttachment() {
 		depthBuffer = GL30.glGenRenderbuffers();
 		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, depthBuffer);
-		if (multisampleAndTarget) {
+		if (multisample) {
 			GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, samples, GL14.GL_DEPTH_COMPONENT24, width, height);
 		} else {
 			GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL14.GL_DEPTH_COMPONENT24, width, height);
