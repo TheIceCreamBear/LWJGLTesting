@@ -15,6 +15,7 @@ public class CubeParticleRenderer {
 	
 	public CubeParticleRenderer(Matrix4f projectionMatrix) {
 		this.shader = new CubeParticleShader();
+		this.projectionMatrix = projectionMatrix;
 	}
 	
 	public void prepare() {

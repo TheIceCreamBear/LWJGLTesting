@@ -5,8 +5,8 @@ import org.joml.Matrix4f;
 import com.joseph.test.lwjgl3.shaders.ShaderProgram;
 
 public class CubeParticleShader extends ShaderProgram {
-	private static final String VERTEX_FILE = "com/joseph/test/lwjgl3/particle/cube/cube.vert";
-	private static final String FRAGMENT_FILE = "com/joseph/test/lwjgl3/particle/cube/cube.frag";
+	private static final String VERTEX_FILE = "/com/joseph/test/lwjgl3/particle/cube/cube.vert";
+	private static final String FRAGMENT_FILE = "/com/joseph/test/lwjgl3/particle/cube/cube.frag";
 	
 	private int projViewMatrix;
 	

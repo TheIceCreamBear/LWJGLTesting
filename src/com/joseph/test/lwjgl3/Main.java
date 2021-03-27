@@ -19,9 +19,10 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
 import com.joseph.test.lwjgl3.entity.Camera;
+import com.joseph.test.lwjgl3.entity.CenteredCamera;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.entity.Light;
-import com.joseph.test.lwjgl3.entity.NonPlayerCamera;
+import com.joseph.test.lwjgl3.entity.FreeCamera;
 import com.joseph.test.lwjgl3.entity.Player;
 import com.joseph.test.lwjgl3.gui.GuiRenderer;
 import com.joseph.test.lwjgl3.gui.GuiTexture;
@@ -37,6 +38,7 @@ import com.joseph.test.lwjgl3.particle.Particle;
 import com.joseph.test.lwjgl3.particle.ParticleTexture;
 import com.joseph.test.lwjgl3.particle.Particles;
 import com.joseph.test.lwjgl3.particle.cube.CubeParticleRenderer;
+import com.joseph.test.lwjgl3.particle.cube.CubeParticleSystem;
 import com.joseph.test.lwjgl3.particle.cube.CubeParticleVao;
 import com.joseph.test.lwjgl3.particle.example.ComplexParticleExample;
 import com.joseph.test.lwjgl3.particle.example.SimpleParticleExample;
@@ -336,15 +338,24 @@ public class Main {
 		if (renderFV) {			
 			guis.add(frustrumResult);
 		}
-		Camera fvCam = new NonPlayerCamera(new Vector3f(camera.getPosition()), camera.getPitch(), camera.getYaw(), 180.0f);
+		Camera fvCam = new FreeCamera(new Vector3f(camera.getPosition()), camera.getPitch(), camera.getYaw(), 180.0f);
 		
 		Fbo multisampleAndTargetFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, true);
 		Fbo outputFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, Fbo.DEPTH_TEXTURE);
 		Fbo outputFbo2 = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, Fbo.DEPTH_TEXTURE);
 		PostProcessing.init();
 		
+		// stuff for the cube particle scene
+		Fbo multisampleFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, false);
+		CubeParticleRenderer cubeRenderer = new CubeParticleRenderer(renderer.getProjMatrix());
+		CubeParticleSystem cubeSystem = new CubeParticleSystem();
+		CubeParticleVao cubeVao = CubeParticleVao.create();
+		Camera cubeCam = new CenteredCamera(new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f);
+		
+		
 		// controll which scene gets rendered with these
-		boolean fullScene = true;
+		boolean fullScene = false;
+		boolean geomScene = !fullScene;
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
@@ -452,6 +463,24 @@ public class Main {
 				
 				// render the text
 				Text.render();
+			}
+			
+			// cubic particles with geometry shaders scene
+			if (geomScene) {
+				// udpate elements
+				cubeCam.move();
+				cubeSystem.update();
+				cubeVao.store(cubeSystem.getParticles());
+				
+				// bind multi sample buffer
+				multisampleFbo.bindFrameBuffer();
+				
+				// render
+				cubeRenderer.prepare();
+				cubeRenderer.render(cubeVao, cubeCam);
+				
+				// resolve the multisample fbo to the screen (yay antialiased sutffssss)
+				multisampleFbo.resolveToScreen();
 			}
 			
 			// this will swap which buffer is currently in the "front" and which is in the "back"

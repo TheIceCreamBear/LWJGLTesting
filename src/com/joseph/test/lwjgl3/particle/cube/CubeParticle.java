@@ -17,6 +17,7 @@ public class CubeParticle {
 	
 	public CubeParticle(Vector3f velocity) {
 		this.velocity = velocity;
+		this.position = new Vector3f(0.0f, 0.0f, 0.0f);
 	}
 	
 	public boolean update() {

@@ -14,8 +14,10 @@ import com.joseph.test.lwjgl3.Main;
 public class CubeParticleSystem {
 	private static final float PPS = 50.0f;
 	private static final Vector3f POSZ = new Vector3f(0.0f, 0.0f, 1.0f);
+	private static final Vector3f CONE = new Vector3f(0.0f, 1.0f, 0.0f);
 	
 	private List<CubeParticle> particles = new ArrayList<CubeParticle>();
+	private float partialParticle;
 	
 	public void update() {
 		this.generateParticles();
@@ -30,10 +32,10 @@ public class CubeParticleSystem {
 	
 	private void generateParticles() {
 		float particlesToCreate = PPS * Main.delta;
-		int count = (int) particlesToCreate;
-		float partialParticle = particlesToCreate % 1;
+		int count = (int) particlesToCreate + (int) partialParticle;
+		partialParticle = particlesToCreate % 1 + partialParticle % 1;
 		for (int i = 0; i < count; i++) {
-			particles.add(new CubeParticle(null));
+			particles.add(new CubeParticle(generateRandomUnitVectorWithinCode(CONE, 45.0f)));
 		}
 	}
 	

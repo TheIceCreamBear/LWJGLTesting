@@ -40,4 +40,8 @@ public class CubeParticleVao {
 	public int getParticleCount() {
 		return this.particleCount;
 	}
+	
+	public static CubeParticleVao create() {
+		return ModelLoader.instance.createCubeVao(MAX_PARTICLES);
+	}
 }
