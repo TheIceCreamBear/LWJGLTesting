@@ -385,6 +385,9 @@ public class Main {
 		Fbo outputFbo2 = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, Fbo.DEPTH_TEXTURE);
 		PostProcessing.init();
 		
+		// controll which scene gets rendered with these
+		boolean fullScene = true;
+		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
 		// UPDATES NOT DELTA TIME UPDATES THANKS
@@ -400,96 +403,98 @@ public class Main {
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
-			// move le player dude 
-			playa.move(waterT, canCamMove);
-			camera.move();
-			fvCam.move();
-			Particles.update(camera);
-			
-			// particle piss stream
-			if (GLFWHandler.keyDown[GLFW.GLFW_KEY_F]) {
-				new Particle(simpleTex, new Vector3f(playa.getPos()), new Vector3f(0.0f, 30.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f);
-			}
-			
-			// simple particle system
-			if (GLFWHandler.keyDown[GLFW.GLFW_KEY_X]) {
-				spe.generateParticles(playa.getPos());
-			}
-			
-			// complex particle system
-			if (GLFWHandler.keyDown[GLFW.GLFW_KEY_C]) {
-				cpe.generateParticles(playa.getPos());
-			}
-			
-//			picker.update();
-//			Vector3f terPoint = picker.getCurTerrainPoint();
-//			if (terPoint != null) {
-//				test.setPos(terPoint);
-//				if (GLFW.glfwGetMouseButton(windowPointer, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
-//					entities.add(test);
-//					test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.5f);
+			if (fullScene) {
+				// move le player dude 
+				playa.move(waterT, canCamMove);
+				camera.move();
+				fvCam.move();
+				Particles.update(camera);
+				
+				// particle piss stream
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_F]) {
+					new Particle(simpleTex, new Vector3f(playa.getPos()), new Vector3f(0.0f, 30.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f);
+				}
+				
+				// simple particle system
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_X]) {
+					spe.generateParticles(playa.getPos());
+				}
+				
+				// complex particle system
+				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_C]) {
+					cpe.generateParticles(playa.getPos());
+				}
+				
+//				picker.update();
+//				Vector3f terPoint = picker.getCurTerrainPoint();
+//				if (terPoint != null) {
+//					test.setPos(terPoint);
+//					if (GLFW.glfwGetMouseButton(windowPointer, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) {
+//						entities.add(test);
+//						test = new Entity(tree, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 0.5f);
+//					}
 //				}
-//			}
-			
-			
-			// = = = = = = = = = = = = = = = = = = = = RENDER = = = = = = = = = = = = = = = = = = = = =
-			renderer.renderShadowMap(entities, nmEntities, terrains, lights.get(0));
-			// its not working
-			
-			// tells open gl that we want to use the clip plane distance 0, just to make sure that it is enabled
-			// clip distance is just how far a vertex is from the clipping plane (this is signed), so like a positive
-			// clip distance means that it is "below" the plane (below is a relative term cause 3d planes and normals
-			// and wierd calc 3 type stuff but basically on the side where the normal of the plane is positive)
-			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
-			
-			// render reflection
-			fbos.bindReflectionFrameBuffer();
-			// set cam to below water
-			float distance = 2 * (camera.getPosition().y - wt.getHeight());
-			camera.getPosition().y -= distance;
-			camera.invertPitch();
-			renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, 1, 0, -wt.getHeight() + 0.15f));
-			// reset cam
-			camera.getPosition().y += distance;
-			camera.invertPitch();
-			
-			// render refraction
-			fbos.bindRefractionFrameBuffer();
-			renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, -1, 0, wt.getHeight() + 0.15f));
-			
-			// disables the cliping feature just so that nothing gets accidentally clipped by the shaders during the main pass
-			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-			
-			// render the entire scene with one call, makes everything simpler to an extent
-			fbos.unbindCurrentFrameBuffer();
-			
-			// bind the post processing fbo
-			multisampleFbo.bindFrameBuffer();
-			renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, 0, 0, 0));
-			
-			if (renderFV) {
-				renderFrustrumViewer(fv, fvfb, renderer, fvCam, entities, nmEntities, terrains, lights);
+				
+				
+				// = = = = = = = = = = = = = = = = = = = = RENDER = = = = = = = = = = = = = = = = = = = = =
+				renderer.renderShadowMap(entities, nmEntities, terrains, lights.get(0));
+				// its not working
+				
+				// tells open gl that we want to use the clip plane distance 0, just to make sure that it is enabled
+				// clip distance is just how far a vertex is from the clipping plane (this is signed), so like a positive
+				// clip distance means that it is "below" the plane (below is a relative term cause 3d planes and normals
+				// and wierd calc 3 type stuff but basically on the side where the normal of the plane is positive)
+				GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
+				
+				// render reflection
+				fbos.bindReflectionFrameBuffer();
+				// set cam to below water
+				float distance = 2 * (camera.getPosition().y - wt.getHeight());
+				camera.getPosition().y -= distance;
+				camera.invertPitch();
+				renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, 1, 0, -wt.getHeight() + 0.15f));
+				// reset cam
+				camera.getPosition().y += distance;
+				camera.invertPitch();
+				
+				// render refraction
+				fbos.bindRefractionFrameBuffer();
+				renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, -1, 0, wt.getHeight() + 0.15f));
+				
+				// disables the cliping feature just so that nothing gets accidentally clipped by the shaders during the main pass
+				GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+				
+				// render the entire scene with one call, makes everything simpler to an extent
+				fbos.unbindCurrentFrameBuffer();
+				
+				// bind the post processing fbo
+				multisampleFbo.bindFrameBuffer();
+				renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, 0, 0, 0));
+				
+				if (renderFV) {
+					renderFrustrumViewer(fv, fvfb, renderer, fvCam, entities, nmEntities, terrains, lights);
+				}
+				
+				// render water after scene but before gui
+				wRenderer.render(water, camera, lights.get(0));
+				
+				// render particles after all 3d and before 2d
+				Particles.renderParticles(camera);
+				
+				// unbind post processing fbo
+				multisampleFbo.unbindFrameBuffer();
+				// resolve straight to the screen
+//				multisampleFbo.resolveToScreen();
+				multisampleFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT0, outputFbo);
+				multisampleFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT1, outputFbo2);
+				PostProcessing.doPostProcessing(outputFbo.getColorTexture(), outputFbo2.getColorTexture());
+				
+				// render the Gui items
+				guiRenderer.render(guis);
+				
+				// render the text
+				Text.render();
 			}
-			
-			// render water after scene but before gui
-			wRenderer.render(water, camera, lights.get(0));
-			
-			// render particles after all 3d and before 2d
-			Particles.renderParticles(camera);
-			
-			// unbind post processing fbo
-			multisampleFbo.unbindFrameBuffer();
-			// resolve straight to the screen
-//			multisampleFbo.resolveToScreen();
-			multisampleFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT0, outputFbo);
-			multisampleFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT1, outputFbo2);
-			PostProcessing.doPostProcessing(outputFbo.getColorTexture(), outputFbo2.getColorTexture());
-			
-			// render the Gui items
-			guiRenderer.render(guis);
-			
-			// render the text
-			Text.render();
 			
 			// this will swap which buffer is currently in the "front" and which is in the "back"
 			// for more reading on why we do this and how it works, see 
