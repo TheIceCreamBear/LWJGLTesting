@@ -21,6 +21,7 @@ import org.lwjgl.system.MemoryUtil;
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.entity.Light;
+import com.joseph.test.lwjgl3.entity.NonPlayerCamera;
 import com.joseph.test.lwjgl3.entity.Player;
 import com.joseph.test.lwjgl3.gui.GuiRenderer;
 import com.joseph.test.lwjgl3.gui.GuiTexture;
@@ -35,6 +36,8 @@ import com.joseph.test.lwjgl3.models.obj.nm.NormalMapOBJLoader;
 import com.joseph.test.lwjgl3.particle.Particle;
 import com.joseph.test.lwjgl3.particle.ParticleTexture;
 import com.joseph.test.lwjgl3.particle.Particles;
+import com.joseph.test.lwjgl3.particle.cube.CubeParticleRenderer;
+import com.joseph.test.lwjgl3.particle.cube.CubeParticleVao;
 import com.joseph.test.lwjgl3.particle.example.ComplexParticleExample;
 import com.joseph.test.lwjgl3.particle.example.SimpleParticleExample;
 import com.joseph.test.lwjgl3.renderer.MainRenderer;
@@ -333,54 +336,9 @@ public class Main {
 		if (renderFV) {			
 			guis.add(frustrumResult);
 		}
-		Camera fvCam = new Camera(new Vector3f(camera.getPosition()), camera.getPitch(), camera.getYaw(), 180.0f) {
-			final float FV_CAM_MOVE_SPEED = 100.0f;
-			final float FV_CAM_TURN_SPEED = 160.0f;
-			@Override
-			// custom implementation of move, for debugging purposes of course
-			public void move() {
-				Vector3f displacement = new Vector3f(0, 0, 0);
-				float speed = FV_CAM_MOVE_SPEED * Main.delta;
-				float turnSpeed = FV_CAM_TURN_SPEED * Main.delta;
-				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_W]) {
-					displacement.x -= speed * Math.sin(Math.toRadians(this.yaw));
-					displacement.z -= speed * Math.cos(Math.toRadians(this.yaw));
-				}
-				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_S]) {
-					displacement.x += speed * Math.sin(Math.toRadians(this.yaw));
-					displacement.z += speed * Math.cos(Math.toRadians(this.yaw));
-				}
-				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_A]) {
-					displacement.x += speed * Math.cos(Math.toRadians(this.yaw));
-					displacement.z -= speed * Math.sin(Math.toRadians(this.yaw));
-				}
-				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_D]) {
-					displacement.x -= speed * Math.cos(Math.toRadians(this.yaw));
-					displacement.z += speed * Math.sin(Math.toRadians(this.yaw));
-				}
-				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_SPACE]) {
-					displacement.y += speed / 2;
-				}
-				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_LEFT_SHIFT]) {
-					displacement.y -= speed / 2;
-				}
-				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_UP]) {
-					this.pitch += turnSpeed;
-				}
-				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_DOWN]) {
-					this.pitch -= turnSpeed;
-				}
-				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_LEFT]) {
-					this.yaw -= turnSpeed;
-				}
-				if (GLFWHandler.keyDown[GLFW.GLFW_KEY_RIGHT]) {
-					this.yaw += turnSpeed;
-				}
-				this.position.add(displacement);
-			}
-		};
+		Camera fvCam = new NonPlayerCamera(new Vector3f(camera.getPosition()), camera.getPitch(), camera.getYaw(), 180.0f);
 		
-		Fbo multisampleFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT);
+		Fbo multisampleAndTargetFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, true);
 		Fbo outputFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, Fbo.DEPTH_TEXTURE);
 		Fbo outputFbo2 = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, Fbo.DEPTH_TEXTURE);
 		PostProcessing.init();
@@ -468,7 +426,7 @@ public class Main {
 				fbos.unbindCurrentFrameBuffer();
 				
 				// bind the post processing fbo
-				multisampleFbo.bindFrameBuffer();
+				multisampleAndTargetFbo.bindFrameBuffer();
 				renderer.renderScene(entities, nmEntities, terrains, lights, camera, new Vector4f(0, 0, 0, 0));
 				
 				if (renderFV) {
@@ -482,11 +440,11 @@ public class Main {
 				Particles.renderParticles(camera);
 				
 				// unbind post processing fbo
-				multisampleFbo.unbindFrameBuffer();
+				multisampleAndTargetFbo.unbindFrameBuffer();
 				// resolve straight to the screen
 //				multisampleFbo.resolveToScreen();
-				multisampleFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT0, outputFbo);
-				multisampleFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT1, outputFbo2);
+				multisampleAndTargetFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT0, outputFbo);
+				multisampleAndTargetFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT1, outputFbo2);
 				PostProcessing.doPostProcessing(outputFbo.getColorTexture(), outputFbo2.getColorTexture());
 				
 				// render the Gui items
@@ -532,7 +490,7 @@ public class Main {
 		renderer.cleanUp();
 		fv.cleanUp();
 		fvfb.cleanUp();
-		multisampleFbo.cleanUp();
+		multisampleAndTargetFbo.cleanUp();
 		outputFbo.cleanUp();
 		outputFbo2.cleanUp();
 		PostProcessing.cleanUp();
