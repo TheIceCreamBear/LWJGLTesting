@@ -17,5 +17,17 @@ public class CenteredCamera extends Camera {
 		this.calculateNewPos(horizDist, vertDist);
 		this.yaw = 360.0f - angleAroundPlayer;
 		this.yaw %= 360.0f;
-	}	
+	}
+	
+	@Override
+	protected void calculateNewPos(float horizDist, float vertDist) {
+		// split that into components using Trig(gered)
+		float theta = angleAroundPlayer;
+		float xOff = (float) (horizDist * Math.sin(Math.toRadians(theta)));
+		float zOff = (float) (horizDist * Math.cos(Math.toRadians(theta)));
+		// cam pos go brr
+		position.x = xOff;
+		position.z = zOff;
+		position.y = vertDist;
+	}
 }
