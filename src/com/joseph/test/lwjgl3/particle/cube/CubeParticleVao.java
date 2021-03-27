@@ -32,4 +32,12 @@ public class CubeParticleVao {
 		}
 		ModelLoader.instance.updateVbo(vbo, particleData, buffer);
 	}
+	
+	public int getVao() {
+		return this.vao;
+	}
+	
+	public int getParticleCount() {
+		return this.particleCount;
+	}
 }
