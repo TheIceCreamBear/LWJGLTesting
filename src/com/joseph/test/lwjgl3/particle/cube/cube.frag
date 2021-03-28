@@ -1,9 +1,9 @@
 #version 400 core
 
-in vec3 pass_color;
+in vec3 finalColor;
 
 out vec4 out_Color;
 
 void main(void) {
-    out_Color = vec4(pass_color, 1.0);
+    out_Color = vec4(finalColor, 1.0);
 }

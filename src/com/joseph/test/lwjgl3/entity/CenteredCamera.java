@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 public class CenteredCamera extends Camera {
 	public CenteredCamera(Vector3f pos, float pitch, float yaw, float roll) {
 		super(pos, pitch, yaw, roll);
+		distFromPlayer = 35;
 	}
 	
 	@Override

@@ -8,7 +8,7 @@ import com.joseph.test.lwjgl3.entity.Player;
 public class CubeParticle {
 	private static final float GRAVITY = 0.5f;
 	private static final float LIFE_LENGTH = 5f;
-	private static final float SPEED = 4f;
+	private static final float SPEED = 5f;
 	
 	private Vector3f velocity;
 	private Vector3f position;
@@ -21,7 +21,7 @@ public class CubeParticle {
 	}
 	
 	public boolean update() {
-		velocity.y += GRAVITY * Main.delta;
+		velocity.y -= GRAVITY * Main.delta;
 		Vector3f deltaPos = new Vector3f(velocity).mul(Main.delta * SPEED);
 		position.add(deltaPos);
 		lifeLeft -= Main.delta;

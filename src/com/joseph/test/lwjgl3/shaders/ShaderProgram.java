@@ -13,6 +13,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL32;
 
 /**
  * Abstract shader program, it does the shading, and makes things have color yay,
@@ -34,6 +35,7 @@ public abstract class ShaderProgram {
 	
 	private int programID;
 	private int vertexShaderID;
+	private int geometryShaderID = -1;
 	private int fragmentShaderID;
 	
 	/**
@@ -43,14 +45,33 @@ public abstract class ShaderProgram {
 	 * @param fragmentFile
 	 */
 	public ShaderProgram(String vertexFile, String fragmentFile) {
+		this(vertexFile, null, fragmentFile);
+	}
+	
+	/**
+	 * New constructor that does the same thing, and expects a vertex and fragment file, 
+	 * but takes in an optional geometry shader file
+	 * @param vertexFile
+	 * @param gemoetryFile
+	 * @param fragmentFile
+	 */
+	public ShaderProgram(String vertexFile, String gemoetryFile, String fragmentFile) {
 		// i think maybe load a vertex shader
 		this.vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
-		// i think maybe load a vertex shader
+		// only load a gemoetry shader if one is passed in
+		if (gemoetryFile != null) {
+			this.geometryShaderID = loadShader(gemoetryFile, GL32.GL_GEOMETRY_SHADER);
+		}
+		// i think maybe load a fragment shader
 		this.fragmentShaderID = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER);
 		// create the program maybe
 		this.programID = GL20.glCreateProgram();
 		// possibly attach the shader to the program
 		GL20.glAttachShader(programID, vertexShaderID);
+		// only attach geometry shader if one exists
+		if (gemoetryFile != null) {
+			GL20.glAttachShader(programID, geometryShaderID);
+		}
 		// possibly attach the shader to the program
 		GL20.glAttachShader(programID, fragmentShaderID);
 		// call this so that they have to bind their attribs and what not
@@ -102,9 +123,15 @@ public abstract class ShaderProgram {
 		stop();
 		// detach the shaders because memory
 		GL20.glDetachShader(programID, vertexShaderID);
+		if (this.geometryShaderID != -1) {
+			GL20.glDetachShader(programID, geometryShaderID);
+		}
 		GL20.glDetachShader(programID, fragmentShaderID);
 		// also delete them too
 		GL20.glDeleteShader(vertexShaderID);
+		if (this.geometryShaderID != -1) {
+			GL20.glDeleteShader(geometryShaderID);
+		}
 		GL20.glDeleteShader(fragmentShaderID);
 		// yea just yeet the whole thing out of here thanks
 		GL20.glDeleteProgram(programID);

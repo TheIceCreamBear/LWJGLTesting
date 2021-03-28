@@ -360,7 +360,7 @@ public class Main {
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
 		// UPDATES NOT DELTA TIME UPDATES THANKS
-		// NOTE: TUT uses Sys.getTime() which is not available in LWJGL 3, how ever, as mentioned on 
+		// NOTE: TUT uses Sys.getTime() which is not available in LWJGL 3, however, as mentioned on 
 		// this (http://forum.lwjgl.org/index.php?topic=5601.0) forum post, you can use GLFW.glfwGetTime(), 
 		// which returns a double. an alternative, would be replacing Sys in the TUT with GLFW.glfw[^] 
 		// where [^] represents making that following letter capitalized
