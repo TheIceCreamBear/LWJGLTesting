@@ -3,6 +3,7 @@
 !/res/provided/*.png
 !/res/provided/*.obj
 !/res/provided/skybox/
+!/res/provided/audio/
 /res/TestModels/*
 !/res/TestModels/*.png
 !/res/TestModels/*.obj
