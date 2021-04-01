@@ -2,6 +2,9 @@ package com.joseph.test.lwjgl3.audio;
 
 import java.io.IOException;
 
+import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.AL11;
+
 public class TempAudioTest {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		try {
@@ -13,6 +16,9 @@ public class TempAudioTest {
 		}
 		Audio.setListenerData(0, 0, 0);
 		
+		// setup distance model
+		AL10.alDistanceModel(AL11.AL_LINEAR_DISTANCE_CLAMPED);
+		
 		int buffer = Audio.loadSound("res/provided/audio/bounce.wav");
 		int airHord = Audio.loadSound("res/fun/airhorn.wav");
 		AudioSource source = new AudioSource();
@@ -22,7 +28,7 @@ public class TempAudioTest {
 		source2.setPitch(2.0f);
 		
 		char c = ' ';
-		boolean disableInputLoop = false;
+		boolean disableInputLoop = true;
 		if (disableInputLoop) {
 			c = 'q';
 		}
@@ -43,14 +49,15 @@ public class TempAudioTest {
 		}
 		
 		// 3d audio example
-		float xPos = 8.0f;
+		float xPos = 0.0f;
 		source.stop();
 		source.setVolume(1.5f);
 		source.play(buffer);
-		source.setPosition(xPos, 0, 2);
-		while (xPos >= -8.0f) {
+		source.setPosition(xPos, 0, 0);
+		while (xPos >= -20.0f) {
 			xPos -= 0.03f;
-			source.setPosition(xPos, 0, 2);
+			source.setPosition(xPos, 0, 0);
+			System.out.println(xPos);
 			Thread.sleep(10);
 		}
 		

@@ -7,6 +7,9 @@ public class AudioSource {
 	
 	public AudioSource() {
 		this.sourceId = AL10.alGenSources();
+		AL10.alSourcef(sourceId, AL10.AL_ROLLOFF_FACTOR, 1.0f);
+		AL10.alSourcef(sourceId, AL10.AL_REFERENCE_DISTANCE, 6.0f);
+		AL10.alSourcef(sourceId, AL10.AL_MAX_DISTANCE, 15.0f);
 	}
 	
 	public void play(int buffer) {
