@@ -25,7 +25,7 @@ public class TempAudioTest {
 		source.setLoop(true);
 		source.play(buffer);
 		AudioSource source2 = new AudioSource();
-		source2.setPitch(2.0f);
+		source2.setPitch(1.0f);
 		
 		char c = ' ';
 		boolean disableInputLoop = true;
@@ -54,7 +54,7 @@ public class TempAudioTest {
 		source.setVolume(1.5f);
 		source.play(buffer);
 		source.setPosition(xPos, 0, 0);
-		while (xPos >= -55.0f) {
+		while (xPos >= -5.0f) {
 			xPos -= 0.03f;
 			source.setPosition(xPos, 0, 0);
 			System.out.println(xPos);
@@ -64,5 +64,7 @@ public class TempAudioTest {
 		source2.delete();
 		source.delete();
 		Audio.cleanUp();
+		
+		// Thats it for this series of TUTs
 	}
 }
