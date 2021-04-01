@@ -5,6 +5,7 @@ out vec4 out_Color;
 in vec2 texCoords;
 in vec3 fragNormal;
 in vec3 reflectedVector;
+in vec3 refractedVector;
 
 uniform sampler2D modelTexture;
 uniform samplerCube envMap;
@@ -17,5 +18,9 @@ void main(void) {
     out_Color = texture(modelTexture, texCoords) * brightness;
     
     vec4 reflectedColor = texture(envMap, reflectedVector);
-    out_Color = mix(out_Color, reflectedColor, 0.6);
+    vec4 refractedColor = texture(envMap, refractedVector);
+    
+    vec4 envrioColor = mix(reflectedColor, refractedColor, 0.5);
+    
+    out_Color = mix(out_Color, envrioColor, 0.6);
 }

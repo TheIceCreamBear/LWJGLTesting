@@ -7,6 +7,7 @@ in vec3 normal;
 out vec3 fragNormal;
 out vec2 texCoords;
 out vec3 reflectedVector;
+out vec3 refractedVector;
 
 uniform mat4 transMatrix;
 uniform mat4 projMatrix;
@@ -23,4 +24,6 @@ void main(void) {
     
     vec3 viewVector = normalize(worldPosition.xyz - cameraPosition);
     reflectedVector = reflect(viewVector, unitNormal);
+    // final input is ration of refractd materials, tut dude uses air (1.0) and water (1.33)
+    refractedVector = refract(viewVector, unitNormal, 1.0 / 1.33);
 }
