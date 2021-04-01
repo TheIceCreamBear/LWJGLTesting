@@ -31,6 +31,7 @@ public class ReflectionEntityRenderer {
 	public void render(List<Entity> entities, Camera cam) {
 		shader.start();
 		shader.loadViewMat(cam);
+		this.bindEnvrionmentMap();
 		for (Entity entity : entities) {
 			TexturedModel model = entity.getModel();
 			this.bindModelVao(model);
@@ -60,6 +61,11 @@ public class ReflectionEntityRenderer {
 	private void bindTexture(TexturedModel model) {
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTex().glTextureID());
+	}
+	
+	private void bindEnvrionmentMap() {
+		GL13.glActiveTexture(GL13.GL_TEXTURE1);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, envMap.getTexture());		
 	}
 	
 	private void loadModelMatrix(Entity e) {

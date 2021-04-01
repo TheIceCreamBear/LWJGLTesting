@@ -6,6 +6,7 @@ in vec3 normal;
 
 out vec3 fragNormal;
 out vec2 texCoords;
+out vec3 reflectedVector;
 
 uniform mat4 transMatrix;
 uniform mat4 projMatrix;
@@ -19,4 +20,7 @@ void main(void) {
     texCoords = textureCoordinates;
     fragNormal = normal;
     vec3 unitNormal = normalize(normal);
+    
+    vec3 viewVector = normalize(worldPosition.xyz - cameraPosition);
+    reflectedVector = reflect(viewVector, unitNormal);
 }

@@ -14,6 +14,7 @@ public class ReflectionEntityShader extends ShaderProgram {
 	private int projMatLocation;
 	private int viewMatLocation;
 	private int textureLocation;
+	private int envMapLocation;
 	private int camPosLocaiton;
 	
 	public ReflectionEntityShader() {
@@ -33,11 +34,13 @@ public class ReflectionEntityShader extends ShaderProgram {
 		this.projMatLocation = super.getUniformLocation("projMatrix");
 		this.viewMatLocation = super.getUniformLocation("viewMatrix");
 		this.textureLocation = super.getUniformLocation("modelTexture");
+		this.envMapLocation = super.getUniformLocation("envMap");
 		this.camPosLocaiton = super.getUniformLocation("cameraPosition");
 	}
 	
 	public void connectTextureUnits() {
 		super.loadInt(textureLocation, 0);
+		super.loadInt(envMapLocation, 1);
 	}
 	
 	public void loadTransMat(Matrix4f mat) {
