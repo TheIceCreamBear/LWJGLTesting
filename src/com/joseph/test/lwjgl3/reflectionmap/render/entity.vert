@@ -7,7 +7,7 @@ in vec3 normal;
 out vec3 fragNormal;
 out vec2 texCoords;
 
-uniform mat4 transformationMatrix;
+uniform mat4 transMatrix;
 uniform mat4 projMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 cameraPosition;

@@ -11,6 +11,6 @@ const vec3 lightDir = normalize(vec3(0.2, -1.0, 0.3));
 const float ambient = 0.3;
 
 void main(void) {
-    float brightness = max(dot(-lightDir, normalize(normal)), ambient);
+    float brightness = max(dot(-lightDir, normalize(fragNormal)), ambient);
     out_Color = texture(modelTexture, texCoords) * brightness;
 }

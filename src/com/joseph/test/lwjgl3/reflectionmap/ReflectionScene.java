@@ -1,5 +1,6 @@
 package com.joseph.test.lwjgl3.reflectionmap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.joml.Matrix4f;
@@ -28,13 +29,16 @@ public class ReflectionScene {
 		multisampleFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, false);
 		cam = new CenteredCamera(new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f);
 		renderer = new ReflectionSceneRenderer(projMat);
+		entities = new ArrayList<Entity>();
 
 		entities.add(new Entity(loadModel("res/provided/reflection/meta.obj", "res/provided/reflection/meta.png"), new Vector3f(4.0f, 1.0f, 0.0f), 0.5f));
-		entities.add(new Entity(loadModel("res/provided/reflection/tea.obj", "res/provided/reflection/tea.png"), new Vector3f(0.3f, 1, 0), 0.34f));
-		entities.add(new Entity(loadModel("res/provided/reflection/dragon.obj", "res/provided/reflection/dragon.png"), new Vector3f(-4, 1, 0), 0.3f));
+		entities.add(new Entity(loadModel("res/provided/reflection/tea.obj", "res/provided/reflection/tea.png"), new Vector3f(0.3f, 1.0f, 0.0f), 0.34f));
+		entities.add(new Entity(loadModel("res/provided/reflection/dragon.obj", "res/provided/reflection/dragon.png"), new Vector3f(-4.0f, 1.0f, 0.0f), 0.3f));
 	}
 	
 	public void renderFull() {
+		multisampleFbo.bindFrameBuffer();
+		
 		cam.move();
 		
 		renderer.render(entities, cam);

@@ -42,6 +42,7 @@ import com.joseph.test.lwjgl3.particle.cube.CubeParticleSystem;
 import com.joseph.test.lwjgl3.particle.cube.CubeParticleVao;
 import com.joseph.test.lwjgl3.particle.example.ComplexParticleExample;
 import com.joseph.test.lwjgl3.particle.example.SimpleParticleExample;
+import com.joseph.test.lwjgl3.reflectionmap.ReflectionScene;
 import com.joseph.test.lwjgl3.renderer.MainRenderer;
 import com.joseph.test.lwjgl3.renderer.postprocess.Fbo;
 import com.joseph.test.lwjgl3.renderer.postprocess.PostProcessing;
@@ -72,9 +73,10 @@ public class Main {
 	 * <ul>
 	 * <li> 0 = main scene </li>
 	 * <li> 1 = cubic particles scene </li>
+	 * <li> 2 = reflection scene </li>
 	 * </ul>
 	 */
-	public static int sceneConrol = 0;
+	public static int sceneConrol = 2;
 	
 	public static void main(String[] args) {
 		// lol this is the main method bois
@@ -361,6 +363,9 @@ public class Main {
 		CubeParticleVao cubeVao = CubeParticleVao.create();
 		Camera cubeCam = new CenteredCamera(new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f);
 		
+		// stuff for the reflection scene
+		ReflectionScene refScene = new ReflectionScene(renderer.getProjMatrix());
+		
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
@@ -486,6 +491,9 @@ public class Main {
 					
 					// resolve the multisample fbo to the screen (yay antialiased sutffssss)
 					multisampleFbo.resolveToScreen();
+					break;
+				case 2:
+					refScene.renderFull();
 					break;
 				default:
 					System.err.println("oops, control flow machine broke");
