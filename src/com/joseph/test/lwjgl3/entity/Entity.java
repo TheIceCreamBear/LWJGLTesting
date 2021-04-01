@@ -23,6 +23,10 @@ public class Entity {
 	private int texIndex;
 	private boolean isLightSource;
 	
+	public Entity(TexturedModel model, Vector3f pos, float scale) {
+		this(model, pos, 0.0f, 0.0f, 0.0f, scale);
+	}
+	
 	public Entity(TexturedModel model, Vector3f pos, float rotx, float roty, float rotz, float scale) {
 		this(model, 0, pos, rotx, roty, rotz, scale);
 	}
