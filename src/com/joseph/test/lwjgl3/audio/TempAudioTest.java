@@ -17,7 +17,7 @@ public class TempAudioTest {
 		Audio.setListenerData(0, 0, 0);
 		
 		// setup distance model
-		AL10.alDistanceModel(AL11.AL_LINEAR_DISTANCE_CLAMPED);
+		AL10.alDistanceModel(AL11.AL_INVERSE_DISTANCE_CLAMPED);
 		
 		int buffer = Audio.loadSound("res/provided/audio/bounce.wav");
 		int airHord = Audio.loadSound("res/fun/airhorn.wav");
@@ -54,7 +54,7 @@ public class TempAudioTest {
 		source.setVolume(1.5f);
 		source.play(buffer);
 		source.setPosition(xPos, 0, 0);
-		while (xPos >= -20.0f) {
+		while (xPos >= -55.0f) {
 			xPos -= 0.03f;
 			source.setPosition(xPos, 0, 0);
 			System.out.println(xPos);
