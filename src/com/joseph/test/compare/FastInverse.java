@@ -57,7 +57,7 @@ public class FastInverse {
 			double diff = Math.abs(info[i].result - info[i].fastResult);
 			diffTotal += diff;
 			
-			if (diff > 0.01) {
+			if (diff > 0.01 && diff > 0) {
 				System.out.printf("%5d: %f & %f differ by %f on the number %f\n", i, info[i].result, info[i].fastResult, diff, info[i].number);
 			}
 			
