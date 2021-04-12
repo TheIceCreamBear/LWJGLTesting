@@ -1,0 +1,8 @@
+# ignore everything, just cause
+*.*
+
+# but dont ignore the gitignore, or any java/c/cpp files
+!.gitignore
+!*.java
+!*.c
+!*.cpp
