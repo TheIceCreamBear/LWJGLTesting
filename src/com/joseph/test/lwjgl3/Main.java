@@ -26,6 +26,7 @@ import com.joseph.test.lwjgl3.entity.FreeCamera;
 import com.joseph.test.lwjgl3.entity.Player;
 import com.joseph.test.lwjgl3.gui.GuiRenderer;
 import com.joseph.test.lwjgl3.gui.GuiTexture;
+import com.joseph.test.lwjgl3.leading.TargetLeadingScene;
 import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.math.MousePicker;
 import com.joseph.test.lwjgl3.models.ModelLoader;
@@ -366,6 +367,8 @@ public class Main {
 		// stuff for the reflection scene
 		ReflectionScene refScene = new ReflectionScene(renderer.getProjMatrix());
 		
+		// stuff for the target leading scene
+		TargetLeadingScene targetScene = new TargetLeadingScene(renderer.getProjMatrix());
 		
 		// THIS IS REALLY BAD NO BAD BUT THE TUT HAS IT IN A CLASS I DONT HAVE (because LWJGL2/3 reasons)
 		// AND IDK WHERE ELSE TO PUT IT ALSO EW NO DELTA TIME IS NOT SOMETHING I LIKE I LIKE FIXED TIME
@@ -495,6 +498,9 @@ public class Main {
 				case 2:
 					refScene.renderFull();
 					break;
+				case 3:
+					targetScene.renderFull();
+					break;
 				default:
 					System.err.println("oops, control flow machine broke");
 			}
@@ -539,6 +545,8 @@ public class Main {
 		multisampleAndTargetFbo.cleanUp();
 		outputFbo.cleanUp();
 		outputFbo2.cleanUp();
+		refScene.cleanUp();
+		targetScene.cleanUp();
 		PostProcessing.cleanUp();
 		TextureLoader.cleanUp();
 		Text.cleanUp();
