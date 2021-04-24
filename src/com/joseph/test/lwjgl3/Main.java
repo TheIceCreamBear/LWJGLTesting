@@ -75,9 +75,10 @@ public class Main {
 	 * <li> 0 = main scene </li>
 	 * <li> 1 = cubic particles scene </li>
 	 * <li> 2 = reflection scene </li>
+	 * <li> 3 = target scene </li> 
 	 * </ul>
 	 */
-	public static int sceneConrol = 2;
+	public static int sceneConrol = 3;
 	
 	public static void main(String[] args) {
 		// lol this is the main method bois
