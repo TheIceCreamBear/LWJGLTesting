@@ -6,7 +6,6 @@ in vec2 texCoords;
 in vec3 fragNormal;
 
 uniform sampler2D modelTexture;
-uniform samplerCube envMap;
 
 const vec3 lightDir = normalize(vec3(0.2, -1.0, 0.3));
 const float ambient = 0.3;
