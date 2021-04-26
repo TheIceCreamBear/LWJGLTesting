@@ -11,6 +11,7 @@ import com.joseph.test.lwjgl3.Main;
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.CenteredCamera;
 import com.joseph.test.lwjgl3.entity.Entity;
+import com.joseph.test.lwjgl3.grid.GridVao;
 import com.joseph.test.lwjgl3.leading.render.TargetLeadingRenderer;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
@@ -46,7 +47,7 @@ public class TargetLeadingScene {
 		
 		this.alive += Main.delta;
 		dirIndicator.increaseRotation(0.0f, 60.f * Main.delta, 0.0f);
-		dirIndicator.setRotx((float) (Math.sin(alive * 10.0f) * 10.0f));
+//		dirIndicator.setRotx((float) (Math.sin(alive * 10.0f) * 10.0f));
 		
 		renderer.render(entities, cam);
 		
