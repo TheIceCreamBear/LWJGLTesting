@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL33;
 
+import com.joseph.test.lwjgl3.grid.GridVao;
 import com.joseph.test.lwjgl3.models.obj.ModelData;
 import com.joseph.test.lwjgl3.particle.cube.CubeParticleVao;
 
@@ -262,6 +263,26 @@ public class ModelLoader {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		this.unbindVAO();
 		return new CubeParticleVao(vao, vbo);
+	}
+	
+	/**
+	 * time to make the spaget worse
+	 * @param maxParticles
+	 * @return
+	 */
+	public GridVao createGridVao(int maxParticles) {
+		// create vao and vbo
+		int vao = createVAO();
+		int vbo = GL15.glGenBuffers();
+		vbos.add(vbo);
+		// bind vbo, say how much data goes in it, put it as an attrib pointer for the vao
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, maxParticles * 4, GL15.GL_DYNAMIC_DRAW);
+		GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
+		// unbind and return
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		this.unbindVAO();
+		return new GridVao(vao, vbo);
 	}
 	
 	/**
