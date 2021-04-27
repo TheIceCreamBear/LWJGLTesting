@@ -7,23 +7,34 @@ import org.lwjgl.opengl.GL11;
 
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
+import com.joseph.test.lwjgl3.grid.GridRendererShader;
 
 public class TargetLeadingRenderer {
 	private Matrix4f projMat;
 	private TargetLeadingEntityRenderer entity;
+	private GridRendererShader grid;
 	
 	public TargetLeadingRenderer(Matrix4f projMat) {
 		this.projMat = projMat;
 		this.entity = new TargetLeadingEntityRenderer(projMat);
+		this.grid = new GridRendererShader(projMat);
 	}
 
 	public void render(List<Entity> entities, Camera cam) {
 		this.prepare();
+		this.grid.render(cam);
 		this.entity.render(entities, cam);
+	}
+	
+	public void setGridRadius(int radius) {
+		this.grid.start();
+		this.grid.loadRadius(radius);
+		this.grid.stop();
 	}
 	
 	public void cleanUp() {
 		this.entity.cleanUp();
+		this.grid.cleanUp();
 	}
 	
 	private void prepare() {
