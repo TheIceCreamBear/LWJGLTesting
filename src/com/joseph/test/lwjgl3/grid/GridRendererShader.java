@@ -33,6 +33,7 @@ public class GridRendererShader extends ShaderProgram {
 	private int projViewMatLocation;
 	private int offsetDirLocation;
 	private int radiusLocation;
+	private int colorLocation;
 	
 	public GridRendererShader(Matrix4f projMat) {
 		super(VERTEX_FILE, GEOMETRY_FILE, FRAGMENT_FILE);
@@ -71,6 +72,7 @@ public class GridRendererShader extends ShaderProgram {
 		this.projViewMatLocation = super.getUniformLocation("projectionViewMatrix");
 		this.offsetDirLocation = super.getUniformLocation("offsetDir");
 		this.radiusLocation = super.getUniformLocation("radius");
+		this.colorLocation = super.getUniformLocation("color");
 	}
 	
 	public void loadProjViewMat(Camera cam) {
@@ -85,5 +87,9 @@ public class GridRendererShader extends ShaderProgram {
 		}
 		super.loadInt(radiusLocation, radius);
 		this.vao.generateFresh(radius, 1);
+	}
+	
+	public void loadColor(Vector3f color) {
+		super.loadVector(colorLocation, color);
 	}
 }
