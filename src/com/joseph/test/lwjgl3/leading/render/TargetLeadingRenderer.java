@@ -3,6 +3,7 @@ package com.joseph.test.lwjgl3.leading.render;
 import java.util.List;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import com.joseph.test.lwjgl3.entity.Camera;
@@ -20,10 +21,17 @@ public class TargetLeadingRenderer {
 		this.grid = new GridRendererShader(projMat);
 	}
 
-	public void render(List<Entity> entities, Camera cam) {
+	public void render(List<Entity> entities, Vector3f gridColor, Camera cam) {
 		this.prepare();
+		this.setGridRgb(gridColor);
 		this.grid.render(cam);
 		this.entity.render(entities, cam);
+	}
+	
+	public void setGridRgb(Vector3f color) {
+		this.grid.start();
+		this.grid.loadColor(color);
+		this.grid.stop();
 	}
 	
 	public void setGridRadius(int radius) {

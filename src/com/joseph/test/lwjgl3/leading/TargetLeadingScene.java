@@ -28,6 +28,12 @@ public class TargetLeadingScene {
 	private TargetLeadingRenderer renderer;
 	private Entity dirIndicator;
 	private float alive = 0.0f;
+	private float rgbspeed = 0.75f;
+	private int rgbstate = 1;
+	private float r = 1.0f;
+	private float g = 0.0f;
+	private float b = 0.0f;
+	private Vector3f rgb = new Vector3f();
 	
 	public TargetLeadingScene(Matrix4f projMat) {
 		multisampleFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, false);
@@ -37,7 +43,7 @@ public class TargetLeadingScene {
 		entities = new ArrayList<Entity>();
 		
 		dirIndicator = new Entity(loadModel("res/target/targetcylinder.obj", "res/red.png"), new Vector3f(0.0f, 0.0f, 0.0f), 1.0f);
-		entities.add(dirIndicator);
+//		entities.add(dirIndicator);
 	}
 	
 	public void renderFull() {
@@ -49,7 +55,52 @@ public class TargetLeadingScene {
 		dirIndicator.increaseRotation(0.0f, 60.f * Main.delta, 0.0f);
 //		dirIndicator.setRotx((float) (Math.sin(alive * 10.0f) * 10.0f));
 		
-		renderer.render(entities, cam);
+		float drgb = rgbspeed * Main.delta;
+		
+		switch (rgbstate) {
+			case 0:
+				b -= drgb;
+				r += drgb;
+				if (b <= 0.0f) {
+					b = 0.0f;
+				}
+				if (r >= 1.0f) {
+					r = 1.0f;
+				}
+				if (b <= 0.0f && r >= 1.0f) {
+					rgbstate = 1;
+				}
+				break;
+			case 1:
+				r -= drgb;
+				g += drgb;
+				if (r <= 0.0f) {
+					r = 0.0f;
+				}
+				if (g >= 1.0f) {
+					g = 1.0f;
+				}
+				if (r <= 0.0f && g >= 1.0f) {
+					rgbstate = 2;
+				}
+				break;
+			case 2:
+				g -= drgb;
+				b += drgb;
+				if (g <= 0.0f) {
+					g = 0.0f;
+				}
+				if (b >= 1.0f) {
+					b = 1.0f;
+				}
+				if (g <= 0.0f && b >= 1.0f) {
+					rgbstate = 0;
+				}
+				break;
+		}
+				
+		rgb.set(r, g, b);
+		renderer.render(entities, rgb, cam);
 		
 		// resolve fbo
 		multisampleFbo.resolveToScreen();
