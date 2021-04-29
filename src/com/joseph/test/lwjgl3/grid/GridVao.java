@@ -40,9 +40,6 @@ public class GridVao {
 			vertData[j * 3 + zIndexOffset * 3] = radius; // x
 			vertData[j * 3 + 1 + zIndexOffset * 3] = 0;  // y
 			vertData[j * 3 + 2 + zIndexOffset * 3] = i;  // z
-			
-			System.out.printf("vertData[%d]=(%d, %d, %d)\n", j, i, 0, radius);
-			System.out.printf("vertData[%d]=(%d, %d, %d)\n", j + zIndexOffset, radius, 0, i);
 		}
 		ModelLoader.instance.updateVbo(vbo, vertData, buffer);
 	}
