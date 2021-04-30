@@ -3,15 +3,16 @@ package com.joseph.test.lwjgl3.leading;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 import com.joseph.test.lwjgl3.GLFWHandler;
 import com.joseph.test.lwjgl3.Main;
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.CenteredCamera;
 import com.joseph.test.lwjgl3.entity.Entity;
-import com.joseph.test.lwjgl3.grid.GridVao;
 import com.joseph.test.lwjgl3.leading.render.TargetLeadingRenderer;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
@@ -27,6 +28,7 @@ public class TargetLeadingScene {
 	private List<Entity> entities;
 	private TargetLeadingRenderer renderer;
 	private Entity dirIndicator;
+	private VelocityEntity last;
 	private float alive = 0.0f;
 	private float rgbspeed = 0.75f;
 	private int rgbstate = 1;
@@ -35,21 +37,43 @@ public class TargetLeadingScene {
 	private float b = 0.0f;
 	private Vector3f rgb = new Vector3f();
 	
+	private TexturedModel shellModel;
+	
 	public TargetLeadingScene(Matrix4f projMat) {
 		multisampleFbo = new Fbo(GLFWHandler.SCREEN_WIDTH, GLFWHandler.SCREEN_HEIGHT, false);
 		// TODO diff cam eventually
 		cam = new CenteredCamera(new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f);
 		renderer = new TargetLeadingRenderer(projMat);
+		renderer.setGridRadius(50);
 		entities = new ArrayList<Entity>();
 		
-		dirIndicator = new Entity(loadModel("res/target/targetcylinder.obj", "res/red.png"), new Vector3f(0.0f, 0.0f, 0.0f), 1.0f);
-//		entities.add(dirIndicator);
+		dirIndicator = new RotMatEntity(loadModel("res/target/targetcylinder.obj", "res/red.png"), new Vector3f(0.0f, 0.0f, 0.0f), 1.0f);
+		entities.add(dirIndicator);
+		
+		shellModel = loadModel("res/target/shell.obj", "res/target/ShellMaterialTexture.png");
+		
+		// have some init entity so things dont break
+		VelocityEntity e = new VelocityEntity(shellModel, new Vector3f(-25.0f, 10.0f, -25.0f), new Vector3f(5.0f, 0.0f, 0.0f), 0.0f, 90.0f, 0.0f, 1.0f);
+		entities.add(e);
+		last = e;
 	}
 	
 	public void renderFull() {
 		multisampleFbo.bindFrameBuffer();
 		
 		cam.move();
+		
+		for (Entity entity : entities) {
+			if (entity instanceof VelocityEntity) {
+				((VelocityEntity) entity).move();
+			}
+		}
+		
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_G]) {
+			VelocityEntity e = new VelocityEntity(shellModel, new Vector3f(-25.0f, 10.0f, -25.0f), new Vector3f(5.0f, 0.0f, 0.0f), 0.0f, 90.0f, 0.0f, 1.0f);
+			entities.add(e);
+			last = e;
+		}
 		
 		this.alive += Main.delta;
 		dirIndicator.increaseRotation(0.0f, 60.f * Main.delta, 0.0f);
