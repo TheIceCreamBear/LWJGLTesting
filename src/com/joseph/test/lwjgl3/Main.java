@@ -78,7 +78,12 @@ public class Main {
 	 * <li> 3 = target scene </li> 
 	 * </ul>
 	 */
-	public static int sceneConrol = 3;
+	public static int sceneControl = 3;
+	
+	/**
+	 * The currently allowed maximum value for sceneControl
+	 */
+	public static int maxSceneControl = 3;
 	
 	public static void main(String[] args) {
 		// lol this is the main method bois
@@ -386,7 +391,7 @@ public class Main {
 		// this can happen if the user hits the X on the window, or (as seen in the key call back)
 		// the user hits escape
 		while (!GLFW.glfwWindowShouldClose(windowPointer)) {
-			switch (sceneConrol) {
+			switch (sceneControl) {
 				case 0:
 					// move le player dude 
 					playa.move(waterT, canCamMove);
