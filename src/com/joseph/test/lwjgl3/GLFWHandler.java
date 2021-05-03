@@ -61,14 +61,28 @@ public class GLFWHandler {
 			}
 		}
 		
-		// THIS IS TEMPORARY GROSS CODE
+		// THIS IS TEMPORARY GROSS CODE (maybe not)
 		if (action == GLFW.GLFW_PRESS) {
 			keyDown[key] = true;
 		}
 		
-		// THIS IS TEMPORARY GROSS CODE
+		// THIS IS TEMPORARY GROSS CODE (maybe not)
 		if (action == GLFW.GLFW_RELEASE) {
 			keyDown[key] = false;
+		}
+		
+		// manual overwrite for a second
+		// if number along top of keyboard
+		if (action == GLFW.GLFW_RELEASE && key >= GLFW.GLFW_KEY_0 && key <= GLFW.GLFW_KEY_9) {
+			if (keyDown[GLFW.GLFW_KEY_LEFT_CONTROL]) {
+				int mode = key - GLFW.GLFW_KEY_0;
+				if (mode > Main.maxSceneControl) {
+					System.err.println("Failed to set new mode, out of bounds: " + mode + ">" + Main.maxSceneControl);
+				}
+				Main.sceneControl = mode;
+				System.err.println("Setting new Scene mode: " + mode);
+				
+			}
 		}
 	}
 	
