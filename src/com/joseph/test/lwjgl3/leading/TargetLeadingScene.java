@@ -27,7 +27,7 @@ public class TargetLeadingScene {
 	private Camera cam;
 	private List<Entity> entities;
 	private TargetLeadingRenderer renderer;
-	private Entity dirIndicator;
+	private QuaternionEntity dirIndicator;
 	private VelocityEntity last;
 	private float alive = 0.0f;
 	private float rgbspeed = 0.75f;
@@ -47,7 +47,7 @@ public class TargetLeadingScene {
 		renderer.setGridRadius(50);
 		entities = new ArrayList<Entity>();
 		
-		dirIndicator = new RotMatEntity(loadModel("res/target/targetcylinder.obj", "res/red.png"), new Vector3f(0.0f, 0.0f, 0.0f), 1.0f);
+		dirIndicator = new QuaternionEntity(loadModel("res/target/targetcylinder.obj", "res/red.png"), new Vector3f(0.0f, 0.0f, 0.0f), 1.0f);
 		entities.add(dirIndicator);
 		
 		shellModel = loadModel("res/target/shell.obj", "res/target/ShellMaterialTexture.png");
@@ -76,8 +76,8 @@ public class TargetLeadingScene {
 		}
 		
 		this.alive += Main.delta;
-		dirIndicator.increaseRotation(0.0f, 60.f * Main.delta, 0.0f);
-//		dirIndicator.setRotx((float) (Math.sin(alive * 10.0f) * 10.0f));
+		Vector3f angle = angleToTarget(new Vector3f(0.0f, 0.0f, 0.0f), 25.0f, last.getPos(), last.getVelocity());
+		dirIndicator.lookAlong(angle);
 		
 		float drgb = rgbspeed * Main.delta;
 		
@@ -138,5 +138,57 @@ public class TargetLeadingScene {
 		RawModel model = ModelLoader.instance.loadToVAO(OBJLoader.loadObjModel(modelFile));
 		Texture texture = TextureLoader.loadTexture(textureFile);
 		return new TexturedModel(model, texture);
+	}
+	
+	/**
+	 * method to find a firing angle given a constant speed projectile, the targets current position and velocity, and where
+	 * the projectile will be fired from, to ensure that the projectile will hit the target given that the target has a constant
+	 * velocity
+	 * <br>
+	 * based on math found at <br>
+	 * https://math.stackexchange.com/questions/1603637/where-to-shoot-to-hit-a-moving-target-in-3d-space<br>
+	 * and code written in an old project available here<br>
+	 * https://github.com/TheIceCreamBear/TurretTest/blob/master/src/com/joseph/gametemplate/gameobject/Turret.java#L222
+	 * @param shootingPosition
+	 * @param projectileSpeed
+	 * @param targetPosition
+	 * @param targetVelocity
+	 * @return
+	 */
+	private Vector3f angleToTarget(Vector3f shootingPosition, float projectileSpeed, Vector3f targetPosition, Vector3f targetVelocity) { 
+		// get targets position if we considered where we were shooting from the origin
+		Vector3f targetP0 = targetPosition.sub(shootingPosition, new Vector3f());
+		
+		float speedSquared = projectileSpeed * projectileSpeed;
+		float velocitySquared = targetVelocity.dot(targetVelocity);	
+		
+		// setup up the quadratic equation
+		float a = (speedSquared - velocitySquared);
+		float b = -2.0f * (targetP0.dot(targetVelocity));
+		float c = -targetP0.dot(targetP0);
+		
+		// test determinant of the quadratic equation
+		float d = b * b - 4 * a * c;
+		
+		if (d < 0) {
+			// this is illegal, as you will have a negative in a sqrt which wont work
+			// return dummy value
+			System.err.println("wtf");
+			return new Vector3f(0.0f, 0.0f, 0.0f);
+		}
+		
+		// solve the quadratic equation
+		float t0 = (float) ((-b - Math.sqrt(d)) / (2 * a));
+		float t1 = (float) ((-b + Math.sqrt(d)) / (2 * a));
+		
+		// take the answer that is positive and greater than 0
+		float t = (t0 < 0) ? t1 : (t1 < 0) ? t0 : Math.min(t1, t0);
+		
+		targetP0.div(t);
+		
+		// return result
+		Vector3f temp = targetP0.add(targetVelocity).normalize();
+//		System.out.println(temp);
+		return temp;
 	}
 }

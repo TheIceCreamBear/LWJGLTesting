@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL30;
 
 import com.joseph.test.lwjgl3.entity.Camera;
 import com.joseph.test.lwjgl3.entity.Entity;
+import com.joseph.test.lwjgl3.leading.QuaternionEntity;
 import com.joseph.test.lwjgl3.math.MathHelper;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.models.TexturedModel;
@@ -60,6 +61,13 @@ public class TargetLeadingEntityRenderer {
 	}
 	
 	private void loadModelMatrix(Entity e) {
+		if (e instanceof QuaternionEntity) {
+			Matrix4f matrix = new Matrix4f();
+			matrix.translate(e.getPos());
+			matrix.rotate(((QuaternionEntity)e).getRotation());
+			shader.loadTransMat(matrix);
+			return;
+		}
 		Matrix4f mat = MathHelper.createTransformationMatrix(e.getPos(), e.getRotx(), e.getRoty(), e.getRotz(), e.getScale());
 		shader.loadTransMat(mat);
 	}
