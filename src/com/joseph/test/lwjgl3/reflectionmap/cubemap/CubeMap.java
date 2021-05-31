@@ -3,7 +3,6 @@ package com.joseph.test.lwjgl3.reflectionmap.cubemap;
 import com.joseph.test.lwjgl3.models.ModelLoader;
 import com.joseph.test.lwjgl3.models.RawModel;
 import com.joseph.test.lwjgl3.textures.TextureLoader;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Loader;
 
 public class CubeMap {
 	private static final float SIZE = 100f;
