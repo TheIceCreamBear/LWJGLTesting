@@ -15,6 +15,7 @@ public class GLFWHandler {
 	
 	// NOT THE FINAL RESTING PLACE FOR THIS, GOOD "for now"
 	public static boolean[] keyDown = new boolean[GLFW.GLFW_KEY_LAST + 1];
+	public static boolean[] frameKeyDown = new boolean[GLFW.GLFW_KEY_LAST + 1];
 	private static double scroll = 0.0f;
 	private static double dx = 0.0f;
 	private static double dy = 0.0f;
@@ -64,6 +65,7 @@ public class GLFWHandler {
 		// THIS IS TEMPORARY GROSS CODE (maybe not)
 		if (action == GLFW.GLFW_PRESS) {
 			keyDown[key] = true;
+			frameKeyDown[key] = true;
 		}
 		
 		// THIS IS TEMPORARY GROSS CODE (maybe not)
@@ -109,6 +111,10 @@ public class GLFWHandler {
 		dx = 0;
 		dy = 0;
 		scroll = 0;
+		
+		for (int i = 0; i < frameKeyDown.length; i++) {
+			frameKeyDown[i] = false;
+		}
 	}
 	
 	/**
