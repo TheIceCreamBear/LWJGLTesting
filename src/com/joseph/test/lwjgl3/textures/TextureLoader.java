@@ -250,7 +250,9 @@ public class TextureLoader {
 	 * @throws IOException
 	 */
 	private static int loadTextureInternal(String file, float bias, boolean ansiotropic) throws IOException {
+		long start = System.nanoTime();
 		TextureData texData = decodeTexture(file);
+		long decode = System.nanoTime();
 		
 		// make a GL texture and bind it
 		int id = GL11.glGenTextures();
@@ -297,6 +299,10 @@ public class TextureLoader {
 
 		// add it to the list
 		textures.add(id);
+		
+		long full = System.nanoTime();
+		
+		System.out.printf("Texture parsing for %40s took %15dns to decode and %15dns to fully load\n", file, decode - start, full - start);
 		
 		return id;
 	}

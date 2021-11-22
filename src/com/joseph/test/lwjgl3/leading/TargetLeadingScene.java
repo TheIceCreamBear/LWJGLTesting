@@ -1,6 +1,7 @@
 package com.joseph.test.lwjgl3.leading;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.joml.Math;
@@ -27,7 +28,7 @@ public class TargetLeadingScene {
 	private Camera cam;
 	private List<Entity> entities;
 	private TargetLeadingRenderer renderer;
-	private QuaternionEntity dirIndicator;
+	private Entity dirIndicator;
 	private VelocityEntity last;
 	private float alive = 0.0f;
 	private float rgbspeed = 0.75f;
@@ -47,7 +48,7 @@ public class TargetLeadingScene {
 		renderer.setGridRadius(50);
 		entities = new ArrayList<Entity>();
 		
-		dirIndicator = new QuaternionEntity(loadModel("res/target/targetcylinder.obj", "res/red.png"), new Vector3f(0.0f, 0.0f, 0.0f), 1.0f);
+		dirIndicator = new Entity(loadModel("res/target/targetcylinder.obj", "res/redgreen.png"), new Vector3f(0.0f, 0.0f, 0.0f), 1.0f);
 		entities.add(dirIndicator);
 		
 		shellModel = loadModel("res/target/shell.obj", "res/target/ShellMaterialTexture.png");
@@ -63,9 +64,16 @@ public class TargetLeadingScene {
 		
 		cam.move();
 		
-		for (Entity entity : entities) {
+		Iterator<Entity> it = entities.iterator();
+		while (it.hasNext()) {
+			Entity entity = it.next();
 			if (entity instanceof VelocityEntity) {
-				((VelocityEntity) entity).move();
+				VelocityEntity ve = ((VelocityEntity) entity);
+				ve.move();
+				// delete entity if its too far away
+				if (ve.getPos().lengthSquared() > 62500) {
+					it.remove();
+				}
 			}
 		}
 		
@@ -77,7 +85,22 @@ public class TargetLeadingScene {
 		
 		this.alive += Main.delta;
 		Vector3f angle = angleToTarget(new Vector3f(0.0f, 0.0f, 0.0f), 25.0f, last.getPos(), last.getVelocity());
-		dirIndicator.lookAlong(angle);
+		float rho = 1.0f;
+		float phi = (float) java.lang.Math.acos(angle.y);
+		float theta = (float) java.lang.Math.atan(angle.x / angle.z);
+		float pitch = (float) (90 - Math.toDegrees(phi));
+		float yaw = (float) Math.toDegrees(theta);
+		if (angle.z < 0) {
+			yaw += 180;
+		}
+		dirIndicator.setRotx(pitch);
+		dirIndicator.setRoty(yaw);
+		
+		if (GLFWHandler.keyDown[GLFW.GLFW_KEY_P]) {
+			QuaternionEntity e = new QuaternionEntity(shellModel, new Vector3f(0,0,0), angle.mul(25, new Vector3f()), 1.0f);
+			e.lookAlong(angle);
+			entities.add(e);
+		}
 		
 		float drgb = rgbspeed * Main.delta;
 		

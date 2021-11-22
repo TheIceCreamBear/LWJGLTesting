@@ -7,13 +7,13 @@ import org.joml.Math;
 import com.joseph.test.lwjgl3.entity.Entity;
 import com.joseph.test.lwjgl3.models.TexturedModel;
 
-public class QuaternionEntity extends Entity {
+public class QuaternionEntity extends VelocityEntity {
 	private final static Vector3f forward = new Vector3f(0.0f, 0.0f, 1.0f);
 	private final static Vector3f up = new Vector3f(0.0f, 1.0f, 0.0f);
 	private Quaternionf rotation;
 	
-	public QuaternionEntity(TexturedModel model, Vector3f pos, float scale) {
-		super(model, pos, scale);
+	public QuaternionEntity(TexturedModel model, Vector3f pos, Vector3f vel, float scale) {
+		super(model, pos, vel, 0, 0, 0, scale);
 		this.rotation = new Quaternionf();
 	}
 	
