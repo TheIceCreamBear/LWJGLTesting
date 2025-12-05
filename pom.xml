@@ -1,0 +1,402 @@
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+        >
+    
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dev.ticb</groupId>
+    <artifactId>lwjgl-testing</artifactId>
+    <name>LWJGLTesting</name>
+
+    <version>${revision}</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <revision>1.0.0-SNAPSHOT</revision>
+        <lwjgl.version>3.3.6</lwjgl.version>
+        <joml.version>1.9.25</joml.version>
+
+        <!-- maven properties for config -->
+        <!-- CANT USE 21 or newer because of com.sun.media.sound, could be fixed by switching to lwjgl-assimp -->
+        <maven.compiler.release>8</maven.compiler.release>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+    </properties>
+
+    <build>
+        <!-- override the way maven pulls directories to make the maven transition easier without needing to move directories at first -->
+        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>res</directory>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/grid</directory>
+                <includes>
+                    <include>grid.frag</include>
+                    <include>grid.geom</include>
+                    <include>grid.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/grid</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/gui</directory>
+                <includes>
+                    <include>gui.frag</include>
+                    <include>gui.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/gui</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/leading/render</directory>
+                <includes>
+                    <include>entity.frag</include>
+                    <include>entity.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/leading/render</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/particle/cube</directory>
+                <includes>
+                    <include>cube.frag</include>
+                    <include>cube.geom</include>
+                    <include>cube.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/particle/cube</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/particle</directory>
+                <includes>
+                    <include>particle.frag</include>
+                    <include>particle.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/particle</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/reflectionmap/cubemap</directory>
+                <includes>
+                    <include>cube.frag</include>
+                    <include>cube.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/reflectionmap/cubemap</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/reflectionmap/render</directory>
+                <includes>
+                    <include>entity.frag</include>
+                    <include>entity.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/reflectionmap/render</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/renderer/nm</directory>
+                <includes>
+                    <include>normalMap.frag</include>
+                    <include>normalMap.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/renderer/nm</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/renderer/postprocess/bloom</directory>
+                <includes>
+                    <include>brightFilter.frag</include>
+                    <include>combine.frag</include>
+                    <include>simple.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/renderer/postprocess/bloom</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/renderer/postprocess/contrast</directory>
+                <includes>
+                    <include>contrast.frag</include>
+                    <include>contrast.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/renderer/postprocess/contrast</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/renderer/postprocess/gaussianblur</directory>
+                <includes>
+                    <include>blur.frag</include>
+                    <include>hblur.vert</include>
+                    <include>vblur.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/renderer/postprocess/gaussianblur</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/renderer/text</directory>
+                <includes>
+                    <include>text.frag</include>
+                    <include>text.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/renderer/text</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/shaders</directory>
+                <includes>
+                    <include>static.frag</include>
+                    <include>static.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/shaders</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/shadows</directory>
+                <includes>
+                    <include>shadow.frag</include>
+                    <include>shadow.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/shadows</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/skybox</directory>
+                <includes>
+                    <include>skybox.frag</include>
+                    <include>skybox.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/skybox</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/terrain</directory>
+                <includes>
+                    <include>terrain.frag</include>
+                    <include>terrain.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/terrain</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/test</directory>
+                <includes>
+                    <include>test.frag</include>
+                    <include>test.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/test</targetPath>
+            </resource>
+            <resource>
+                <!-- this is a bad pattern, and should be changed eventually -->
+                <directory>src/com/joseph/test/lwjgl3/water</directory>
+                <includes>
+                    <include>water.frag</include>
+                    <include>water.vert</include>
+                </includes>
+                <targetPath>com/joseph/test/lwjgl3/water</targetPath>
+            </resource>
+        </resources>
+
+        <finalName>LWJGLTesting</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.joseph.test.lwjgl3.Main</mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- manage which native should be used via profiles, though it would be cool if there was a better way to do this -->
+    <profiles>
+        <profile>
+            <id>lwjgl-natives-linux-amd64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>linux</name>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-linux</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>lwjgl-natives-linux-aarch64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>linux</name>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-linux-arm64</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>lwjgl-natives-linux-riscv64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>linux</name>
+                    <arch>riscv64</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-linux-riscv64</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>lwjgl-natives-macos-x86_64</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>x86_64</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-macos</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>lwjgl-natives-macos-aarch64</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-macos-arm64</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>lwjgl-natives-windows-amd64</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-windows</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>lwjgl-natives-windows-x86</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>x86</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-windows-x86</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>lwjgl-natives-windows-aarch64</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-windows-arm64</lwjgl.natives>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- pull in lwjgl deps via their pom bom for the specified version -->
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-bom</artifactId>
+                <version>${lwjgl.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- direct lwjgl deps -->
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl</artifactId>
+            <classifier>${lwjgl.natives}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-glfw</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-glfw</artifactId>
+            <classifier>${lwjgl.natives}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-opengl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-openal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-opengl</artifactId>
+            <classifier>${lwjgl.natives}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-openal</artifactId>
+            <classifier>${lwjgl.natives}</classifier>
+        </dependency>
+
+        <!-- other deps, joml for math, PGNDecoder for png decoding (TODO: transition to lwjgl assimp? -->
+        <dependency>
+            <groupId>org.joml</groupId>
+            <artifactId>joml</artifactId>
+            <version>${joml.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.l33tlabs.twl</groupId>
+            <artifactId>pngdecoder</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+
+</project>
